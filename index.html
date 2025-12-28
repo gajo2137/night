@@ -7,84 +7,70 @@
 
 <style>
 :root{
---bg:#000;
---card:#111;
 --yellow:#f5c400;
 --text:#fff;
 --muted:#aaa;
 }
-
-*{
-box-sizing:border-box;
-font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial;
-}
+*{box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial}
 
 body{
 margin:0;
-background:var(--bg);
 color:var(--text);
+background:
+radial-gradient(1200px 600px at top, #111 0%, #000 60%),
+linear-gradient(180deg, #050505, #000);
 }
 
-/* ===== HEADER ===== */
-header{
-padding:16px;
-background:var(--bg);
-border-bottom:1px solid #222;
+/* BANER */
+.banner img{width:100%;max-height:260px;object-fit:cover}
+.banner-text{text-align:center;padding:14px;border-bottom:1px solid rgba(255,255,255,.06)}
+.banner-text h1{margin:0;color:var(--yellow)}
+.banner-text p{margin:4px 0;color:var(--muted)}
+
+/* ŚREDNIA OCENA */
+.avg-rating{
+text-align:center;
+padding:10px;
+font-size:18px;
+color:var(--yellow);
 }
 
-.header-inner{
-max-width:520px;
-margin:auto;
+/* JĘZYK */
+.lang{display:flex;justify-content:center;gap:10px;margin-top:8px}
+.lang button{
+background:transparent;
+border:1px solid var(--yellow);
+color:var(--yellow);
+padding:5px 12px;
+border-radius:20px;
+font-weight:600;
 }
 
-.logo{
-width:160px;
-max-width:100%;
-margin-bottom:10px;
-}
+/* MAIN */
+main{max-width:520px;margin:auto;padding:18px}
 
-header p{
-margin:0;
-color:var(--muted);
-font-size:14px;
-}
-
-/* ===== MAIN ===== */
-main{
-max-width:520px;
-margin:auto;
-padding:16px;
-}
-
-/* ===== CARD ===== */
+/* KARTY */
 .card{
-background:var(--card);
-border-radius:18px;
+background:rgba(17,17,17,.85);
+backdrop-filter:blur(10px);
+border-radius:20px;
 padding:16px;
-margin-bottom:16px;
+margin-bottom:18px;
+box-shadow:0 10px 30px rgba(0,0,0,.6);
 }
 
-/* ===== FORM ===== */
-.label{
-font-size:13px;
-color:var(--muted);
-margin-bottom:6px;
-display:block;
-}
-
+/* FORM */
+.label{font-size:13px;color:var(--muted);margin-bottom:6px;display:block}
 select,input,textarea{
 width:100%;
 padding:14px;
 border-radius:14px;
-border:1px solid #222;
+border:none;
 background:#000;
 color:#fff;
-font-size:16px;
 }
 
-textarea{resize:none}
-
-/* ===== BUTTONS ===== */
+/* BUTTONY */
 .btn{
 width:100%;
 padding:16px;
@@ -93,193 +79,186 @@ border:none;
 font-size:17px;
 font-weight:600;
 margin-top:12px;
-display:flex;
-align-items:center;
-justify-content:center;
-gap:10px;
 }
+.btn-primary{background:var(--yellow);color:#000}
+.btn-secondary{background:transparent;color:var(--yellow);border:1px solid var(--yellow)}
+.btn-dark{background:#000;color:#fff;border:1px solid #333}
 
-.btn-primary{
-background:var(--yellow);
-color:#000;
-}
+/* GWIAZDKI */
+.stars{display:flex;justify-content:center;gap:6px;font-size:28px;cursor:pointer}
+.star{color:#333}
+.star.active{color:var(--yellow)}
 
-.btn-secondary{
-background:#000;
-color:var(--yellow);
-border:1px solid var(--yellow);
+/* OPINIE */
+.review{
+border-bottom:1px solid rgba(255,255,255,.08);
+padding:10px 0;
 }
+.review:last-child{border:none}
+.review-stars{color:var(--yellow)}
+.review-text{font-size:14px;color:#ddd}
 
-.btn-dark{
-background:#000;
-color:#fff;
-border:1px solid #333;
-}
-
-/* ===== INFO ===== */
-.info{
-font-size:13px;
-color:var(--muted);
-text-align:center;
-margin-top:6px;
-}
-
-/* ===== PRICE ===== */
-.price{
-font-size:28px;
-font-weight:700;
-color:var(--yellow);
-text-align:center;
-margin-top:10px;
-}
-
-/* ===== FOOTER ===== */
-footer{
-text-align:center;
-padding:16px;
-font-size:14px;
-color:var(--muted);
-border-top:1px solid #222;
-}
-footer a{
-color:var(--yellow);
-text-decoration:none;
-}
-
-/* ===== ICON STYLE (UBER-LIKE) ===== */
-.icon{
-width:20px;
-height:20px;
-display:inline-block;
-}
+/* STOPKA */
+footer{text-align:center;padding:18px;color:var(--muted)}
+footer a{color:var(--yellow);text-decoration:none}
 </style>
 </head>
 
 <body>
 
-<header>
-<div class="header-inner">
-<img src="logo.png" alt="Night Delivery" class="logo">
-<p>Dostawa & przewóz 24/7</p>
+<div class="banner">
+<img src="logo.png">
 </div>
-</header>
+
+<div class="banner-text">
+<h1>Night Delivery Małdyty</h1>
+<p>Dostawa & przewóz 24/7</p>
+
+<div class="avg-rating" id="avgRating">⭐ 0.0 / 5 (0 opinii)</div>
+
+<div class="lang">
+<button>PL</button>
+<button>EN</button>
+<button>UA</button>
+</div>
+</div>
 
 <main>
 
-<!-- USŁUGA -->
 <div class="card">
 <span class="label">Rodzaj usługi</span>
 <select id="type">
-<option value="delivery">🍔 Dostawa (jedzenie / zakupy)</option>
-<option value="ride">🚗 Przewóz osoby</option>
+<option value="delivery">🍔 Dostawa</option>
+<option value="ride">🚗 Przewóz</option>
 </select>
 </div>
 
-<!-- DYSTANS -->
 <div class="card">
 <span class="label">Dystans (km)</span>
-<input type="number" id="km" placeholder="np. 12">
-<button class="btn btn-dark" onclick="getGPS()">📍 Pobierz dystans z GPS</button>
-<div class="info">Orientacyjnie od centrum Małdyt</div>
+<input type="number" id="km">
+<button class="btn btn-dark" onclick="getGPS()">📍 GPS</button>
 </div>
 
-<!-- OPIS -->
 <div class="card">
-<span class="label">Adres / opis zamówienia</span>
-<textarea id="note" rows="3" placeholder="Adres odbioru, co kupić itp."></textarea>
+<span class="label">Napiwek</span>
+<select id="tip">
+<option value="0">Bez napiwku</option>
+<option value="5">5 zł</option>
+<option value="10">10 zł</option>
+<option value="15">15 zł</option>
+</select>
 </div>
 
-<!-- CENA -->
 <div class="card">
 <button class="btn btn-primary" onclick="calculate()">💰 Oblicz cenę</button>
 <div class="price" id="result"></div>
-<div class="info" id="timeInfo"></div>
 </div>
 
-<!-- ZAMÓW -->
+<!-- DODAJ OPINIĘ -->
 <div class="card">
-<button class="btn btn-secondary" onclick="sendOrder()">📲 Zamów (WhatsApp / SMS)</button>
+<span class="label">Wystaw opinię</span>
+<div class="stars" id="stars"></div>
+<textarea id="reviewText" rows="2" placeholder="Napisz krótką opinię..."></textarea>
+<button class="btn btn-secondary" onclick="addReview()">➕ Dodaj opinię</button>
+</div>
+
+<!-- LISTA OPINII -->
+<div class="card">
+<span class="label">Opinie klientów</span>
+<div id="reviews"></div>
+</div>
+
+<div class="card">
+<button class="btn btn-secondary" onclick="sendOrder()">📲 Zamów</button>
 </div>
 
 </main>
 
 <footer>
-📞 <a href="tel:+48512956789">512 956 789</a><br>
-Godziny nocne 22:00–6:00 (droższe stawki)
+📞 <a href="tel:+48512956789">512 956 789</a>
 </footer>
 
 <script>
-const MALDYTY = { lat:53.9586, lon:19.7406 };
+const MALDYTY={lat:53.9586,lon:19.7406};
+let rating=0;
+let reviews=JSON.parse(localStorage.getItem("reviews")||"[]");
 
 function getGPS(){
-if(!navigator.geolocation){
-alert("GPS niedostępny");
-return;
-}
-navigator.geolocation.getCurrentPosition(pos=>{
-const km = distance(
-MALDYTY.lat,MALDYTY.lon,
-pos.coords.latitude,pos.coords.longitude
-);
-document.getElementById("km").value = km.toFixed(1);
+navigator.geolocation.getCurrentPosition(p=>{
+km.value=dist(MALDYTY.lat,MALDYTY.lon,p.coords.latitude,p.coords.longitude).toFixed(1);
 });
 }
 
-function distance(lat1,lon1,lat2,lon2){
+function dist(a,b,c,d){
 const R=6371;
-const dLat=(lat2-lat1)*Math.PI/180;
-const dLon=(lon2-lon1)*Math.PI/180;
-const a=
-Math.sin(dLat/2)**2 +
-Math.cos(lat1*Math.PI/180)*
-Math.cos(lat2*Math.PI/180)*
+const dLat=(c-a)*Math.PI/180;
+const dLon=(d-b)*Math.PI/180;
+const x=Math.sin(dLat/2)**2+
+Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*
 Math.sin(dLon/2)**2;
-return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));
 }
 
 function calculate(){
-const km=Number(document.getElementById("km").value);
-const type=document.getElementById("type").value;
-if(!km||km<=0){
-result.innerText="Podaj dystans";
-return;
-}
-
-const hour=new Date().getHours();
-const night=hour>=22||hour<6;
-let price=0;
-
-if(type==="delivery"){
-price = night ? 19+km*1.6 : 15+km*1.4;
-}else{
-price = night ? 8+km*2.8 : 6+km*2.5;
-}
-
-result.innerText = price.toFixed(2)+" zł";
-timeInfo.innerText = night ? "Taryfa nocna 🌙" : "Taryfa dzienna ☀️";
+const k=Number(km.value), t=Number(tip.value);
+if(!k)return;
+const night=new Date().getHours()>=22||new Date().getHours()<6;
+let p=type.value==="delivery"
+? night?19+k*1.6:15+k*1.4
+: night?8+k*2.8:6+k*2.5;
+result.innerText=(p+t).toFixed(2)+" zł";
 }
 
 function sendOrder(){
-const km=document.getElementById("km").value;
-const type=document.getElementById("type").value;
-const note=document.getElementById("note").value;
-const price=document.getElementById("result").innerText;
-
-if(!price){
-alert("Najpierw oblicz cenę");
-return;
+const txt=`Night Delivery
+Cena: ${result.innerText}
+Ocena: ${rating}/5`;
+window.open(`https://wa.me/48512956789?text=${encodeURIComponent(txt)}`);
 }
 
-const text=`Night Delivery Małdyty
-Usługa: ${type==="delivery"?"Dostawa":"Przewóz"}
-Dystans: ${km} km
-Cena: ${price}
-Info: ${note}`;
-
-const phone="512956789";
-window.open(`https://wa.me/48${phone}?text=${encodeURIComponent(text)}`,"_blank");
+/* GWIAZDKI */
+const starsDiv=document.getElementById("stars");
+for(let i=1;i<=5;i++){
+const s=document.createElement("span");
+s.innerText="★";
+s.className="star";
+s.onclick=()=>setRating(i);
+starsDiv.appendChild(s);
 }
+function setRating(v){
+rating=v;
+[...starsDiv.children].forEach((s,i)=>s.classList.toggle("active",i<v));
+}
+
+/* OPINIE */
+function addReview(){
+if(!rating)return alert("Wybierz ocenę");
+reviews.push({rating,text:reviewText.value});
+localStorage.setItem("reviews",JSON.stringify(reviews));
+reviewText.value="";
+rating=0;
+[...starsDiv.children].forEach(s=>s.classList.remove("active"));
+renderReviews();
+}
+
+function renderReviews(){
+reviewsDiv.innerHTML="";
+let sum=0;
+reviews.forEach(r=>{
+sum+=r.rating;
+reviewsDiv.innerHTML+=`
+<div class="review">
+<div class="review-stars">${"★".repeat(r.rating)}</div>
+<div class="review-text">${r.text||""}</div>
+</div>`;
+});
+const avg=reviews.length?(sum/reviews.length).toFixed(1):"0.0";
+avgRating.innerText=`⭐ ${avg} / 5 (${reviews.length} opinii)`;
+}
+
+renderReviews();
 </script>
 
 </body>
 </html>
+
