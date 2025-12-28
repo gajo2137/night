@@ -1,118 +1,123 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Night Delivery Małdyty</title>
-<meta name="theme-color" content="#000000" />
-<link rel="manifest" href="manifest.json">
 
 <style>
-body {
+:root{
+--green:#06c167;
+--dark:#111;
+--gray:#f6f6f6;
+}
+
+*{box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto}
+
+body{
 margin:0;
-font-family: Arial, sans-serif;
+background:var(--gray);
+color:#000;
+}
+
+header{
+padding:20px;
+background:#fff;
+border-bottom:1px solid #eee;
+}
+
+header h1{
+margin:0;
+font-size:22px;
+}
+
+header p{
+margin:4px 0 0;
+color:#666;
+}
+
+.lang{
+margin-top:10px;
+}
+
+.lang button{
+border:none;
+background:#eee;
+padding:6px 10px;
+border-radius:8px;
+margin-right:6px;
+}
+
+main{
+padding:16px;
+max-width:500px;
+margin:auto;
+}
+
+.card{
+background:#fff;
+border-radius:16px;
+padding:16px;
+margin-bottom:16px;
+box-shadow:0 5px 15px rgba(0,0,0,.05);
+}
+
+label{
+font-size:13px;
+color:#555;
+display:block;
+margin-bottom:6px;
+}
+
+select,input,textarea{
+width:100%;
+padding:14px;
+border-radius:12px;
+border:1px solid #ddd;
+font-size:16px;
+}
+
+textarea{resize:none}
+
+.btn{
+width:100%;
+padding:16px;
+border-radius:14px;
+border:none;
+font-size:17px;
+font-weight:600;
+margin-top:12px;
+}
+
+.btn-green{
+background:var(--green);
+color:#fff;
+}
+
+.btn-dark{
 background:#000;
 color:#fff;
 }
 
-header {
-background:#111;
-padding:20px;
-text-align:center;
-}
-
-h1 {
-color:#f5c400;
-margin:0;
-}
-
-section {
-padding:20px;
-}
-
-label {
-display:block;
-margin-top:15px;
-font-size:14px;
-}
-
-input, select, textarea, button {
-width:100%;
-padding:12px;
-margin-top:5px;
-border-radius:8px;
-border:none;
-font-size:16px;
-}
-
-textarea { resize: vertical; }
-
-button {
-background:#f5c400;
-font-weight:bold;
-margin-top:20px;
-transition: transform .15s ease, opacity .15s ease;
-}
-
-button:hover {
-transform: scale(1.02);
-opacity: 0.95;
-}
-
-button.secondary {
-background:#222;
-color:#f5c400;
-border:1px solid #f5c400;
-}
-
-.price {
+.price{
 font-size:26px;
-margin-top:20px;
-color:#f5c400;
+font-weight:700;
 text-align:center;
-}
-
-footer {
-text-align:center;
-padding:15px;
-background:#111;
-}
-
-a {
-color:#f5c400;
-text-decoration:none;
-font-size:18px;
-}
-
-.info {
-text-align:center;
-font-size:13px;
-opacity:0.8;
 margin-top:10px;
 }
 
-.card {
-background:#111;
-border-radius:18px;
-padding:20px;
-max-width:480px;
-margin:20px auto;
-box-shadow:0 15px 40px rgba(0,0,0,.7);
-}
-
-.summary {
-background:#000;
-border:1px solid #222;
-border-radius:12px;
-padding:15px;
-margin-top:15px;
-font-size:14px;
-}
-
-.error {
-color:#ff5555;
+.info{
 font-size:13px;
-margin-top:8px;
+text-align:center;
+color:#666;
+margin-top:6px;
+}
+
+footer{
+padding:16px;
+text-align:center;
+font-size:14px;
+color:#555;
 }
 </style>
 </head>
@@ -120,160 +125,143 @@ margin-top:8px;
 <body>
 
 <header>
-<img src="logo.png" alt="Night Delivery Małdyty"
-style="max-width:180px; width:100%; height:auto; margin-bottom:10px;">
-
-<div class="lang-switch">
+<h1 id="title">Night Delivery Małdyty</h1>
+<p id="subtitle">Dostawa & przewóz 24/7</p>
+<div class="lang">
 <button onclick="setLang('pl')">PL</button>
 <button onclick="setLang('en')">EN</button>
 <button onclick="setLang('ua')">UA</button>
 </div>
-
-<h1>Night Delivery Małdyty</h1>
-<p>Dostawa & przewóz 24/7</p>
-<a href="tel:+48512956568">📞 +48 512 956 568</a>
 </header>
 
-<section class="card">
+<main>
 
+<div class="card">
 <label>Rodzaj usługi</label>
 <select id="type">
-<option value="delivery">Dostawa (jedzenie / zakupy)</option>
-<option value="ride">Przewóz osoby</option>
+<option value="delivery">🍔 Dostawa (jedzenie / zakupy)</option>
+<option value="ride">🚗 Przewóz osoby</option>
 </select>
+</div>
 
+<div class="card">
 <label>Dystans (km)</label>
-<input type="number" id="km" placeholder="np. 12" />
-<button type="button" class="secondary" onclick="getGPS()">📍 Oblicz km z GPS</button>
-<div class="info">GPS liczy orientacyjny dystans od centrum Małdyt</div>
+<input type="number" id="km" placeholder="np. 10">
+<button class="btn btn-dark" onclick="getGPS()">📍 Pobierz dystans z GPS</button>
+<div class="info">GPS liczy orientacyjnie od Małdyt</div>
+</div>
 
-<label>Adres / opis zamówienia</label>
-<textarea id="note" placeholder="Np. adres odbioru, co kupić, itp."></textarea>
+<div class="card">
+<label>Adres / opis</label>
+<textarea id="note" rows="3" placeholder="Adres odbioru, co kupić itp."></textarea>
+</div>
 
-<button onclick="calculate()">Oblicz cenę</button>
-<button onclick="sendOrder()">📩 Zamów (SMS / WhatsApp)</button>
-
+<div class="card">
+<button class="btn btn-green" onclick="calculate()">💰 Oblicz cenę</button>
 <div class="price" id="result"></div>
-<div class="error" id="error"></div>
 <div class="info" id="timeInfo"></div>
-<div class="summary" id="summary"></div>
+</div>
 
-</section>
+<div class="card">
+<button class="btn btn-dark" onclick="sendOrder()">📲 Zamów (WhatsApp / SMS)</button>
+</div>
+
+</main>
 
 <footer>
-<a href="tel:512956789">📞 Zadzwoń: 512 956 789</a>
-<div class="info">Godziny nocne 22:00–6:00 (droższe stawki)</div>
+📞 <a href="tel:+48512956789">512 956 789</a><br>
+Godziny nocne 22:00–6:00 (drożej)
 </footer>
 
 <script>
-const MALDYTY = { lat: 53.9586, lon: 19.7406 };
+const MALDYTY = { lat:53.986, lon:19.744 };
 
-function getGPS() {
-if (!navigator.geolocation) {
-alert('GPS niedostępny');
+function getGPS(){
+if(!navigator.geolocation){
+alert("GPS niedostępny");
 return;
 }
-
-navigator.geolocation.getCurrentPosition(pos => {
-const lat = pos.coords.latitude;
-const lon = pos.coords.longitude;
-const km = distanceKm(MALDYTY.lat, MALDYTY.lon, lat, lon);
-document.getElementById('km').value = km.toFixed(1);
-}, () => alert('Nie udało się pobrać lokalizacji'));
+navigator.geolocation.getCurrentPosition(pos=>{
+const km = distance(
+MALDYTY.lat,MALDYTY.lon,
+pos.coords.latitude,pos.coords.longitude
+);
+document.getElementById("km").value = km.toFixed(1);
+});
 }
 
-function distanceKm(lat1, lon1, lat2, lon2) {
-const R = 6371;
-const dLat = (lat2 - lat1) * Math.PI / 180;
-const dLon = (lon2 - lon1) * Math.PI / 180;
-const a =
+function distance(lat1,lon1,lat2,lon2){
+const R=6371;
+const dLat=(lat2-lat1)*Math.PI/180;
+const dLon=(lon2-lon1)*Math.PI/180;
+const a=
 Math.sin(dLat/2)**2 +
-Math.cos(lat1*Math.PI/180) *
-Math.cos(lat2*Math.PI/180) *
+Math.cos(lat1*Math.PI/180)*
+Math.cos(lat2*Math.PI/180)*
 Math.sin(dLon/2)**2;
-
-return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
 }
 
-function calculate() {
-const km = Number(document.getElementById('km').value);
-const type = document.getElementById('type').value;
-const hour = new Date().getHours();
-const night = (hour >= 22 || hour < 6);
-
-if (!km || km <= 0) {
-document.getElementById('error').innerText = 'Podaj poprawny dystans';
-return;
-} else {
-document.getElementById('error').innerText = '';
-}
-
-if (km > 50) {
-document.getElementById('result').innerText = 'Maksymalny dystans to 50 km';
+function calculate(){
+const km=Number(document.getElementById("km").value);
+const type=document.getElementById("type").value;
+if(!km||km<=0){
+result.innerText="Podaj dystans";
 return;
 }
 
-let price = 0;
+const hour=new Date().getHours();
+const night=hour>=22||hour<6;
+let price=0;
 
-if (type === 'delivery') {
-price = night ? 19 + km * 1.6 : 15 + km * 1.4;
-} else {
-price = night ? 8 + km * 2.8 : 6 + km * 2.5;
+if(type==="delivery"){
+price = night ? 19+km*1.6 : 15+km*1.4;
+}else{
+price = night ? 8+km*2.8 : 6+km*2.5;
 }
 
-document.getElementById('result').innerText =
-'Cena: ' + price.toFixed(2) + ' zł';
-
-document.getElementById('timeInfo').innerText =
-night ? 'Taryfa nocna 🌙' : 'Taryfa dzienna ☀️';
-
-document.getElementById('summary').innerHTML = `
-<b>Usługa:</b> ${type === 'delivery' ? 'Dostawa' : 'Przewóz'}<br>
-<b>Dystans:</b> ${km} km<br>
-<b>Stawka:</b> ${night ? 'Nocna' : 'Dzienna'}
-`;
+result.innerText=`${price.toFixed(2)} zł`;
+timeInfo.innerText=night?"Taryfa nocna":"Taryfa dzienna";
 }
 
-function sendOrder() {
-const km = document.getElementById('km').value;
-const type = document.getElementById('type').value;
-const note = document.getElementById('note').value;
-const price = document.getElementById('result').innerText;
+function sendOrder(){
+const km=kmInput.value;
+const type=document.getElementById("type").value;
+const note=document.getElementById("note").value;
+const price=result.innerText;
 
-if (!km) {
-alert('Najpierw oblicz cenę');
+if(!price){
+alert("Najpierw oblicz cenę");
 return;
 }
 
-const text =
-`Night Delivery Małdyty%0A` +
-`Usługa: ${type === 'delivery' ? 'Dostawa' : 'Przewóz'}%0A` +
-`Dystans: ${km} km%0A` +
-`${price}%0A` +
-`Uwagi: ${note}`;
+const text=`Night Delivery Małdyty
+Usługa: ${type==="delivery"?"Dostawa":"Przewóz"}
+Dystans: ${km} km
+Cena: ${price}
+Info: ${note}`;
 
-const phone = '512956789';
-
-if (/Android|iPhone/i.test(navigator.userAgent)) {
-window.open(`https://wa.me/48${phone}?text=${text}`, '_blank');
-} else {
-window.location.href = `sms:${phone}?body=${text}`;
+const phone="512956789";
+if(/Android|iPhone/i.test(navigator.userAgent)){
+window.open(`https://wa.me/48${phone}?text=${encodeURIComponent(text)}`);
+}else{
+window.location.href=`sms:${phone}?body=${encodeURIComponent(text)}`;
 }
 }
 
-const translations = {
-pl: { title: "Night Delivery Małdyty", subtitle: "Dostawa & przewóz 24/7" },
-en: { title: "Night Delivery Małdyty", subtitle: "Delivery & transport 24/7" },
-ua: { title: "Night Delivery Małdyty", subtitle: "Доставка та перевезення 24/7" }
+const translations={
+pl:{title:"Night Delivery Małdyty",subtitle:"Dostawa & przewóz 24/7"},
+en:{title:"Night Delivery Małdyty",subtitle:"Delivery & transport 24/7"},
+ua:{title:"Night Delivery Małdyty",subtitle:"Доставка та перевезення 24/7"}
 };
 
-function setLang(lang) {
-document.querySelector("h1").innerText = translations[lang].title;
-document.querySelector("header p").innerText = translations[lang].subtitle;
+function setLang(l){
+title.innerText=translations[l].title;
+subtitle.innerText=translations[l].subtitle;
 }
-
-setLang('pl');
 </script>
 
 </body>
 </html>
+
+
