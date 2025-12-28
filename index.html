@@ -7,117 +7,150 @@
 
 <style>
 :root{
---green:#06c167;
---dark:#111;
---gray:#f6f6f6;
+--bg:#000;
+--card:#111;
+--yellow:#f5c400;
+--text:#fff;
+--muted:#aaa;
 }
 
-*{box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto}
+*{
+box-sizing:border-box;
+font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial;
+}
 
 body{
 margin:0;
-background:var(--gray);
-color:#000;
+background:var(--bg);
+color:var(--text);
 }
 
+/* ===== HEADER ===== */
 header{
-padding:20px;
-background:#fff;
-border-bottom:1px solid #eee;
-}
-
-header h1{
-margin:0;
-font-size:22px;
-}
-
-header p{
-margin:4px 0 0;
-color:#666;
-}
-
-.lang{
-margin-top:10px;
-}
-
-.lang button{
-border:none;
-background:#eee;
-padding:6px 10px;
-border-radius:8px;
-margin-right:6px;
-}
-
-main{
 padding:16px;
-max-width:500px;
+background:var(--bg);
+border-bottom:1px solid #222;
+}
+
+.header-inner{
+max-width:520px;
 margin:auto;
 }
 
-.card{
-background:#fff;
-border-radius:16px;
-padding:16px;
-margin-bottom:16px;
-box-shadow:0 5px 15px rgba(0,0,0,.05);
+.logo{
+width:160px;
+max-width:100%;
+margin-bottom:10px;
 }
 
-label{
+header p{
+margin:0;
+color:var(--muted);
+font-size:14px;
+}
+
+/* ===== MAIN ===== */
+main{
+max-width:520px;
+margin:auto;
+padding:16px;
+}
+
+/* ===== CARD ===== */
+.card{
+background:var(--card);
+border-radius:18px;
+padding:16px;
+margin-bottom:16px;
+}
+
+/* ===== FORM ===== */
+.label{
 font-size:13px;
-color:#555;
-display:block;
+color:var(--muted);
 margin-bottom:6px;
+display:block;
 }
 
 select,input,textarea{
 width:100%;
 padding:14px;
-border-radius:12px;
-border:1px solid #ddd;
+border-radius:14px;
+border:1px solid #222;
+background:#000;
+color:#fff;
 font-size:16px;
 }
 
 textarea{resize:none}
 
+/* ===== BUTTONS ===== */
 .btn{
 width:100%;
 padding:16px;
-border-radius:14px;
+border-radius:16px;
 border:none;
 font-size:17px;
 font-weight:600;
 margin-top:12px;
+display:flex;
+align-items:center;
+justify-content:center;
+gap:10px;
 }
 
-.btn-green{
-background:var(--green);
-color:#fff;
+.btn-primary{
+background:var(--yellow);
+color:#000;
+}
+
+.btn-secondary{
+background:#000;
+color:var(--yellow);
+border:1px solid var(--yellow);
 }
 
 .btn-dark{
 background:#000;
 color:#fff;
+border:1px solid #333;
 }
 
+/* ===== INFO ===== */
+.info{
+font-size:13px;
+color:var(--muted);
+text-align:center;
+margin-top:6px;
+}
+
+/* ===== PRICE ===== */
 .price{
-font-size:26px;
+font-size:28px;
 font-weight:700;
+color:var(--yellow);
 text-align:center;
 margin-top:10px;
 }
 
-.info{
-font-size:13px;
+/* ===== FOOTER ===== */
+footer{
 text-align:center;
-color:#666;
-margin-top:6px;
+padding:16px;
+font-size:14px;
+color:var(--muted);
+border-top:1px solid #222;
+}
+footer a{
+color:var(--yellow);
+text-decoration:none;
 }
 
-footer{
-padding:16px;
-text-align:center;
-font-size:14px;
-color:#555;
+/* ===== ICON STYLE (UBER-LIKE) ===== */
+.icon{
+width:20px;
+height:20px;
+display:inline-block;
 }
 </style>
 </head>
@@ -125,56 +158,58 @@ color:#555;
 <body>
 
 <header>
-<h1 id="title">Night Delivery Małdyty</h1>
-<p id="subtitle">Dostawa & przewóz 24/7</p>
-<div class="lang">
-<button onclick="setLang('pl')">PL</button>
-<button onclick="setLang('en')">EN</button>
-<button onclick="setLang('ua')">UA</button>
+<div class="header-inner">
+<img src="logo.png" alt="Night Delivery" class="logo">
+<p>Dostawa & przewóz 24/7</p>
 </div>
 </header>
 
 <main>
 
+<!-- USŁUGA -->
 <div class="card">
-<label>Rodzaj usługi</label>
+<span class="label">Rodzaj usługi</span>
 <select id="type">
 <option value="delivery">🍔 Dostawa (jedzenie / zakupy)</option>
 <option value="ride">🚗 Przewóz osoby</option>
 </select>
 </div>
 
+<!-- DYSTANS -->
 <div class="card">
-<label>Dystans (km)</label>
-<input type="number" id="km" placeholder="np. 10">
+<span class="label">Dystans (km)</span>
+<input type="number" id="km" placeholder="np. 12">
 <button class="btn btn-dark" onclick="getGPS()">📍 Pobierz dystans z GPS</button>
-<div class="info">GPS liczy orientacyjnie od Małdyt</div>
+<div class="info">Orientacyjnie od centrum Małdyt</div>
 </div>
 
+<!-- OPIS -->
 <div class="card">
-<label>Adres / opis</label>
+<span class="label">Adres / opis zamówienia</span>
 <textarea id="note" rows="3" placeholder="Adres odbioru, co kupić itp."></textarea>
 </div>
 
+<!-- CENA -->
 <div class="card">
-<button class="btn btn-green" onclick="calculate()">💰 Oblicz cenę</button>
+<button class="btn btn-primary" onclick="calculate()">💰 Oblicz cenę</button>
 <div class="price" id="result"></div>
 <div class="info" id="timeInfo"></div>
 </div>
 
+<!-- ZAMÓW -->
 <div class="card">
-<button class="btn btn-dark" onclick="sendOrder()">📲 Zamów (WhatsApp / SMS)</button>
+<button class="btn btn-secondary" onclick="sendOrder()">📲 Zamów (WhatsApp / SMS)</button>
 </div>
 
 </main>
 
 <footer>
 📞 <a href="tel:+48512956789">512 956 789</a><br>
-Godziny nocne 22:00–6:00 (drożej)
+Godziny nocne 22:00–6:00 (droższe stawki)
 </footer>
 
 <script>
-const MALDYTY = { lat:53.986, lon:19.744 };
+const MALDYTY = { lat:53.9586, lon:19.7406 };
 
 function getGPS(){
 if(!navigator.geolocation){
@@ -220,15 +255,15 @@ price = night ? 19+km*1.6 : 15+km*1.4;
 price = night ? 8+km*2.8 : 6+km*2.5;
 }
 
-result.innerText=`${price.toFixed(2)} zł`;
-timeInfo.innerText=night?"Taryfa nocna":"Taryfa dzienna";
+result.innerText = price.toFixed(2)+" zł";
+timeInfo.innerText = night ? "Taryfa nocna 🌙" : "Taryfa dzienna ☀️";
 }
 
 function sendOrder(){
-const km=kmInput.value;
+const km=document.getElementById("km").value;
 const type=document.getElementById("type").value;
 const note=document.getElementById("note").value;
-const price=result.innerText;
+const price=document.getElementById("result").innerText;
 
 if(!price){
 alert("Najpierw oblicz cenę");
@@ -242,26 +277,9 @@ Cena: ${price}
 Info: ${note}`;
 
 const phone="512956789";
-if(/Android|iPhone/i.test(navigator.userAgent)){
-window.open(`https://wa.me/48${phone}?text=${encodeURIComponent(text)}`);
-}else{
-window.location.href=`sms:${phone}?body=${encodeURIComponent(text)}`;
-}
-}
-
-const translations={
-pl:{title:"Night Delivery Małdyty",subtitle:"Dostawa & przewóz 24/7"},
-en:{title:"Night Delivery Małdyty",subtitle:"Delivery & transport 24/7"},
-ua:{title:"Night Delivery Małdyty",subtitle:"Доставка та перевезення 24/7"}
-};
-
-function setLang(l){
-title.innerText=translations[l].title;
-subtitle.innerText=translations[l].subtitle;
+window.open(`https://wa.me/48${phone}?text=${encodeURIComponent(text)}`,"_blank");
 }
 </script>
 
 </body>
 </html>
-
-
