@@ -15,11 +15,18 @@
 --border:#222;
 --green:#2ecc71;
 }
+
 body{
 margin:0;
 font-family:system-ui,-apple-system,Arial;
 background:var(--bg);
 color:#fff;
+animation:fadeBody .6s ease;
+}
+
+@keyframes fadeBody{
+from{opacity:0}
+to{opacity:1}
 }
 
 /* HEADER */
@@ -31,6 +38,7 @@ align-items:center;
 background:radial-gradient(circle at top, rgba(245,196,0,.25), transparent 65%);
 }
 .banner img{max-width:320px;width:80%}
+
 header{text-align:center;padding:20px}
 h1{color:var(--yellow);margin:0}
 .phone{color:var(--yellow);text-decoration:none;font-size:18px;display:block;margin-top:6px}
@@ -62,7 +70,13 @@ border-radius:18px;
 padding:20px;
 margin:15px;
 box-shadow:0 10px 30px rgba(0,0,0,.4);
+animation:cardIn .5s ease;
 }
+@keyframes cardIn{
+from{transform:translateY(20px);opacity:0}
+to{transform:none;opacity:1}
+}
+
 label{font-size:14px;opacity:.8}
 input,textarea,select{
 width:100%;
@@ -84,7 +98,7 @@ font-weight:700;
 font-size:16px;
 }
 
-/* REGULAMIN PRO */
+/* REGULAMIN */
 .reg-box{
 border:2px solid var(--border);
 border-radius:18px;
@@ -121,9 +135,18 @@ accent-color:var(--yellow);
 }
 
 /* OPINIE */
-.stars span{font-size:30px;cursor:pointer;color:#444}
-.stars span.active{color:var(--yellow)}
-.opinia{border-bottom:1px solid var(--border);padding:8px 0;font-size:13px}
+.stars span{
+font-size:32px;
+cursor:pointer;
+color:#444;
+transition:.2s;
+}
+.stars span.active{color:var(--yellow);transform:scale(1.1)}
+.opinia{
+border-bottom:1px solid var(--border);
+padding:8px 0;
+font-size:13px;
+}
 
 footer{text-align:center;padding:20px;opacity:.6}
 </style>
@@ -134,7 +157,7 @@ footer{text-align:center;padding:20px;opacity:.6}
 <div class="banner"><img src="logo.png"></div>
 
 <header>
-<h1 id="t_title">Night Delivery Małdyty</h1>
+<h1 id="t_title">🚗 Night Delivery Małdyty</h1>
 <a class="phone" href="tel:+48512956568">📞 512 956 568</a>
 <div class="rating" id="avgRating">⭐ 0.0 / 5</div>
 
@@ -147,38 +170,38 @@ footer{text-align:center;padding:20px;opacity:.6}
 
 <!-- ZAMÓWIENIE -->
 <div class="card">
-<label id="t_service">Rodzaj usługi</label>
+<label id="t_service">🚗 Rodzaj usługi</label>
 <select id="type">
-<option>Dostawa</option>
-<option>Przewóz</option>
+<option>🚗 Dostawa</option>
+<option>🚕 Przewóz</option>
 </select>
 
-<label id="t_km">Dystans (km)</label>
+<label id="t_km">📍 Dystans (km)</label>
 <input type="number" id="km">
-<button class="main" onclick="getGPS()">📍 Oblicz km z GPS</button>
+<button class="main" onclick="getGPS()">📡 Oblicz km z GPS</button>
 
-<label id="t_note">Adres / opis</label>
+<label id="t_note">📦 Adres / opis</label>
 <textarea id="note"></textarea>
 
-<label id="t_tip">Napiwek</label>
+<label id="t_tip">💰 Napiwek</label>
 <input type="number" id="tip">
 
-<label id="t_pay">Płatność</label>
+<label id="t_pay">💳 Płatność</label>
 <select id="payment">
 <option>Gotówka</option>
 <option>BLIK 603433325</option>
 </select>
 
-<button class="main" onclick="calculate()" id="t_calc">Oblicz cenę</button>
+<button class="main" onclick="calculate()" id="t_calc">🧮 Oblicz cenę</button>
 <div id="price" style="text-align:center;color:var(--yellow);font-size:22px"></div>
 </div>
 
 <!-- REGULAMIN -->
 <div class="card">
-<h3 id="t_rules">Regulamin</h3>
+<h3 id="t_rules">📜 Regulamin</h3>
 <div class="reg-box required" id="regBox">
 <div class="reg-item">🚫 Alkohol i papierosy tylko 18+</div>
-<div class="reg-item">💳 Zamówienia powyżej 30 zł → BLIK</div>
+<div class="reg-item">💳 Zamówienia +30 zł → BLIK</div>
 <div class="reg-item">📞 Kierowca może się kontaktować</div>
 <div class="reg-item">💰 Cena nie podlega negocjacji</div>
 
@@ -191,7 +214,20 @@ footer{text-align:center;padding:20px;opacity:.6}
 <button class="main" onclick="sendOrder()" id="t_order">📩 Zamów</button>
 </div>
 
-<footer>Night Delivery Małdyty</footer>
+<!-- OPINIE -->
+<div class="card">
+<label>⭐ Oceń aplikację</label>
+<div class="stars" id="stars"></div>
+<textarea id="opinionText" placeholder="Twoja opinia (opcjonalnie)"></textarea>
+<button class="main" onclick="addOpinion()">⭐ Dodaj opinię</button>
+</div>
+
+<div class="card">
+<h3>🗣 Opinie klientów</h3>
+<div id="opinions"></div>
+</div>
+
+<footer>🚗 Night Delivery Małdyty</footer>
 
 <script>
 /* REGULAMIN */
@@ -200,7 +236,7 @@ regBox.classList.toggle("accepted",acceptReg.checked);
 regBox.classList.toggle("required",!acceptReg.checked);
 };
 
-/* GPS + KM */
+/* GPS */
 const BASE={lat:53.9586,lon:19.7406};
 function getGPS(){
 navigator.geolocation.getCurrentPosition(p=>{
@@ -233,7 +269,7 @@ price.innerText="Cena: "+p.toFixed(2)+" zł";
 function sendOrder(){
 if(!acceptReg.checked)return alert("Zaakceptuj regulamin");
 if(!price.innerText)return alert("Oblicz cenę");
-const msg=`Night Delivery
+const msg=`🚗 Night Delivery
 Usługa: ${type.value}
 Km: ${km.value}
 ${price.innerText}
@@ -242,11 +278,35 @@ Uwagi: ${note.value}`;
 window.open("https://wa.me/48512956568?text="+encodeURIComponent(msg));
 }
 
+/* OPINIE – LOKALNE */
+let sel=0;
+for(let i=1;i<=5;i++){
+const s=document.createElement("span");
+s.textContent="★";
+s.onclick=()=>{
+sel=i;
+[...stars.children].forEach((e,j)=>e.classList.toggle("active",j<i));
+};
+stars.appendChild(s);
+}
+
+function addOpinion(){
+if(sel<1)return alert("Wybierz gwiazdki");
+const txt=opinionText.value||"";
+const el=document.createElement("div");
+el.className="opinia";
+el.innerText="⭐ "+sel+" "+txt;
+opinions.prepend(el);
+opinionText.value="";
+sel=0;
+[...stars.children].forEach(e=>e.classList.remove("active"));
+}
+
 /* JĘZYKI */
 const T={
-pl:{title:"Night Delivery Małdyty",service:"Rodzaj usługi",km:"Dystans (km)",note:"Adres / opis",tip:"Napiwek",pay:"Płatność",calc:"Oblicz cenę",rules:"Regulamin",accept:"Akceptuję regulamin",order:"Zamów"},
-en:{title:"Night Delivery",service:"Service",km:"Distance (km)",note:"Address / note",tip:"Tip",pay:"Payment",calc:"Calculate price",rules:"Terms",accept:"I accept terms",order:"Order"},
-ua:{title:"Нічна доставка",service:"Послуга",km:"Відстань (км)",note:"Адреса / опис",tip:"Чайові",pay:"Оплата",calc:"Розрахувати",rules:"Правила",accept:"Я приймаю правила",order:"Замовити"}
+pl:{title:"🚗 Night Delivery Małdyty",service:"🚗 Rodzaj usługi",km:"📍 Dystans (km)",note:"📦 Adres / opis",tip:"💰 Napiwek",pay:"💳 Płatność",calc:"🧮 Oblicz cenę",rules:"📜 Regulamin",accept:"Akceptuję regulamin",order:"Zamów"},
+en:{title:"🚗 Night Delivery",service:"🚗 Service",km:"📍 Distance (km)",note:"📦 Address / note",tip:"💰 Tip",pay:"💳 Payment",calc:"🧮 Calculate",rules:"📜 Terms",accept:"I accept terms",order:"Order"},
+ua:{title:"🚗 Нічна доставка",service:"🚗 Послуга",km:"📍 Відстань",note:"📦 Адреса",tip:"💰 Чайові",pay:"💳 Оплата",calc:"🧮 Розрахувати",rules:"📜 Правила",accept:"Я приймаю правила",order:"Замовити"}
 };
 function setLang(l,btn){
 document.querySelectorAll(".langs button").forEach(b=>b.classList.remove("active"));
