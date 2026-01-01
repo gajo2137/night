@@ -2,158 +2,314 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
-<title>Night Delivery – Opinie</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Night Delivery Małdyty</title>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, serverTimestamp }
-from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
-const firebaseConfig = {
-  apiKey: "AIzaSyDqWK9pZt5Ak97-1b12LymEu5bGVLpbPn0",
-  authDomain: "night-delivery-18960.firebaseapp.com",
-  projectId: "night-delivery-18960",
-  storageBucket: "night-delivery-18960.firebasestorage.app",
-  messagingSenderId: "425404689430",
-  appId: "1:425404689430:web:efce19048bee3232a11937",
-  measurementId: "G-C2JG4SVNQQ"
-};
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const opinionsRef = collection(db, "opinions");
-
-window.addOpinion = async () => {
-const name = document.getElementById("name").value.trim();
-const text = document.getElementById("text").value.trim();
-const rating = parseInt(document.querySelector("input[name='rating']:checked")?.value);
-const tip = parseFloat(document.getElementById("tip").value || 0);
-
-if (!name || !text || !rating) {
-alert("Uzupełnij wszystkie wymagane pola!");
-return;
-}
-
-await addDoc(opinionsRef, {
-name,
-text,
-rating,
-tip,
-createdAt: serverTimestamp()
-});
-
-document.getElementById("form").reset();
-};
-
-const q = query(opinionsRef, orderBy("createdAt", "desc"));
-
-onSnapshot(q, (snapshot) => {
-const list = document.getElementById("opinions");
-list.innerHTML = "";
-
-let sum = 0;
-let count = 0;
-
-snapshot.forEach(doc => {
-const d = doc.data();
-sum += d.rating;
-count++;
-
-list.innerHTML += `
-<div class="opinion">
-<strong>${d.name}</strong>
-<div class="stars">${"⭐".repeat(d.rating)}</div>
-<p>${d.text}</p>
-<small>Napiwek: ${d.tip.toFixed(2)} zł</small>
-</div>
-`;
-});
-
-document.getElementById("avg").innerText =
-count ? (sum / count).toFixed(1) : "0.0";
-});
-</script>
+<meta name="theme-color" content="#000000">
+<link rel="manifest" href="manifest.json">
 
 <style>
-body {
-background: #0f172a;
-color: #fff;
-font-family: Arial, sans-serif;
-padding: 20px;
+:root{
+--yellow:#f5c400;
+--black:#000;
+--dark:#111;
 }
-h1 { color: #38bdf8; }
-input, textarea, button {
-width: 100%;
-margin: 6px 0;
-padding: 10px;
-border-radius: 6px;
-border: none;
+
+body{
+margin:0;
+font-family:Arial, sans-serif;
+background:#000;
+color:#fff;
 }
-button {
-background: #22c55e;
-color: #000;
-font-weight: bold;
-cursor: pointer;
+
+/* BANER */
+.banner{
+height:160px;
+display:flex;
+justify-content:center;
+align-items:center;
+background:radial-gradient(circle at top, rgba(245,196,0,.25), transparent 65%);
 }
-.stars label {
-cursor: pointer;
-font-size: 22px;
+.banner img{
+max-width:320px;
+width:80%;
 }
-.opinion {
-background: #1e293b;
-padding: 12px;
-border-radius: 8px;
-margin: 10px 0;
+
+/* HEADER */
+header{
+text-align:center;
+padding:20px;
 }
-.regulamin {
-background: #020617;
-padding: 12px;
-margin-top: 20px;
-font-size: 13px;
+h1{
+color:var(--yellow);
+margin:5px 0;
+}
+.sub{opacity:.8;}
+.phone{
+color:var(--yellow);
+text-decoration:none;
+font-size:18px;
+display:block;
+margin-top:8px;
+}
+.rating{
+margin-top:6px;
+font-size:14px;
+opacity:.8;
+}
+.langs button{
+margin:6px;
+padding:6px 14px;
+background:none;
+border:1px solid var(--yellow);
+color:var(--yellow);
+border-radius:20px;
+}
+
+/* KARTY */
+.card{
+background:#111;
+border-radius:18px;
+padding:20px;
+margin:15px;
+}
+label{
+font-size:14px;
+opacity:.8;
+}
+input, select, textarea{
+width:100%;
+margin-top:6px;
+padding:12px;
+border-radius:12px;
+border:none;
+background:#000;
+color:#fff;
+}
+button.main{
+margin-top:15px;
+width:100%;
+padding:14px;
+border:none;
+border-radius:14px;
+background:var(--yellow);
+font-weight:bold;
+font-size:16px;
+}
+
+/* GWIAZDKI */
+.stars span{
+font-size:26px;
+cursor:pointer;
+color:#444;
+}
+.stars span.active{color:var(--yellow);}
+.opinia{
+font-size:13px;
+border-bottom:1px solid #222;
+padding:8px 0;
+}
+
+/* REGULAMIN */
+.regulamin{
+display:none;
+font-size:13px;
+opacity:.85;
+line-height:1.4;
+margin-top:10px;
+}
+
+footer{
+text-align:center;
+padding:20px;
+opacity:.7;
 }
 </style>
 </head>
 
 <body>
 
-<h1>Night Delivery ⭐ <span id="avg">0.0</span></h1>
-
-<form id="form" onsubmit="event.preventDefault(); addOpinion();">
-<input id="name" placeholder="Twoje imię" required>
-
-<div class="stars">
-<label><input type="radio" name="rating" value="1">⭐</label>
-<label><input type="radio" name="rating" value="2">⭐⭐</label>
-<label><input type="radio" name="rating" value="3">⭐⭐⭐</label>
-<label><input type="radio" name="rating" value="4">⭐⭐⭐⭐</label>
-<label><input type="radio" name="rating" value="5">⭐⭐⭐⭐⭐</label>
+<div class="banner">
+<img src="logo.png" alt="Night Delivery">
 </div>
 
-<textarea id="text" placeholder="Napisz opinię..." required></textarea>
+<header>
+<h1>Night Delivery Małdyty</h1>
+<div class="sub">Dostawa & przewóz 24/7</div>
 
-<input id="tip" type="number" min="0" step="0.01" placeholder="Napiwek (zł) – opcjonalnie">
+<a class="phone" href="tel:+48512956568">📞 +48 512 956 568</a>
 
-<button>Dodaj opinię</button>
-</form>
+<div class="rating" id="avgRating">⭐ 0.0 / 5 (0 opinii)</div>
 
+<div class="langs">
+<button onclick="setLang('pl')">PL</button>
+<button onclick="setLang('en')">EN</button>
+<button onclick="setLang('ua')">UA</button>
+</div>
+</header>
+
+<!-- ZAMÓWIENIE -->
+<div class="card">
+<label id="l1">Rodzaj usługi</label>
+<select id="type">
+<option value="delivery">🍔 Dostawa (jedzenie / zakupy)</option>
+<option value="ride">🚗 Przewóz osoby</option>
+</select>
+
+<label id="l2">Dystans (km)</label>
+<input type="number" id="km" placeholder="np. 12">
+
+<button class="main" onclick="getGPS()">📍 Oblicz km z GPS (od Małdyt)</button>
+
+<label id="l3">Adres / opis zamówienia</label>
+<textarea id="note"></textarea>
+
+<label>Napiwek (opcjonalnie)</label>
+<input type="number" id="tip" placeholder="np. 5">
+
+<button class="main" onclick="calculate()" id="calcBtn">Oblicz cenę</button>
+<div id="price" style="text-align:center;color:var(--yellow);font-size:22px;margin-top:10px"></div>
+
+<button class="main" onclick="sendOrder()">📩 Zamów (SMS / WhatsApp)</button>
+</div>
+
+<!-- REGULAMIN -->
+<div class="card">
+<button class="main" onclick="toggleReg()">📜 Regulamin</button>
+<div class="regulamin" id="reg">
+<b>REGULAMIN</b><br><br>
+- Nie kupujemy alkoholu i wyrobów nikotynowych osobom poniżej 18 lat.<br>
+- Przy zamówieniach powyżej 30 zł wymagana przedpłata BLIK.<br>
+- Kierowca ma prawo odmówić realizacji.<br>
+- Cena usługi nie podlega negocjacji.<br>
+- Zamówienie oznacza akceptację regulaminu.
+</div>
+</div>
+
+<!-- OPINIE -->
+<div class="card">
+<label>Twoje imię</label>
+<input id="opName">
+
+<label>Oceń aplikację</label>
+<div class="stars" id="stars"></div>
+
+<textarea id="opinionText" placeholder="Napisz opinię"></textarea>
+<button class="main" onclick="saveOpinion()">Dodaj opinię</button>
+</div>
+
+<div class="card">
+<h3>Opinie</h3>
 <div id="opinions"></div>
-
-<div class="regulamin">
-<h3>Regulamin</h3>
-<p>
-Opinie są publiczne i widoczne dla wszystkich użytkowników.
-Zabronione jest dodawanie treści obraźliwych, niezgodnych z prawem
-lub zawierających dane osobowe osób trzecich.
-Administracja zastrzega sobie prawo do usuwania opinii.
-Napiwek jest dobrowolny i nie podlega zwrotowi.
-</p>
 </div>
+
+<footer>
+📞 512 956 568<br>
+22:00–6:00 taryfa nocna
+</footer>
+
+<!-- FIREBASE -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const firebaseConfig = {
+apiKey: "AIzaSyDqWK9pZt5Ak97-1b12LymEu5bGVLpbPn0",
+authDomain: "night-delivery-18960.firebaseapp.com",
+projectId: "night-delivery-18960",
+storageBucket: "night-delivery-18960.appspot.com",
+messagingSenderId: "425404689430",
+appId: "1:425404689430:web:fce19048bee3232a11937"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const ref = collection(db,"opinions");
+
+window.saveOpinion = async ()=>{
+if(!selected) return alert("Wybierz gwiazdki");
+await addDoc(ref,{
+name:opName.value||"Anonim",
+stars:selected,
+text:opinionText.value
+});
+opinionText.value="";
+selected=0;
+loadOpinions();
+};
+
+async function loadOpinions(){
+const snap=await getDocs(ref);
+let sum=0,c=0;
+opinions.innerHTML="";
+snap.forEach(d=>{
+const o=d.data();
+sum+=o.stars;c++;
+opinions.innerHTML+=`<div class="opinia">⭐ ${o.stars}/5 – <b>${o.name}</b><br>${o.text||""}</div>`;
+});
+avgRating.innerText=`⭐ ${(c?sum/c:0).toFixed(1)} / 5 (${c} opinii)`;
+}
+loadOpinions();
+</script>
+
+<script>
+/* RESZTA LOGIKI */
+let selected=0;
+const starsDiv=document.getElementById("stars");
+for(let i=1;i<=5;i++){
+const s=document.createElement("span");
+s.innerText="★";
+s.onclick=()=>{selected=i;[...starsDiv.children].forEach((x,j)=>x.classList.toggle("active",j<i));};
+starsDiv.appendChild(s);
+}
+
+const MALDYTY={lat:53.9586,lon:19.7406};
+function getGPS(){
+navigator.geolocation.getCurrentPosition(p=>{
+const km=distance(MALDYTY.lat,MALDYTY.lon,p.coords.latitude,p.coords.longitude);
+kmInput.value=km.toFixed(1);
+});
+}
+function distance(a,b,c,d){
+const R=6371;
+const dLat=(c-a)*Math.PI/180;
+const dLon=(d-b)*Math.PI/180;
+const x=Math.sin(dLat/2)**2+Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.sin(dLon/2)**2;
+return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));
+}
+
+function calculate(){
+const km=+kmInput.value;
+const tip=+tipInput.value||0;
+if(!km)return;
+const night=new Date().getHours()>=22||new Date().getHours()<6;
+let price=night?19+km*1.6:15+km*1.4;
+price+=tip;
+priceDiv.innerText="Cena: "+price.toFixed(2)+" zł";
+}
+
+function sendOrder(){
+const phone="512956568";
+const text=`Night Delivery Małdyty
+Usługa: ${type.value}
+Km: ${kmInput.value}
+${priceDiv.innerText}
+Uwagi: ${note.value}`;
+window.open(`https://wa.me/48${phone}?text=`+encodeURIComponent(text));
+}
+
+function toggleReg(){
+reg.style.display=reg.style.display==="block"?"none":"block";
+}
+
+const kmInput=document.getElementById("km");
+const tipInput=document.getElementById("tip");
+const priceDiv=document.getElementById("price");
+</script>
 
 </body>
 </html>
+
 
 
 
