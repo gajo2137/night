@@ -170,18 +170,32 @@ window.open("https://wa.me/48512956568?text="+encodeURIComponent(txt));
 }
 
 /* ===== OPINIE ===== */
-let sel=0;
-for(let i=1;i<=5;i++){
-const s=document.createElement("span");
-s.innerText="★";
-s.onclick=()=>{sel=i;[...stars.children].forEach((e,j)=>e.classList.toggle("active",j<i));};
-stars.appendChild(s);
+let selectedStars = 0;
+const starsDiv = document.getElementById("stars");
+
+for(let i = 1; i <= 5; i++){
+const star = document.createElement("span");
+star.innerText = "★";
+
+star.onclick = () => {
+selectedStars = i;
+[...starsDiv.children].forEach((s, idx) => {
+s.classList.toggle("active", idx < i);
+});
+};
+
+starsDiv.appendChild(star);
 }
-function saveOpinion(){
-if(!sel)return alert("Wybierz gwiazdki");
-saveOpinionFB(sel,opinionText.value);
-opinionText.value="";
-sel=0;
+async function saveOpinion(){
+if(selectedStars === 0){
+alert("Wybierz gwiazdki");
+return;
+}
+
+await saveOpinionFB(selectedStars, opinionText.value);
+opinionText.value = "";
+selectedStars = 0;
+[...starsDiv.children].forEach(s=>s.classList.remove("active"));
 }
 listenOpinions(arr=>{
 opinions.innerHTML="";
@@ -196,6 +210,7 @@ avgRating.innerText=`⭐ ${(arr.length?sum/arr.length:0).toFixed(1)} / 5 (${arr.
 
 </body>
 </html>
+
 
 
 
