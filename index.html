@@ -28,7 +28,8 @@ height:160px;
 display:flex;
 justify-content:center;
 align-items:center;
-background:radial-gradient(circle at top, rgba(245,196,0,.25), transparent 65%);
+background:
+radial-gradient(circle at top, rgba(245,196,0,.25), transparent 65%);
 }
 .banner img{
 max-width:320px;
@@ -44,7 +45,9 @@ h1{
 color:var(--yellow);
 margin:5px 0;
 }
-.sub{opacity:.8;}
+.sub{
+opacity:.8;
+}
 .phone{
 color:var(--yellow);
 text-decoration:none;
@@ -103,22 +106,16 @@ font-size:26px;
 cursor:pointer;
 color:#444;
 }
-.stars span.active{color:var(--yellow);}
+.stars span.active{
+color:var(--yellow);
+}
 .opinia{
 font-size:13px;
 border-bottom:1px solid #222;
 padding:8px 0;
 }
 
-/* REGULAMIN */
-.regulamin{
-display:none;
-font-size:13px;
-opacity:.85;
-line-height:1.4;
-margin-top:10px;
-}
-
+/* STOPKA */
 footer{
 text-align:center;
 padding:20px;
@@ -129,6 +126,7 @@ opacity:.7;
 
 <body>
 
+<!-- BANER -->
 <div class="banner">
 <img src="logo.png" alt="Night Delivery">
 </div>
@@ -160,9 +158,12 @@ opacity:.7;
 <input type="number" id="km" placeholder="np. 12">
 
 <button class="main" onclick="getGPS()">📍 Oblicz km z GPS (od Małdyt)</button>
+<div style="font-size:12px;opacity:.6;text-align:center;margin-top:6px">
+GPS liczy orientacyjny dystans od centrum Małdyt
+</div>
 
 <label id="l3">Adres / opis zamówienia</label>
-<textarea id="note"></textarea>
+<textarea id="note" placeholder="Np. adres odbioru, co kupić, itp."></textarea>
 
 <label>Napiwek (opcjonalnie)</label>
 <input type="number" id="tip" placeholder="np. 5">
@@ -173,28 +174,11 @@ opacity:.7;
 <button class="main" onclick="sendOrder()">📩 Zamów (SMS / WhatsApp)</button>
 </div>
 
-<!-- REGULAMIN -->
+<!-- OCENY -->
 <div class="card">
-<button class="main" onclick="toggleReg()">📜 Regulamin</button>
-<div class="regulamin" id="reg">
-<b>REGULAMIN</b><br><br>
-- Nie kupujemy alkoholu i wyrobów nikotynowych osobom poniżej 18 lat.<br>
-- Przy zamówieniach powyżej 30 zł wymagana przedpłata BLIK.<br>
-- Kierowca ma prawo odmówić realizacji.<br>
-- Cena usługi nie podlega negocjacji.<br>
-- Zamówienie oznacza akceptację regulaminu.
-</div>
-</div>
-
-<!-- OPINIE -->
-<div class="card">
-<label>Twoje imię</label>
-<input id="opName">
-
 <label>Oceń aplikację</label>
 <div class="stars" id="stars"></div>
-
-<textarea id="opinionText" placeholder="Napisz opinię"></textarea>
+<textarea id="opinionText" placeholder="Napisz opinię (opcjonalnie)"></textarea>
 <button class="main" onclick="saveOpinion()">Dodaj opinię</button>
 </div>
 
@@ -204,79 +188,40 @@ opacity:.7;
 </div>
 
 <footer>
-📞 512 956 568<br>
-22:00–6:00 taryfa nocna
+📞 Zadzwoń: 512 956 568<br>
+Godziny nocne 22:00–6:00 (droższe stawki)
 </footer>
 
-<!-- FIREBASE -->
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-const firebaseConfig = {
-apiKey: "AIzaSyDqWK9pZt5Ak97-1b12LymEu5bGVLpbPn0",
-authDomain: "night-delivery-18960.firebaseapp.com",
-projectId: "night-delivery-18960",
-storageBucket: "night-delivery-18960.appspot.com",
-messagingSenderId: "425404689430",
-appId: "1:425404689430:web:fce19048bee3232a11937"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const ref = collection(db,"opinions");
-
-window.saveOpinion = async ()=>{
-if(!selected) return alert("Wybierz gwiazdki");
-await addDoc(ref,{
-name:opName.value||"Anonim",
-stars:selected,
-text:opinionText.value
-});
-opinionText.value="";
-selected=0;
-loadOpinions();
-};
-
-async function loadOpinions(){
-const snap=await getDocs(ref);
-let sum=0,c=0;
-opinions.innerHTML="";
-snap.forEach(d=>{
-const o=d.data();
-sum+=o.stars;c++;
-opinions.innerHTML+=`<div class="opinia">⭐ ${o.stars}/5 – <b>${o.name}</b><br>${o.text||""}</div>`;
-});
-avgRating.innerText=`⭐ ${(c?sum/c:0).toFixed(1)} / 5 (${c} opinii)`;
-}
-loadOpinions();
-</script>
-
 <script>
-/* RESZTA LOGIKI */
-let selected=0;
-const starsDiv=document.getElementById("stars");
-for(let i=1;i<=5;i++){
-const s=document.createElement("span");
-s.innerText="★";
-s.onclick=()=>{selected=i;[...starsDiv.children].forEach((x,j)=>x.classList.toggle("active",j<i));};
-starsDiv.appendChild(s);
+/* PWA */
+if("serviceWorker" in navigator){
+navigator.serviceWorker.register("sw.js");
 }
 
+/* GPS */
 const MALDYTY={lat:53.9586,lon:19.7406};
 function getGPS(){
-navigator.geolocation.getCurrentPosition(p=>{
-const km=distance(MALDYTY.lat,MALDYTY.lon,p.coords.latitude,p.coords.longitude);
-kmInput.value=km.toFixed(1);
-});
+navigator.geolocation.getCurrentPosition(pos=>{
+const km=distance(
+MALDYTY.lat,MALDYTY.lon,
+pos.coords.latitude,pos.coords.longitude
+);
+document.getElementById("km").value=km.toFixed(1);
+},()=>alert("Nie udało się pobrać lokalizacji"));
 }
 function distance(a,b,c,d){
 const R=6371;
 const dLat=(c-a)*Math.PI/180;
 const dLon=(d-b)*Math.PI/180;
-const x=Math.sin(dLat/2)**2+Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.sin(dLon/2)**2;
+const x=Math.sin(dLat/2)**2+
+Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.sin(dLon/2)**2;
 return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));
 }
+
+/* CENA */
+const kmInput=document.getElementById("km");
+const tipInput=document.getElementById("tip");
+const priceDiv=document.getElementById("price");
 
 function calculate(){
 const km=+kmInput.value;
@@ -288,6 +233,7 @@ price+=tip;
 priceDiv.innerText="Cena: "+price.toFixed(2)+" zł";
 }
 
+/* ZAMÓWIENIE */
 function sendOrder(){
 const phone="512956568";
 const text=`Night Delivery Małdyty
@@ -295,16 +241,64 @@ Usługa: ${type.value}
 Km: ${kmInput.value}
 ${priceDiv.innerText}
 Uwagi: ${note.value}`;
+
+if(/Android|iPhone/i.test(navigator.userAgent)){
 window.open(`https://wa.me/48${phone}?text=`+encodeURIComponent(text));
+}else{
+location.href=`sms:${phone}?body=`+encodeURIComponent(text);
+}
 }
 
-function toggleReg(){
-reg.style.display=reg.style.display==="block"?"none":"block";
+/* OPINIE */
+let selected=0;
+const starsDiv=document.getElementById("stars");
+
+for(let i=1;i<=5;i++){
+const s=document.createElement("span");
+s.innerText="★";
+s.onclick=()=>selectStar(i);
+starsDiv.appendChild(s);
 }
 
-const kmInput=document.getElementById("km");
-const tipInput=document.getElementById("tip");
-const priceDiv=document.getElementById("price");
+function selectStar(n){
+selected=n;
+[...starsDiv.children].forEach((s,i)=>s.classList.toggle("active",i<n));
+}
+
+function saveOpinion(){
+if(!selected)return alert("Wybierz gwiazdki");
+const data=JSON.parse(localStorage.getItem("opinions")||"[]");
+data.push({stars:selected,text:opinionText.value});
+localStorage.setItem("opinions",JSON.stringify(data));
+opinionText.value="";
+selected=0;
+loadOpinions();
+}
+
+function loadOpinions(){
+const data=JSON.parse(localStorage.getItem("opinions")||"[]");
+let sum=0;
+opinions.innerHTML="";
+data.forEach(o=>{
+sum+=o.stars;
+opinions.innerHTML+=`<div class="opinia">⭐ ${o.stars}/5 – ${o.text||""}</div>`;
+});
+avgRating.innerText=`⭐ ${(data.length?sum/data.length:0).toFixed(1)} / 5 (${data.length} opinii)`;
+}
+loadOpinions();
+
+/* JĘZYKI */
+const t={
+pl:{l1:"Rodzaj usługi",l2:"Dystans (km)",l3:"Adres / opis zamówienia",btn:"Oblicz cenę"},
+en:{l1:"Service type",l2:"Distance (km)",l3:"Order details",btn:"Calculate price"},
+ua:{l1:"Тип послуги",l2:"Відстань (км)",l3:"Опис замовлення",btn:"Розрахувати"}
+};
+function setLang(l){
+l1.innerText=t[l].l1;
+l2.innerText=t[l].l2;
+l3.innerText=t[l].l3;
+calcBtn.innerText=t[l].btn;
+}
 </script>
 
 </body>
