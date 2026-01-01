@@ -36,17 +36,26 @@ footer{text-align:center;padding:20px;opacity:.7;}
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-apiKey: "TU_WKLEJ_APIKEY",
-authDomain: "TU_WKLEJ_DOMAIN",
-projectId: "TU_WKLEJ_PROJECT_ID",
+  apiKey: "AIzaSyDqWK9pZt5Ak97-1b12LymEu5bGVLpbPn0",
+  authDomain: "night-delivery-18960.firebaseapp.com",
+  projectId: "night-delivery-18960",
+  storageBucket: "night-delivery-18960.firebasestorage.app",
+  messagingSenderId: "425404689430",
+  appId: "1:425404689430:web:efce19048bee3232a11937",
+  measurementId: "G-C2JG4SVNQQ"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 window.saveOpinionFB = async (stars, text) => {
-await addDoc(collection(db,"opinions"),{ stars, text, time:Date.now() });
+await addDoc(collection(db,"opinions"),{
+stars,
+text,
+time: Date.now()
+});
 };
 
 window.listenOpinions = (cb) => {
@@ -95,6 +104,17 @@ cb(arr);
 
 <button class="main" onclick="calculate()">Oblicz cenę</button>
 <div id="price" style="text-align:center;color:var(--yellow);font-size:22px"></div>
+
+<!-- REGULAMIN -->
+<div style="margin-top:15px;font-size:13px;line-height:1.4;opacity:.85">
+<p>• Zamówienia powyżej 30 zł wymagają przedpłaty BLIK</p>
+<p>• Nie kupujemy alkoholu i papierosów osobom poniżej 18 lat</p>
+<p>• Kierowca ma prawo odmówić realizacji</p>
+<p>• Cena nie podlega negocjacji</p>
+<label style="display:block;margin-top:10px">
+<input type="checkbox" id="acceptReg"> Akceptuję regulamin
+</label>
+</div>
 
 <button class="main" onclick="sendOrder()">📩 Zamów</button>
 </div>
@@ -148,17 +168,20 @@ priceDiv.innerText="Cena: "+price.toFixed(2)+" zł";
 
 /* ZAMÓWIENIE */
 function sendOrder(){
-if(!priceDiv.innerText)return alert("Oblicz cenę");
+if(!acceptReg.checked) return alert("Zaakceptuj regulamin");
+if(!priceDiv.innerText) return alert("Oblicz cenę");
+
 const txt=`Night Delivery Małdyty
 Usługa:${type.value}
 Km:${kmInput.value}
 ${priceDiv.innerText}
 Płatność:${payment.value}
 Uwagi:${note.value}`;
+
 window.open("https://wa.me/48512956568?text="+encodeURIComponent(txt));
 }
 
-/* ====== OPINIE – POPRAWIONE ====== */
+/* OPINIE */
 let sel = 0;
 const starsDiv = document.getElementById("stars");
 
@@ -166,26 +189,21 @@ for(let i=1;i<=5;i++){
 const s=document.createElement("span");
 s.innerText="★";
 s.onclick=()=>{
-sel = i;
-[...starsDiv.children].forEach((e,j)=>{
-e.classList.toggle("active", j < sel);
-});
+sel=i;
+[...starsDiv.children].forEach((e,j)=>e.classList.toggle("active",j<i));
 };
 starsDiv.appendChild(s);
 }
 
 function saveOpinion(){
-if(sel <= 0){
-alert("Wybierz gwiazdki");
-return;
-}
+if(sel<=0) return alert("Wybierz gwiazdki");
 saveOpinionFB(sel, opinionText.value);
 opinionText.value="";
-sel = 0;
+sel=0;
 [...starsDiv.children].forEach(e=>e.classList.remove("active"));
 }
 
-listenOpinions(arr=>{
+window.listenOpinions(arr=>{
 opinions.innerHTML="";
 let sum=0;
 arr.forEach(o=>{
@@ -198,8 +216,6 @@ avgRating.innerText=`⭐ ${(arr.length?sum/arr.length:0).toFixed(1)} / 5 (${arr.
 
 </body>
 </html>
-
-
 
 
 
