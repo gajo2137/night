@@ -135,7 +135,6 @@ opacity:.7;
 <div class="sub">Dostawa & przewóz 24/7</div>
 
 <a class="phone" href="tel:+48512956568">📞 +48 512 956 568</a>
-
 <div class="rating" id="avgRating">⭐ 0.0 / 5 (0 opinii)</div>
 
 <div class="langs">
@@ -148,23 +147,23 @@ opacity:.7;
 <div class="card">
 <label id="l1">Rodzaj usługi</label>
 <select id="type">
-<option value="delivery">🍔 Dostawa (jedzenie / zakupy)</option>
+<option value="delivery">🍔 Dostawa</option>
 <option value="ride">🚗 Przewóz osoby</option>
 </select>
 
 <label id="l2">Dystans (km)</label>
 <input type="number" id="km">
 
-<button class="main" onclick="getGPS()">📍 Oblicz km z GPS (od Małdyt)</button>
+<button class="main" onclick="getGPS()">📍 Oblicz km z GPS</button>
 
-<label id="l3">Adres / opis zamówienia</label>
+<label id="l3">Adres / opis</label>
 <textarea id="note"></textarea>
 
-<label>Napiwek (opcjonalnie)</label>
+<label>Napiwek</label>
 <input type="number" id="tip">
 
 <button class="main" onclick="calculate()" id="calcBtn">Oblicz cenę</button>
-<div id="price" style="text-align:center;color:var(--yellow);font-size:22px;margin-top:10px"></div>
+<div id="price" style="text-align:center;color:#f5c400;font-size:22px"></div>
 
 <button class="main" onclick="sendOrder()">📩 Zamów</button>
 </div>
@@ -186,19 +185,16 @@ opacity:.7;
 22:00–6:00 drożej
 </footer>
 
-<!-- ================= FIREBASE + CAŁA LOGIKA ================= -->
 <script type="module">
-/* PWA */
-if("serviceWorker" in navigator){
-navigator.serviceWorker.register("sw.js");
-}
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import {
+getFirestore, collection, addDoc, getDocs,
+query, orderBy, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 /* FIREBASE */
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
 const firebaseConfig = {
-apiKey: "AIzaSyDQWKp2TsAk97-1b12LymEU5bGVLpbPn8",
+apiKey: "TU_WKLEJ_API_KEY",
 authDomain: "night-delivery-18960.firebaseapp.com",
 projectId: "night-delivery-18960",
 storageBucket: "night-delivery-18960.appspot.com",
@@ -209,15 +205,19 @@ appId: "1:425404689430:web:efce19048bee323a211937"
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
+/* PWA */
+if ("serviceWorker" in navigator) {
+navigator.serviceWorker.register("sw.js");
+}
+
 /* GPS */
 const MALDYTY={lat:53.9586,lon:19.7406};
-function getGPS(){
-navigator.geolocation.getCurrentPosition(pos=>{
-const km=distance(MALDYTY.lat,MALDYTY.lon,pos.coords.latitude,pos.coords.longitude);
-kmInput.value=km.toFixed(1);
+window.getGPS=function(){
+navigator.geolocation.getCurrentPosition(p=>{
+km.value=dist(MALDYTY.lat,MALDYTY.lon,p.coords.latitude,p.coords.longitude).toFixed(1);
 });
-}
-function distance(a,b,c,d){
+};
+function dist(a,b,c,d){
 const R=6371;
 const dLat=(c-a)*Math.PI/180;
 const dLon=(d-b)*Math.PI/180;
@@ -227,46 +227,39 @@ return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));
 }
 
 /* CENA */
-const kmInput=document.getElementById("km");
-const tipInput=document.getElementById("tip");
-const priceDiv=document.getElementById("price");
-
-function calculate(){
-const km=+kmInput.value;
-const tip=+tipInput.value||0;
-if(!km)return;
-const night=new Date().getHours()>=22||new Date().getHours()<6;
-let price=night?19+km*1.6:15+km*1.4;
-price+=tip;
-priceDiv.innerText="Cena: "+price.toFixed(2)+" zł";
-}
+window.calculate=function(){
+const k=+km.value;
+if(!k)return;
+const h=new Date().getHours();
+let p=(h>=22||h<6)?19+k*1.6:15+k*1.4;
+p+=(+tip.value||0);
+price.innerText="Cena: "+p.toFixed(2)+" zł";
+};
 
 /* ZAMÓWIENIE */
-function sendOrder(){
-const text=`Night Delivery
-Km: ${kmInput.value}
-${priceDiv.innerText}
-Uwagi: ${note.value}`;
-window.open("https://wa.me/48512956789?text="+encodeURIComponent(text));
-}
+window.sendOrder=function(){
+const t=`Night Delivery
+${type.value}
+Km: ${km.value}
+${price.innerText}
+${note.value}`;
+window.open("https://wa.me/48512956789?text="+encodeURIComponent(t));
+};
 
-/* OPINIE – FIRESTORE */
+/* OPINIE */
 let selected=0;
-const starsDiv=document.getElementById("stars");
-
 for(let i=1;i<=5;i++){
 const s=document.createElement("span");
 s.innerText="★";
 s.onclick=()=>selectStar(i);
-starsDiv.appendChild(s);
+stars.appendChild(s);
 }
-
 function selectStar(n){
 selected=n;
-[...starsDiv.children].forEach((s,i)=>s.classList.toggle("active",i<n));
+[...stars.children].forEach((s,i)=>s.classList.toggle("active",i<n));
 }
 
-async function saveOpinion(){
+window.saveOpinion=async function(){
 if(!selected)return alert("Wybierz gwiazdki");
 await addDoc(collection(db,"opinions"),{
 stars:selected,
@@ -276,39 +269,39 @@ created:serverTimestamp()
 opinionText.value="";
 selected=0;
 loadOpinions();
-}
+};
 
 async function loadOpinions(){
 const q=query(collection(db,"opinions"),orderBy("created","desc"));
 const snap=await getDocs(q);
-let sum=0,count=0;
+let sum=0,c=0;
 opinions.innerHTML="";
-snap.forEach(doc=>{
-const o=doc.data();
-sum+=o.stars;
-count++;
-opinions.innerHTML+=`<div class="opinia">⭐ ${o.stars}/5 – ${o.text||""}</div>`;
+snap.forEach(d=>{
+const o=d.data();
+sum+=o.stars;c++;
+opinions.innerHTML+=`<div class="opinia">⭐ ${o.stars}/5 – ${o.text}</div>`;
 });
-avgRating.innerText=`⭐ ${(count?sum/count:0).toFixed(1)} / 5 (${count} opinii)`;
+avgRating.innerText=`⭐ ${(c?sum/c:0).toFixed(1)} / 5 (${c} opinii)`;
 }
 loadOpinions();
 
 /* JĘZYKI */
 const t={
-pl:{l1:"Rodzaj usługi",l2:"Dystans (km)",l3:"Adres / opis zamówienia",btn:"Oblicz cenę"},
-en:{l1:"Service type",l2:"Distance (km)",l3:"Order details",btn:"Calculate"},
-ua:{l1:"Тип послуги",l2:"Відстань",l3:"Опис",btn:"Розрахувати"}
+pl:{l1:"Rodzaj usługi",l2:"Dystans (km)",l3:"Adres / opis",btn:"Oblicz cenę"},
+en:{l1:"Service",l2:"Distance",l3:"Details",btn:"Calculate"},
+ua:{l1:"Послуга",l2:"Км",l3:"Опис",btn:"Розрахувати"}
 };
-function setLang(l){
+window.setLang=l=>{
 l1.innerText=t[l].l1;
-l2.innerText=t[l].l
+l2.innerText=t[l].l2;
 l3.innerText=t[l].l3;
 calcBtn.innerText=t[l].btn;
-}
+};
 </script>
 
 </body>
 </html>
+
 
 
 
