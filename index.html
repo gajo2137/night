@@ -126,6 +126,7 @@ opacity:.7;
 
 <body>
 
+<!-- BANER -->
 <div class="banner">
 <img src="logo.png" alt="Night Delivery">
 </div>
@@ -135,6 +136,7 @@ opacity:.7;
 <div class="sub">Dostawa & przewóz 24/7</div>
 
 <a class="phone" href="tel:+48512956568">📞 +48 512 956 568</a>
+
 <div class="rating" id="avgRating">⭐ 0.0 / 5 (0 opinii)</div>
 
 <div class="langs">
@@ -164,7 +166,7 @@ opacity:.7;
 <input type="number" id="tip">
 
 <button class="main" onclick="calculate()" id="calcBtn">Oblicz cenę</button>
-<div id="price" style="text-align:center;color:#f5c400;font-size:22px;margin-top:10px"></div>
+<div id="price" style="text-align:center;color:var(--yellow);font-size:22px;margin-top:10px"></div>
 
 <button class="main" onclick="sendOrder()">📩 Zamów (SMS / WhatsApp)</button>
 </div>
@@ -183,11 +185,10 @@ opacity:.7;
 </div>
 
 <footer>
-📞 512 956 789<br>
+📞 Zadzwoń: 512 956 789<br>
 Godziny nocne 22:00–6:00
 </footer>
 
-<!-- ===== TWÓJ ORYGINALNY SCRIPT (JEDNA POPRAWKA: window.selected) ===== -->
 <script>
 /* PWA */
 if("serviceWorker" in navigator){
@@ -202,7 +203,7 @@ const km=distance(
 MALDYTY.lat,MALDYTY.lon,
 pos.coords.latitude,pos.coords.longitude
 );
-document.getElementById("km").value=km.toFixed(1);
+kmInput.value=km.toFixed(1);
 });
 }
 function distance(a,b,c,d){
@@ -218,13 +219,13 @@ return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));
 const kmInput=document.getElementById("km");
 const tipInput=document.getElementById("tip");
 const priceDiv=document.getElementById("price");
+
 function calculate(){
 const km=+kmInput.value;
-const tip=+tipInput.value||0;
-if(!km)return;
+if(!km) return;
 const night=new Date().getHours()>=22||new Date().getHours()<6;
 let price=night?19+km*1.6:15+km*1.4;
-price+=tip;
+price+=+tipInput.value||0;
 priceDiv.innerText="Cena: "+price.toFixed(2)+" zł";
 }
 
@@ -235,23 +236,53 @@ Usługa: ${type.value}
 Km: ${kmInput.value}
 ${priceDiv.innerText}
 Uwagi: ${note.value}`;
-const phone="512956789";
-window.open(`https://wa.me/48${phone}?text=`+encodeURIComponent(text));
+window.open(`https://wa.me/48512956789?text=`+encodeURIComponent(text));
 }
 
-/* GWIAZDKI UI — POPRAWKA */
+/* ⭐ GWIAZDKI – NAPRAWIONE */
 window.selected = 0;
 const starsDiv=document.getElementById("stars");
+
 for(let i=1;i<=5;i++){
 const s=document.createElement("span");
 s.innerText="★";
 s.onclick=()=>selectStar(i);
 starsDiv.appendChild(s);
 }
+
 function selectStar(n){
-window.selected = n;
-[...starsDiv.children].forEach((s,i)=>s.classList.toggle("active",i<n));
+window.selected=n;
+[...starsDiv.children].forEach((s,i)=>{
+s.classList.toggle("active", i<n);
+});
 }
+
+/* OPINIE */
+function saveOpinion(){
+if(window.selected===0){
+alert("Wybierz gwiazdki");
+return;
+}
+const data=JSON.parse(localStorage.getItem("opinions")||"[]");
+data.push({stars:window.selected,text:opinionText.value});
+localStorage.setItem("opinions",JSON.stringify(data));
+opinionText.value="";
+window.selected=0;
+[...starsDiv.children].forEach(s=>s.classList.remove("active"));
+loadOpinions();
+}
+
+function loadOpinions(){
+const data=JSON.parse(localStorage.getItem("opinions")||"[]");
+let sum=0;
+opinions.innerHTML="";
+data.forEach(o=>{
+sum+=o.stars;
+opinions.innerHTML+=`<div class="opinia">⭐ ${o.stars}/5 – ${o.text||""}</div>`;
+});
+avgRating.innerText=`⭐ ${(data.length?sum/data.length:0).toFixed(1)} / 5 (${data.length} opinii)`;
+}
+loadOpinions();
 
 /* JĘZYKI */
 const t={
@@ -267,62 +298,8 @@ calcBtn.innerText=t[l].btn;
 }
 </script>
 
-<!-- ===== FIREBASE – TYLKO OPINIE ===== -->
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import {
-getFirestore, collection, addDoc, getDocs,
-query, orderBy, serverTimestamp
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-const firebaseConfig = {
-apiKey: "TU_WKLEJ_API_KEY",
-authDomain: "night-delivery-18960.firebaseapp.com",
-projectId: "night-delivery-18960",
-storageBucket: "night-delivery-18960.appspot.com",
-messagingSenderId: "425404689430",
-appId: "1:425404689430:web:efce19048bee323a211937"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-const opinionsDiv=document.getElementById("opinions");
-const avgRating=document.getElementById("avgRating");
-const opinionText=document.getElementById("opinionText");
-
-window.saveOpinion = async function(){
-if(!window.selected) return alert("Wybierz gwiazdki");
-
-await addDoc(collection(db,"opinions"),{
-stars: window.selected,
-text: opinionText.value || "",
-created: serverTimestamp()
-});
-
-opinionText.value="";
-window.selected=0;
-loadOpinions();
-};
-
-async function loadOpinions(){
-const q=query(collection(db,"opinions"),orderBy("created","desc"));
-const snap=await getDocs(q);
-let sum=0,count=0;
-opinionsDiv.innerHTML="";
-snap.forEach(d=>{
-const o=d.data();
-sum+=o.stars;count++;
-opinionsDiv.innerHTML+=`<div class="opinia">⭐ ${o.stars}/5 – ${o.text}</div>`;
-});
-avgRating.innerText=`⭐ ${(count?sum/count:0).toFixed(1)} / 5 (${count} opinii)`;
-}
-loadOpinions();
-</script>
-
 </body>
 </html>
-
 
 
 
