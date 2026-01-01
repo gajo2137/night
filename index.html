@@ -126,7 +126,6 @@ opacity:.7;
 
 <body>
 
-<!-- BANER -->
 <div class="banner">
 <img src="logo.png" alt="Night Delivery">
 </div>
@@ -146,7 +145,6 @@ opacity:.7;
 </div>
 </header>
 
-<!-- ZAMÓWIENIE -->
 <div class="card">
 <label id="l1">Rodzaj usługi</label>
 <select id="type">
@@ -155,30 +153,26 @@ opacity:.7;
 </select>
 
 <label id="l2">Dystans (km)</label>
-<input type="number" id="km" placeholder="np. 12">
+<input type="number" id="km">
 
 <button class="main" onclick="getGPS()">📍 Oblicz km z GPS (od Małdyt)</button>
-<div style="font-size:12px;opacity:.6;text-align:center;margin-top:6px">
-GPS liczy orientacyjny dystans od centrum Małdyt
-</div>
 
 <label id="l3">Adres / opis zamówienia</label>
-<textarea id="note" placeholder="Np. adres odbioru, co kupić, itp."></textarea>
+<textarea id="note"></textarea>
 
 <label>Napiwek (opcjonalnie)</label>
-<input type="number" id="tip" placeholder="np. 5">
+<input type="number" id="tip">
 
 <button class="main" onclick="calculate()" id="calcBtn">Oblicz cenę</button>
 <div id="price" style="text-align:center;color:var(--yellow);font-size:22px;margin-top:10px"></div>
 
-<button class="main" onclick="sendOrder()">📩 Zamów (SMS / WhatsApp)</button>
+<button class="main" onclick="sendOrder()">📩 Zamów</button>
 </div>
 
-<!-- OCENY -->
 <div class="card">
 <label>Oceń aplikację</label>
 <div class="stars" id="stars"></div>
-<textarea id="opinionText" placeholder="Napisz opinię (opcjonalnie)"></textarea>
+<textarea id="opinionText"></textarea>
 <button class="main" onclick="saveOpinion()">Dodaj opinię</button>
 </div>
 
@@ -188,26 +182,40 @@ GPS liczy orientacyjny dystans od centrum Małdyt
 </div>
 
 <footer>
-📞 Zadzwoń: 512 956 568<br>
-Godziny nocne 22:00–6:00 (droższe stawki)
+📞 512 956 789<br>
+22:00–6:00 drożej
 </footer>
 
-<script>
+<!-- ================= FIREBASE + CAŁA LOGIKA ================= -->
+<script type="module">
 /* PWA */
 if("serviceWorker" in navigator){
 navigator.serviceWorker.register("sw.js");
 }
 
+/* FIREBASE */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, query, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+const firebaseConfig = {
+apiKey: "AIzaSyDQWKp2TsAk97-1b12LymEU5bGVLpbPn8",
+authDomain: "night-delivery-18960.firebaseapp.com",
+projectId: "night-delivery-18960",
+storageBucket: "night-delivery-18960.appspot.com",
+messagingSenderId: "425404689430",
+appId: "1:425404689430:web:efce19048bee323a211937"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
 /* GPS */
 const MALDYTY={lat:53.9586,lon:19.7406};
 function getGPS(){
 navigator.geolocation.getCurrentPosition(pos=>{
-const km=distance(
-MALDYTY.lat,MALDYTY.lon,
-pos.coords.latitude,pos.coords.longitude
-);
-document.getElementById("km").value=km.toFixed(1);
-},()=>alert("Nie udało się pobrać lokalizacji"));
+const km=distance(MALDYTY.lat,MALDYTY.lon,pos.coords.latitude,pos.coords.longitude);
+kmInput.value=km.toFixed(1);
+});
 }
 function distance(a,b,c,d){
 const R=6371;
@@ -219,6 +227,10 @@ return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));
 }
 
 /* CENA */
+const kmInput=document.getElementById("km");
+const tipInput=document.getElementById("tip");
+const priceDiv=document.getElementById("price");
+
 function calculate(){
 const km=+kmInput.value;
 const tip=+tipInput.value||0;
@@ -228,68 +240,68 @@ let price=night?19+km*1.6:15+km*1.4;
 price+=tip;
 priceDiv.innerText="Cena: "+price.toFixed(2)+" zł";
 }
-const kmInput=document.getElementById("km");
-const tipInput=document.getElementById("tip");
-const priceDiv=document.getElementById("price");
 
 /* ZAMÓWIENIE */
 function sendOrder(){
-const text=`Night Delivery Małdyty
-Usługa: ${type.value}
+const text=`Night Delivery
 Km: ${kmInput.value}
 ${priceDiv.innerText}
 Uwagi: ${note.value}`;
-const phone="512956568";
-if(/Android|iPhone/i.test(navigator.userAgent)){
-window.open(`https://wa.me/48${phone}?text=`+encodeURIComponent(text));
-}else{
-location.href=`sms:${phone}?body=`+encodeURIComponent(text);
-}
+window.open("https://wa.me/48512956789?text="+encodeURIComponent(text));
 }
 
-/* OPINIE */
+/* OPINIE – FIRESTORE */
 let selected=0;
 const starsDiv=document.getElementById("stars");
+
 for(let i=1;i<=5;i++){
 const s=document.createElement("span");
 s.innerText="★";
 s.onclick=()=>selectStar(i);
 starsDiv.appendChild(s);
 }
+
 function selectStar(n){
 selected=n;
 [...starsDiv.children].forEach((s,i)=>s.classList.toggle("active",i<n));
 }
-function saveOpinion(){
+
+async function saveOpinion(){
 if(!selected)return alert("Wybierz gwiazdki");
-const data=JSON.parse(localStorage.getItem("opinions")||"[]");
-data.push({stars:selected,text:opinionText.value});
-localStorage.setItem("opinions",JSON.stringify(data));
+await addDoc(collection(db,"opinions"),{
+stars:selected,
+text:opinionText.value,
+created:serverTimestamp()
+});
 opinionText.value="";
 selected=0;
 loadOpinions();
 }
-function loadOpinions(){
-const data=JSON.parse(localStorage.getItem("opinions")||"[]");
-let sum=0;
+
+async function loadOpinions(){
+const q=query(collection(db,"opinions"),orderBy("created","desc"));
+const snap=await getDocs(q);
+let sum=0,count=0;
 opinions.innerHTML="";
-data.forEach(o=>{
+snap.forEach(doc=>{
+const o=doc.data();
 sum+=o.stars;
+count++;
 opinions.innerHTML+=`<div class="opinia">⭐ ${o.stars}/5 – ${o.text||""}</div>`;
 });
-avgRating.innerText=`⭐ ${(data.length?sum/data.length:0).toFixed(1)} / 5 (${data.length} opinii)`;
+avgRating.innerText=`⭐ ${(count?sum/count:0).toFixed(1)} / 5 (${count} opinii)`;
 }
 loadOpinions();
 
 /* JĘZYKI */
 const t={
 pl:{l1:"Rodzaj usługi",l2:"Dystans (km)",l3:"Adres / opis zamówienia",btn:"Oblicz cenę"},
-en:{l1:"Service type",l2:"Distance (km)",l3:"Order details",btn:"Calculate price"},
-ua:{l1:"Тип послуги",l2:"Відстань (км)",l3:"Опис замовлення",btn:"Розрахувати"}
+en:{l1:"Service type",l2:"Distance (km)",l3:"Order details",btn:"Calculate"},
+ua:{l1:"Тип послуги",l2:"Відстань",l3:"Опис",btn:"Розрахувати"}
 };
 function setLang(l){
 l1.innerText=t[l].l1;
-l2.innerText=t[l].l2;
+l2.innerText=t[l].l
 l3.innerText=t[l].l3;
 calcBtn.innerText=t[l].btn;
 }
@@ -297,6 +309,7 @@ calcBtn.innerText=t[l].btn;
 
 </body>
 </html>
+
 
 
 
