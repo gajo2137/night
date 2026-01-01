@@ -15,7 +15,6 @@
 --border:#222;
 --green:#2ecc71;
 }
-
 body{
 margin:0;
 font-family:system-ui,-apple-system,Arial;
@@ -31,11 +30,10 @@ justify-content:center;
 align-items:center;
 background:radial-gradient(circle at top, rgba(245,196,0,.25), transparent 65%);
 }
-.banner img{max-width:300px;width:80%}
-
+.banner img{max-width:320px;width:80%}
 header{text-align:center;padding:20px}
 h1{color:var(--yellow);margin:0}
-.phone{color:var(--yellow);text-decoration:none;font-size:18px}
+.phone{color:var(--yellow);text-decoration:none;font-size:18px;display:block;margin-top:6px}
 .rating{opacity:.8;margin-top:6px}
 
 /* JĘZYKI */
@@ -108,7 +106,6 @@ display:flex;
 gap:10px;
 margin-bottom:8px;
 font-size:13px;
-opacity:.9;
 }
 .reg-accept{
 display:flex;
@@ -124,47 +121,12 @@ accent-color:var(--yellow);
 }
 
 /* OPINIE */
-.stars span{
-font-size:30px;
-cursor:pointer;
-color:#444;
-}
+.stars span{font-size:30px;cursor:pointer;color:#444}
 .stars span.active{color:var(--yellow)}
-.opinia{
-border-bottom:1px solid var(--border);
-padding:8px 0;
-font-size:13px;
-}
+.opinia{border-bottom:1px solid var(--border);padding:8px 0;font-size:13px}
 
-/* FOOTER */
 footer{text-align:center;padding:20px;opacity:.6}
 </style>
-
-<!-- FIREBASE -->
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getFirestore, collection, addDoc, onSnapshot, query, orderBy }
-from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-const firebaseConfig = {
-apiKey: "TU_WKLEJ_APIKEY",
-authDomain: "TU_WKLEJ_DOMAIN",
-projectId: "TU_WKLEJ_PROJECT_ID",
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-window.saveOpinionFB = (stars,text)=>
-addDoc(collection(db,"opinions"),{stars,text,time:Date.now()});
-
-window.listenOpinions = cb=>{
-const q=query(collection(db,"opinions"),orderBy("time","desc"));
-onSnapshot(q,s=>{
-const a=[]; s.forEach(d=>a.push(d.data())); cb(a);
-});
-};
-</script>
 </head>
 
 <body>
@@ -174,22 +136,50 @@ const a=[]; s.forEach(d=>a.push(d.data())); cb(a);
 <header>
 <h1 id="t_title">Night Delivery Małdyty</h1>
 <a class="phone" href="tel:+48512956568">📞 512 956 568</a>
-<div class="rating" id="avgRating">⭐ 0.0 / 5 (0)</div>
+<div class="rating" id="avgRating">⭐ 0.0 / 5</div>
 
 <div class="langs">
-<button class="active" onclick="setLang('pl')">PL</button>
-<button onclick="setLang('en')">EN</button>
-<button onclick="setLang('ua')">UA</button>
+<button class="active" onclick="setLang('pl',this)">PL</button>
+<button onclick="setLang('en',this)">EN</button>
+<button onclick="setLang('ua',this)">UA</button>
 </div>
 </header>
+
+<!-- ZAMÓWIENIE -->
+<div class="card">
+<label id="t_service">Rodzaj usługi</label>
+<select id="type">
+<option>Dostawa</option>
+<option>Przewóz</option>
+</select>
+
+<label id="t_km">Dystans (km)</label>
+<input type="number" id="km">
+<button class="main" onclick="getGPS()">📍 Oblicz km z GPS</button>
+
+<label id="t_note">Adres / opis</label>
+<textarea id="note"></textarea>
+
+<label id="t_tip">Napiwek</label>
+<input type="number" id="tip">
+
+<label id="t_pay">Płatność</label>
+<select id="payment">
+<option>Gotówka</option>
+<option>BLIK 603433325</option>
+</select>
+
+<button class="main" onclick="calculate()" id="t_calc">Oblicz cenę</button>
+<div id="price" style="text-align:center;color:var(--yellow);font-size:22px"></div>
+</div>
 
 <!-- REGULAMIN -->
 <div class="card">
 <h3 id="t_rules">Regulamin</h3>
 <div class="reg-box required" id="regBox">
 <div class="reg-item">🚫 Alkohol i papierosy tylko 18+</div>
-<div class="reg-item">💳 Zamówienia +30 zł → BLIK</div>
-<div class="reg-item">📞 Kierowca może kontaktować się z klientem</div>
+<div class="reg-item">💳 Zamówienia powyżej 30 zł → BLIK</div>
+<div class="reg-item">📞 Kierowca może się kontaktować</div>
 <div class="reg-item">💰 Cena nie podlega negocjacji</div>
 
 <div class="reg-accept">
@@ -197,19 +187,8 @@ const a=[]; s.forEach(d=>a.push(d.data())); cb(a);
 <span id="t_accept">Akceptuję regulamin</span>
 </div>
 </div>
-</div>
 
-<!-- OPINIE -->
-<div class="card">
-<label id="t_rate">Oceń aplikację</label>
-<div class="stars" id="stars"></div>
-<textarea id="opinionText" placeholder="Opcjonalna opinia"></textarea>
-<button class="main" onclick="saveOpinion()" id="t_add">Dodaj opinię</button>
-</div>
-
-<div class="card">
-<h3 id="t_reviews">Opinie</h3>
-<div id="opinions"></div>
+<button class="main" onclick="sendOrder()" id="t_order">📩 Zamów</button>
 </div>
 
 <footer>Night Delivery Małdyty</footer>
@@ -221,79 +200,70 @@ regBox.classList.toggle("accepted",acceptReg.checked);
 regBox.classList.toggle("required",!acceptReg.checked);
 };
 
-/* GWIAZDKI */
-let sel=0;
-for(let i=1;i<=5;i++){
-const s=document.createElement("span");
-s.textContent="★";
-s.onclick=()=>{
-sel=i;
-[...stars.children].forEach((e,j)=>e.classList.toggle("active",j<i));
-};
-stars.appendChild(s);
+/* GPS + KM */
+const BASE={lat:53.9586,lon:19.7406};
+function getGPS(){
+navigator.geolocation.getCurrentPosition(p=>{
+const d=dist(BASE.lat,BASE.lon,p.coords.latitude,p.coords.longitude);
+km.value=d.toFixed(1);
+});
+}
+function dist(a,b,c,d){
+const R=6371;
+const dLat=(c-a)*Math.PI/180;
+const dLon=(d-b)*Math.PI/180;
+const x=Math.sin(dLat/2)**2+
+Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.sin(dLon/2)**2;
+return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));
 }
 
-/* OPINIE */
-function saveOpinion(){
-if(sel<1)return alert("Wybierz gwiazdki");
-window.saveOpinionFB(sel,opinionText.value.trim());
-opinionText.value="";
-sel=0;
-[...stars.children].forEach(e=>e.classList.remove("active"));
+/* CENA */
+function calculate(){
+const kmv=parseFloat(km.value);
+const tipv=parseFloat(tip.value)||0;
+if(!kmv)return alert("Podaj km");
+const h=new Date().getHours();
+const night=h>=22||h<6;
+let p=night?19+kmv*1.6:15+kmv*1.4;
+p+=tipv;
+price.innerText="Cena: "+p.toFixed(2)+" zł";
 }
 
-window.listenOpinions(arr=>{
-opinions.innerHTML="";
-let sum=0;
-arr.forEach(o=>{
-sum+=o.stars;
-opinions.innerHTML+=`<div class="opinia">⭐ ${o.stars} ${o.text||""}</div>`;
-});
-avgRating.innerText=`⭐ ${(arr.length?sum/arr.length:0).toFixed(1)} / 5 (${arr.length})`;
-});
+/* ZAMÓWIENIE */
+function sendOrder(){
+if(!acceptReg.checked)return alert("Zaakceptuj regulamin");
+if(!price.innerText)return alert("Oblicz cenę");
+const msg=`Night Delivery
+Usługa: ${type.value}
+Km: ${km.value}
+${price.innerText}
+Płatność: ${payment.value}
+Uwagi: ${note.value}`;
+window.open("https://wa.me/48512956568?text="+encodeURIComponent(msg));
+}
 
 /* JĘZYKI */
 const T={
-pl:{
-title:"Night Delivery Małdyty",
-rules:"Regulamin",
-accept:"Akceptuję regulamin",
-rate:"Oceń aplikację",
-add:"Dodaj opinię",
-reviews:"Opinie"
-},
-en:{
-title:"Night Delivery",
-rules:"Terms & Conditions",
-accept:"I accept the terms",
-rate:"Rate the app",
-add:"Add review",
-reviews:"Reviews"
-},
-ua:{
-title:"Нічна доставка",
-rules:"Правила",
-accept:"Я приймаю правила",
-rate:"Оцініть додаток",
-add:"Додати відгук",
-reviews:"Відгуки"
-}
+pl:{title:"Night Delivery Małdyty",service:"Rodzaj usługi",km:"Dystans (km)",note:"Adres / opis",tip:"Napiwek",pay:"Płatność",calc:"Oblicz cenę",rules:"Regulamin",accept:"Akceptuję regulamin",order:"Zamów"},
+en:{title:"Night Delivery",service:"Service",km:"Distance (km)",note:"Address / note",tip:"Tip",pay:"Payment",calc:"Calculate price",rules:"Terms",accept:"I accept terms",order:"Order"},
+ua:{title:"Нічна доставка",service:"Послуга",km:"Відстань (км)",note:"Адреса / опис",tip:"Чайові",pay:"Оплата",calc:"Розрахувати",rules:"Правила",accept:"Я приймаю правила",order:"Замовити"}
 };
-
-function setLang(l){
+function setLang(l,btn){
 document.querySelectorAll(".langs button").forEach(b=>b.classList.remove("active"));
-event.target.classList.add("active");
+btn.classList.add("active");
 t_title.innerText=T[l].title;
+t_service.innerText=T[l].service;
+t_km.innerText=T[l].km;
+t_note.innerText=T[l].note;
+t_tip.innerText=T[l].tip;
+t_pay.innerText=T[l].pay;
+t_calc.innerText=T[l].calc;
 t_rules.innerText=T[l].rules;
 t_accept.innerText=T[l].accept;
-t_rate.innerText=T[l].rate;
-t_add.innerText=T[l].add;
-t_reviews.innerText=T[l].reviews;
+t_order.innerText="📩 "+T[l].order;
 }
 </script>
 
 </body>
 </html>
-
-
 
