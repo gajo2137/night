@@ -9,45 +9,24 @@
 <link rel="manifest" href="manifest.json">
 
 <style>
-:root{--yellow:#f5c400;--black:#000;--dark:#111;}
+:root{--yellow:#f5c400;}
 body{margin:0;font-family:Arial,sans-serif;background:#000;color:#fff;}
 .banner{height:160px;display:flex;justify-content:center;align-items:center;
 background:radial-gradient(circle at top, rgba(245,196,0,.25), transparent 65%);}
 .banner img{max-width:320px;width:80%;}
 header{text-align:center;padding:20px;}
-h1{color:var(--yellow);margin:5px 0;}
-.sub{opacity:.8;}
-.phone{color:var(--yellow);text-decoration:none;font-size:18px;display:block;margin-top:8px;}
-.rating{margin-top:6px;font-size:14px;opacity:.8;}
+h1{color:var(--yellow);}
+.phone{color:var(--yellow);text-decoration:none;font-size:18px;}
 .card{background:#111;border-radius:18px;padding:20px;margin:15px;}
-label{font-size:14px;opacity:.8;}
 input,select,textarea{width:100%;margin-top:6px;padding:12px;border-radius:12px;
 border:none;background:#000;color:#fff;}
 button.main{margin-top:15px;width:100%;padding:14px;border:none;border-radius:14px;
 background:var(--yellow);font-weight:bold;font-size:16px;}
-.stars span{font-size:26px;cursor:pointer;color:#444;}
+.stars span{font-size:28px;cursor:pointer;color:#444;}
 .stars span.active{color:var(--yellow);}
 .opinia{font-size:13px;border-bottom:1px solid #222;padding:8px 0;}
+.reg-box{border:2px solid #f5c400;border-radius:14px;padding:14px;font-size:13px;}
 footer{text-align:center;padding:20px;opacity:.7;}
-
-/* REGULAMIN – WYRAŹNY */
-.reg-box{
-border:2px solid #333;
-border-radius:14px;
-padding:14px;
-margin-top:15px;
-font-size:13px;
-transition:.3s;
-}
-.reg-box.required{
-border-color:#f5c400;
-box-shadow:0 0 14px rgba(245,196,0,.6);
-}
-.reg-box.accepted{
-border-color:#2ecc71;
-box-shadow:none;
-}
-#acceptReg{accent-color:var(--yellow);transform:scale(1.2);}
 </style>
 
 <!-- FIREBASE -->
@@ -58,7 +37,7 @@ from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
 apiKey: "AIzaSyDqWK9pZt5Ak97-1b12LymEu5bGVLpbPn0",
-authDomain: "night-delivery-18960.firebaseapp.com",
+authDomain: ""night-delivery-18960.firebaseapp.com",
 projectId: "night-delivery-18960",
 };
 
@@ -90,55 +69,15 @@ cb(arr);
 
 <header>
 <h1>Night Delivery Małdyty</h1>
-<div class="sub">Dostawa & przewóz 24/7</div>
-<a class="phone" href="tel:+48512956568">📞 +48 512 956 568</a>
-<div class="rating" id="avgRating">⭐ 0.0 / 5 (0 opinii)</div>
+<a class="phone" href="tel:+48512956568">📞 512 956 568</a>
+<div id="avgRating">⭐ 0.0 / 5 (0 opinii)</div>
 </header>
-
-<div class="card">
-<label>Rodzaj usługi</label>
-<select id="type">
-<option>Dostawa</option>
-<option>Przewóz</option>
-</select>
-
-<label>Dystans (km)</label>
-<input type="number" id="km">
-<button class="main" onclick="getGPS()">📍 Oblicz km z GPS</button>
-
-<label>Adres / opis</label>
-<textarea id="note"></textarea>
-
-<label>Napiwek</label>
-<input type="number" id="tip">
-
-<label>Płatność</label>
-<select id="payment">
-<option>Gotówka</option>
-<option>BLIK 603433325</option>
-</select>
-
-<button class="main" onclick="calculate()">Oblicz cenę</button>
-<div id="price" style="text-align:center;color:var(--yellow);font-size:22px"></div>
-
-<div class="reg-box required" id="regBox">
-<p>• Zamówienia powyżej 30 zł wymagają przedpłaty BLIK</p>
-<p>• Nie kupujemy alkoholu i papierosów osobom poniżej 18 lat</p>
-<p>• Kierowca ma prawo odmówić realizacji</p>
-<p>• Cena nie podlega negocjacji</p>
-<label style="display:flex;gap:8px;align-items:center;margin-top:10px">
-<input type="checkbox" id="acceptReg"> <b>Akceptuję regulamin</b>
-</label>
-</div>
-
-<button class="main" onclick="sendOrder()">📩 Zamów</button>
-</div>
 
 <div class="card">
 <label>Oceń aplikację</label>
 <div class="stars" id="stars"></div>
-<textarea id="opinionText"></textarea>
-<button class="main" onclick="saveOpinion()">Dodaj opinię</button>
+<textarea id="opinionText" placeholder="Napisz opinię (opcjonalnie)"></textarea>
+<button class="main" id="addOpinionBtn">Dodaj opinię</button>
 </div>
 
 <div class="card">
@@ -146,93 +85,59 @@ cb(arr);
 <div id="opinions"></div>
 </div>
 
-<footer>📞 512 956 568</footer>
+<footer>Night Delivery Małdyty</footer>
 
 <script>
-const kmInput=document.getElementById("km");
-const tipInput=document.getElementById("tip");
-const priceDiv=document.getElementById("price");
+const starsDiv = document.getElementById("stars");
+const opinionText = document.getElementById("opinionText");
+const opinionsDiv = document.getElementById("opinions");
+const avgRating = document.getElementById("avgRating");
+const addBtn = document.getElementById("addOpinionBtn");
 
-/* REGULAMIN */
-acceptReg.onchange=()=>{
-regBox.classList.toggle("accepted",acceptReg.checked);
-regBox.classList.toggle("required",!acceptReg.checked);
-};
+let selectedStars = 0;
 
-/* GPS */
-const MALDYTY={lat:53.9586,lon:19.7406};
-function getGPS(){
-navigator.geolocation.getCurrentPosition(pos=>{
-const d=distance(MALDYTY.lat,MALDYTY.lon,pos.coords.latitude,pos.coords.longitude);
-kmInput.value=d.toFixed(1);
-});
-}
-function distance(a,b,c,d){
-const R=6371;
-const dLat=(c-a)*Math.PI/180;
-const dLon=(d-b)*Math.PI/180;
-const x=Math.sin(dLat/2)**2+
-Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.sin(dLon/2)**2;
-return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));
-}
-
-/* CENA */
-function calculate(){
-const kmv=parseFloat(kmInput.value);
-const tipv=parseFloat(tipInput.value)||0;
-if(!kmv)return alert("Podaj km");
-const night=new Date().getHours()>=22||new Date().getHours()<6;
-let price=night?19+kmv*1.6:15+kmv*1.4;
-price+=tipv;
-priceDiv.innerText="Cena: "+price.toFixed(2)+" zł";
-}
-
-/* ZAMÓWIENIE */
-function sendOrder(){
-if(!acceptReg.checked)return alert("Zaakceptuj regulamin");
-if(!priceDiv.innerText)return alert("Oblicz cenę");
-
-const txt=`Night Delivery Małdyty
-Usługa:${type.value}
-Km:${kmInput.value}
-${priceDiv.innerText}
-Płatność:${payment.value}
-Uwagi:${note.value}`;
-
-window.open("https://wa.me/48512956568?text="+encodeURIComponent(txt));
-}
-
-/* OPINIE */
-let sel=0;
+/* GWIAZDKI */
 for(let i=1;i<=5;i++){
 const s=document.createElement("span");
-s.innerText="★";
+s.textContent="★";
 s.onclick=()=>{
-sel=i;
-[...stars.children].forEach((e,j)=>e.classList.toggle("active",j<i));
+selectedStars=i;
+[...starsDiv.children].forEach((el,idx)=>{
+el.classList.toggle("active",idx<i);
+});
 };
-stars.appendChild(s);
+starsDiv.appendChild(s);
 }
 
-function saveOpinion(){
-if(sel<1)return alert("Wybierz gwiazdki");
-window.saveOpinionFB(sel,opinionText.value.trim());
+/* ZAPIS OPINII */
+addBtn.onclick = async () => {
+if(selectedStars === 0){
+alert("Wybierz gwiazdki");
+return;
+}
+addBtn.disabled = true;
+await window.saveOpinionFB(selectedStars, opinionText.value.trim());
 opinionText.value="";
-sel=0;
-[...stars.children].forEach(e=>e.classList.remove("active"));
-}
+selectedStars=0;
+[...starsDiv.children].forEach(e=>e.classList.remove("active"));
+addBtn.disabled=false;
+};
 
+/* ODCZYT OPINII */
 window.listenOpinions(arr=>{
-opinions.innerHTML="";
+opinionsDiv.innerHTML="";
 let sum=0;
 arr.forEach(o=>{
 sum+=o.stars;
-opinions.innerHTML+=`<div class="opinia">⭐ ${o.stars} ${o.text||""}</div>`;
+opinionsDiv.innerHTML+=
+`<div class="opinia">⭐ ${o.stars} ${o.text||""}</div>`;
 });
-avgRating.innerText=`⭐ ${(arr.length?sum/arr.length:0).toFixed(1)} / 5 (${arr.length})`;
+avgRating.innerText =
+`⭐ ${(arr.length?sum/arr.length:0).toFixed(1)} / 5 (${arr.length} opinii)`;
 });
 </script>
 
 </body>
 </html>
+
 
