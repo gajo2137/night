@@ -9,136 +9,76 @@
 <link rel="manifest" href="manifest.json">
 
 <style>
-:root{
---yellow:#f5c400;
---black:#000;
---dark:#111;
-}
-
-body{
-margin:0;
-font-family:Arial, sans-serif;
-background:#000;
-color:#fff;
-}
-
-/* BANER */
-.banner{
-height:160px;
-display:flex;
-justify-content:center;
-align-items:center;
-background:
-radial-gradient(circle at top, rgba(245,196,0,.25), transparent 65%);
-}
-.banner img{
-max-width:320px;
-width:80%;
-}
-
-/* HEADER */
-header{
-text-align:center;
-padding:20px;
-}
-h1{
-color:var(--yellow);
-margin:5px 0;
-}
-.sub{
-opacity:.8;
-}
-.phone{
-color:var(--yellow);
-text-decoration:none;
-font-size:18px;
-display:block;
-margin-top:8px;
-}
-.rating{
-margin-top:6px;
-font-size:14px;
-opacity:.8;
-}
-.langs button{
-margin:6px;
-padding:6px 14px;
-background:none;
-border:1px solid var(--yellow);
-color:var(--yellow);
-border-radius:20px;
-}
-
-/* KARTY */
-.card{
-background:#111;
-border-radius:18px;
-padding:20px;
-margin:15px;
-}
-label{
-font-size:14px;
-opacity:.8;
-}
-input, select, textarea{
-width:100%;
-margin-top:6px;
-padding:12px;
-border-radius:12px;
-border:none;
-background:#000;
-color:#fff;
-}
-button.main{
-margin-top:15px;
-width:100%;
-padding:14px;
-border:none;
-border-radius:14px;
-background:var(--yellow);
-font-weight:bold;
-font-size:16px;
-}
-
-/* GWIAZDKI */
-.stars span{
-font-size:26px;
-cursor:pointer;
-color:#444;
-}
-.stars span.active{
-color:var(--yellow);
-}
-.opinia{
-font-size:13px;
-border-bottom:1px solid #222;
-padding:8px 0;
-}
-
-/* STOPKA */
-footer{
-text-align:center;
-padding:20px;
-opacity:.7;
-}
+/* —— NIE RUSZANE —— */
+:root{--yellow:#f5c400;--black:#000;--dark:#111;}
+body{margin:0;font-family:Arial,sans-serif;background:#000;color:#fff;}
+.banner{height:160px;display:flex;justify-content:center;align-items:center;
+background:radial-gradient(circle at top, rgba(245,196,0,.25), transparent 65%);}
+.banner img{max-width:320px;width:80%;}
+header{text-align:center;padding:20px;}
+h1{color:var(--yellow);margin:5px 0;}
+.sub{opacity:.8;}
+.phone{color:var(--yellow);text-decoration:none;font-size:18px;display:block;margin-top:8px;}
+.rating{margin-top:6px;font-size:14px;opacity:.8;}
+.langs button{margin:6px;padding:6px 14px;background:none;border:1px solid var(--yellow);
+color:var(--yellow);border-radius:20px;}
+.card{background:#111;border-radius:18px;padding:20px;margin:15px;}
+label{font-size:14px;opacity:.8;}
+input,select,textarea{width:100%;margin-top:6px;padding:12px;border-radius:12px;
+border:none;background:#000;color:#fff;}
+button.main{margin-top:15px;width:100%;padding:14px;border:none;border-radius:14px;
+background:var(--yellow);font-weight:bold;font-size:16px;}
+.stars span{font-size:26px;cursor:pointer;color:#444;}
+.stars span.active{color:var(--yellow);}
+.opinia{font-size:13px;border-bottom:1px solid #222;padding:8px 0;}
+footer{text-align:center;padding:20px;opacity:.7;}
 </style>
+
+<!-- FIREBASE -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyDqWK9pZt5Ak97-1b12LymEu5bGVLpbPn0",
+  authDomain: "night-delivery-18960.firebaseapp.com",
+  projectId: "night-delivery-18960",
+  storageBucket: "night-delivery-18960.firebasestorage.app",
+  messagingSenderId: "425404689430",
+  appId: "1:425404689430:web:efce19048bee3232a11937",
+  measurementId: "G-C2JG4SVNQQ"
+};
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+window.saveOpinionFB = async (stars, text) => {
+await addDoc(collection(db,"opinions"),{
+stars, text, time: Date.now()
+});
+};
+
+window.listenOpinions = (cb) => {
+onSnapshot(collection(db,"opinions"), snap=>{
+const arr=[];
+snap.forEach(d=>arr.push(d.data()));
+cb(arr);
+});
+};
+</script>
 </head>
 
 <body>
 
-<!-- BANER -->
-<div class="banner">
-<img src="logo.png" alt="Night Delivery">
-</div>
+<div class="banner"><img src="logo.png"></div>
 
 <header>
 <h1>Night Delivery Małdyty</h1>
 <div class="sub">Dostawa & przewóz 24/7</div>
-
 <a class="phone" href="tel:+48512956568">📞 +48 512 956 568</a>
-
 <div class="rating" id="avgRating">⭐ 0.0 / 5 (0 opinii)</div>
-
 <div class="langs">
 <button onclick="setLang('pl')">PL</button>
 <button onclick="setLang('en')">EN</button>
@@ -146,39 +86,38 @@ opacity:.7;
 </div>
 </header>
 
-<!-- ZAMÓWIENIE -->
 <div class="card">
 <label id="l1">Rodzaj usługi</label>
 <select id="type">
-<option value="delivery">🍔 Dostawa (jedzenie / zakupy)</option>
-<option value="ride">🚗 Przewóz osoby</option>
+<option value="delivery">🍔 Dostawa</option>
+<option value="ride">🚗 Przewóz</option>
 </select>
 
 <label id="l2">Dystans (km)</label>
-<input type="number" id="km" placeholder="np. 12">
+<input type="number" id="km">
 
-<button class="main" onclick="getGPS()">📍 Oblicz km z GPS (od Małdyt)</button>
-<div style="font-size:12px;opacity:.6;text-align:center;margin-top:6px">
-GPS liczy orientacyjny dystans od centrum Małdyt
-</div>
+<label id="l3">Adres / opis</label>
+<textarea id="note"></textarea>
 
-<label id="l3">Adres / opis zamówienia</label>
-<textarea id="note" placeholder="Np. adres odbioru, co kupić, itp."></textarea>
+<label>Napiwek</label>
+<input type="number" id="tip">
 
-<label>Napiwek (opcjonalnie)</label>
-<input type="number" id="tip" placeholder="np. 5">
+<label>Płatność</label>
+<select id="payment">
+<option value="Gotówka">Gotówka</option>
+<option value="BLIK 603433325">BLIK 603 433 325</option>
+</select>
 
 <button class="main" onclick="calculate()" id="calcBtn">Oblicz cenę</button>
-<div id="price" style="text-align:center;color:var(--yellow);font-size:22px;margin-top:10px"></div>
+<div id="price" style="text-align:center;color:var(--yellow);font-size:22px"></div>
 
-<button class="main" onclick="sendOrder()">📩 Zamów (SMS / WhatsApp)</button>
+<button class="main" onclick="sendOrder()">📩 Zamów</button>
 </div>
 
-<!-- OCENY -->
 <div class="card">
 <label>Oceń aplikację</label>
 <div class="stars" id="stars"></div>
-<textarea id="opinionText" placeholder="Napisz opinię (opcjonalnie)"></textarea>
+<textarea id="opinionText"></textarea>
 <button class="main" onclick="saveOpinion()">Dodaj opinię</button>
 </div>
 
@@ -187,123 +126,73 @@ GPS liczy orientacyjny dystans od centrum Małdyt
 <div id="opinions"></div>
 </div>
 
-<footer>
-📞 Zadzwoń: 512 956 568<br>
-Godziny nocne 22:00–6:00 (droższe stawki)
-</footer>
+<div class="card">
+<h3>Regulamin</h3>
+<div style="font-size:13px;line-height:1.5">
+<p>REGULAMIN</p>
+<p>- Nie kupujemy alkoholu oraz wyrobów nikotynowych osobom poniżej 18 roku życia…</p>
+<p>- Jeżeli zamówienie jest większe niż 30zł potrzebna jest przedpłata BLIK</p>
+<p>- Kierowca ma prawo odmówić realizacji</p>
+<p>- Cena za usługę nie podlega dyskusji</p>
+<p>- Kierowca ma obowiązek zabierać paragony</p>
+<p>- Gwarantujemy jak najszybszy dojazd</p>
+</div>
+</div>
+
+<footer>📞 512 956 568</footer>
 
 <script>
-/* PWA */
-if("serviceWorker" in navigator){
-navigator.serviceWorker.register("sw.js");
-}
-
-/* GPS */
-const MALDYTY={lat:53.9586,lon:19.7406};
-function getGPS(){
-navigator.geolocation.getCurrentPosition(pos=>{
-const km=distance(
-MALDYTY.lat,MALDYTY.lon,
-pos.coords.latitude,pos.coords.longitude
-);
-document.getElementById("km").value=km.toFixed(1);
-},()=>alert("Nie udało się pobrać lokalizacji"));
-}
-function distance(a,b,c,d){
-const R=6371;
-const dLat=(c-a)*Math.PI/180;
-const dLon=(d-b)*Math.PI/180;
-const x=Math.sin(dLat/2)**2+
-Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.sin(dLon/2)**2;
-return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));
-}
-
 /* CENA */
-const kmInput=document.getElementById("km");
-const tipInput=document.getElementById("tip");
-const priceDiv=document.getElementById("price");
-
 function calculate(){
-const km=+kmInput.value;
-const tip=+tipInput.value||0;
+const km=+kmInput.value,tip=+tipInput.value||0;
 if(!km)return;
-const night=new Date().getHours()>=22||new Date().getHours()<6;
-let price=night?19+km*1.6:15+km*1.4;
-price+=tip;
+let price=15+km*1.4+tip;
 priceDiv.innerText="Cena: "+price.toFixed(2)+" zł";
 }
 
 /* ZAMÓWIENIE */
 function sendOrder(){
-const phone="512956568";
-const text=`Night Delivery Małdyty
-Usługa: ${type.value}
-Km: ${kmInput.value}
-${priceDiv.innerText}
-Uwagi: ${note.value}`;
-
-if(/Android|iPhone/i.test(navigator.userAgent)){
-window.open(`https://wa.me/48${phone}?text=`+encodeURIComponent(text));
-}else{
-location.href=`sms:${phone}?body=`+encodeURIComponent(text);
-}
+const txt=`Usługa:${type.value}
+Km:${km.value}
+${price.innerText}
+Płatność:${payment.value}
+Uwagi:${note.value}`;
+window.open("https://wa.me/48512956568?text="+encodeURIComponent(txt));
 }
 
 /* OPINIE */
-let selected=0;
-const starsDiv=document.getElementById("stars");
-
+let sel=0;
 for(let i=1;i<=5;i++){
-const s=document.createElement("span");
-s.innerText="★";
-s.onclick=()=>selectStar(i);
-starsDiv.appendChild(s);
+let s=document.createElement("span");s.innerText="★";
+s.onclick=()=>{sel=i;[...stars.children].forEach((e,j)=>e.classList.toggle("active",j<i));};
+stars.appendChild(s);
 }
-
-function selectStar(n){
-selected=n;
-[...starsDiv.children].forEach((s,i)=>s.classList.toggle("active",i<n));
-}
-
 function saveOpinion(){
-if(!selected)return alert("Wybierz gwiazdki");
-const data=JSON.parse(localStorage.getItem("opinions")||"[]");
-data.push({stars:selected,text:opinionText.value});
-localStorage.setItem("opinions",JSON.stringify(data));
+if(!sel)return alert("Wybierz gwiazdki");
+saveOpinionFB(sel,opinionText.value);
 opinionText.value="";
-selected=0;
-loadOpinions();
 }
-
-function loadOpinions(){
-const data=JSON.parse(localStorage.getItem("opinions")||"[]");
-let sum=0;
+listenOpinions(arr=>{
 opinions.innerHTML="";
-data.forEach(o=>{
+let sum=0;
+arr.forEach(o=>{
 sum+=o.stars;
-opinions.innerHTML+=`<div class="opinia">⭐ ${o.stars}/5 – ${o.text||""}</div>`;
+opinions.innerHTML+=`<div class="opinia">⭐${o.stars} ${o.text||""}</div>`;
 });
-avgRating.innerText=`⭐ ${(data.length?sum/data.length:0).toFixed(1)} / 5 (${data.length} opinii)`;
-}
-loadOpinions();
+avgRating.innerText=`⭐ ${(arr.length?sum/arr.length:0).toFixed(1)} / 5 (${arr.length})`;
+});
 
 /* JĘZYKI */
-const t={
-pl:{l1:"Rodzaj usługi",l2:"Dystans (km)",l3:"Adres / opis zamówienia",btn:"Oblicz cenę"},
-en:{l1:"Service type",l2:"Distance (km)",l3:"Order details",btn:"Calculate price"},
-ua:{l1:"Тип послуги",l2:"Відстань (км)",l3:"Опис замовлення",btn:"Розрахувати"}
-};
+const t={pl:{l1:"Rodzaj usługi",l2:"Dystans (km)",l3:"Adres / opis",btn:"Oblicz cenę"},
+en:{l1:"Service",l2:"Distance",l3:"Details",btn:"Calculate"},
+ua:{l1:"Послуга",l2:"Відстань",l3:"Опис",btn:"Розрахувати"}};
 function setLang(l){
-l1.innerText=t[l].l1;
-l2.innerText=t[l].l2;
-l3.innerText=t[l].l3;
-calcBtn.innerText=t[l].btn;
+l1.innerText=t[l].l1;l2.innerText=t[l].l2;l3.innerText=t[l].l3;calcBtn.innerText=t[l].btn;
 }
 </script>
 
 </body>
 </html>
-
 
 
 
