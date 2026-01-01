@@ -6,27 +6,138 @@
 <title>Night Delivery Małdyty</title>
 
 <meta name="theme-color" content="#000000">
-<link rel="manifest" href="manifest.json">
 
 <style>
-:root{--yellow:#f5c400;}
-body{margin:0;font-family:Arial,sans-serif;background:#000;color:#fff;}
-.banner{height:160px;display:flex;justify-content:center;align-items:center;
-background:radial-gradient(circle at top, rgba(245,196,0,.25), transparent 65%);}
-.banner img{max-width:320px;width:80%;}
-header{text-align:center;padding:20px;}
-h1{color:var(--yellow);}
-.phone{color:var(--yellow);text-decoration:none;font-size:18px;}
-.card{background:#111;border-radius:18px;padding:20px;margin:15px;}
-input,select,textarea{width:100%;margin-top:6px;padding:12px;border-radius:12px;
-border:none;background:#000;color:#fff;}
-button.main{margin-top:15px;width:100%;padding:14px;border:none;border-radius:14px;
-background:var(--yellow);font-weight:bold;font-size:16px;}
-.stars span{font-size:28px;cursor:pointer;color:#444;}
-.stars span.active{color:var(--yellow);}
-.opinia{font-size:13px;border-bottom:1px solid #222;padding:8px 0;}
-.reg-box{border:2px solid #f5c400;border-radius:14px;padding:14px;font-size:13px;}
-footer{text-align:center;padding:20px;opacity:.7;}
+:root{
+--yellow:#f5c400;
+--bg:#000;
+--card:#111;
+--border:#222;
+--green:#2ecc71;
+}
+
+body{
+margin:0;
+font-family:system-ui,-apple-system,Arial;
+background:var(--bg);
+color:#fff;
+}
+
+/* HEADER */
+.banner{
+height:160px;
+display:flex;
+justify-content:center;
+align-items:center;
+background:radial-gradient(circle at top, rgba(245,196,0,.25), transparent 65%);
+}
+.banner img{max-width:300px;width:80%}
+
+header{text-align:center;padding:20px}
+h1{color:var(--yellow);margin:0}
+.phone{color:var(--yellow);text-decoration:none;font-size:18px}
+.rating{opacity:.8;margin-top:6px}
+
+/* JĘZYKI */
+.langs{
+display:flex;
+justify-content:center;
+gap:10px;
+margin-top:10px;
+}
+.langs button{
+background:#000;
+border:1px solid var(--border);
+color:#fff;
+padding:6px 12px;
+border-radius:10px;
+}
+.langs button.active{
+border-color:var(--yellow);
+color:var(--yellow);
+}
+
+/* KARTY */
+.card{
+background:var(--card);
+border-radius:18px;
+padding:20px;
+margin:15px;
+box-shadow:0 10px 30px rgba(0,0,0,.4);
+}
+label{font-size:14px;opacity:.8}
+input,textarea,select{
+width:100%;
+margin-top:6px;
+padding:12px;
+border-radius:12px;
+border:none;
+background:#000;
+color:#fff;
+}
+button.main{
+width:100%;
+margin-top:15px;
+padding:14px;
+border:none;
+border-radius:14px;
+background:var(--yellow);
+font-weight:700;
+font-size:16px;
+}
+
+/* REGULAMIN PRO */
+.reg-box{
+border:2px solid var(--border);
+border-radius:18px;
+padding:16px;
+margin-top:15px;
+background:linear-gradient(180deg,#111,#0a0a0a);
+transition:.3s;
+}
+.reg-box.required{
+border-color:var(--yellow);
+box-shadow:0 0 18px rgba(245,196,0,.4);
+}
+.reg-box.accepted{
+border-color:var(--green);
+box-shadow:0 0 18px rgba(46,204,113,.4);
+}
+.reg-item{
+display:flex;
+gap:10px;
+margin-bottom:8px;
+font-size:13px;
+opacity:.9;
+}
+.reg-accept{
+display:flex;
+align-items:center;
+gap:10px;
+margin-top:12px;
+font-weight:600;
+}
+.reg-accept input{
+width:22px;
+height:22px;
+accent-color:var(--yellow);
+}
+
+/* OPINIE */
+.stars span{
+font-size:30px;
+cursor:pointer;
+color:#444;
+}
+.stars span.active{color:var(--yellow)}
+.opinia{
+border-bottom:1px solid var(--border);
+padding:8px 0;
+font-size:13px;
+}
+
+/* FOOTER */
+footer{text-align:center;padding:20px;opacity:.6}
 </style>
 
 <!-- FIREBASE -->
@@ -36,28 +147,21 @@ import { getFirestore, collection, addDoc, onSnapshot, query, orderBy }
 from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 const firebaseConfig = {
-apiKey: "AIzaSyDqWK9pZt5Ak97-1b12LymEu5bGVLpbPn0",
-authDomain: ""night-delivery-18960.firebaseapp.com",
-projectId: "night-delivery-18960",
+apiKey: "TU_WKLEJ_APIKEY",
+authDomain: "TU_WKLEJ_DOMAIN",
+projectId: "TU_WKLEJ_PROJECT_ID",
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-window.saveOpinionFB = async (stars, text) => {
-await addDoc(collection(db,"opinions"),{
-stars,
-text,
-time: Date.now()
-});
-};
+window.saveOpinionFB = (stars,text)=>
+addDoc(collection(db,"opinions"),{stars,text,time:Date.now()});
 
-window.listenOpinions = (cb) => {
-const q = query(collection(db,"opinions"), orderBy("time","desc"));
-onSnapshot(q, snap=>{
-const arr=[];
-snap.forEach(d=>arr.push(d.data()));
-cb(arr);
+window.listenOpinions = cb=>{
+const q=query(collection(db,"opinions"),orderBy("time","desc"));
+onSnapshot(q,s=>{
+const a=[]; s.forEach(d=>a.push(d.data())); cb(a);
 });
 };
 </script>
@@ -68,76 +172,128 @@ cb(arr);
 <div class="banner"><img src="logo.png"></div>
 
 <header>
-<h1>Night Delivery Małdyty</h1>
+<h1 id="t_title">Night Delivery Małdyty</h1>
 <a class="phone" href="tel:+48512956568">📞 512 956 568</a>
-<div id="avgRating">⭐ 0.0 / 5 (0 opinii)</div>
+<div class="rating" id="avgRating">⭐ 0.0 / 5 (0)</div>
+
+<div class="langs">
+<button class="active" onclick="setLang('pl')">PL</button>
+<button onclick="setLang('en')">EN</button>
+<button onclick="setLang('ua')">UA</button>
+</div>
 </header>
 
+<!-- REGULAMIN -->
 <div class="card">
-<label>Oceń aplikację</label>
+<h3 id="t_rules">Regulamin</h3>
+<div class="reg-box required" id="regBox">
+<div class="reg-item">🚫 Alkohol i papierosy tylko 18+</div>
+<div class="reg-item">💳 Zamówienia +30 zł → BLIK</div>
+<div class="reg-item">📞 Kierowca może kontaktować się z klientem</div>
+<div class="reg-item">💰 Cena nie podlega negocjacji</div>
+
+<div class="reg-accept">
+<input type="checkbox" id="acceptReg">
+<span id="t_accept">Akceptuję regulamin</span>
+</div>
+</div>
+</div>
+
+<!-- OPINIE -->
+<div class="card">
+<label id="t_rate">Oceń aplikację</label>
 <div class="stars" id="stars"></div>
-<textarea id="opinionText" placeholder="Napisz opinię (opcjonalnie)"></textarea>
-<button class="main" id="addOpinionBtn">Dodaj opinię</button>
+<textarea id="opinionText" placeholder="Opcjonalna opinia"></textarea>
+<button class="main" onclick="saveOpinion()" id="t_add">Dodaj opinię</button>
 </div>
 
 <div class="card">
-<h3>Opinie</h3>
+<h3 id="t_reviews">Opinie</h3>
 <div id="opinions"></div>
 </div>
 
 <footer>Night Delivery Małdyty</footer>
 
 <script>
-const starsDiv = document.getElementById("stars");
-const opinionText = document.getElementById("opinionText");
-const opinionsDiv = document.getElementById("opinions");
-const avgRating = document.getElementById("avgRating");
-const addBtn = document.getElementById("addOpinionBtn");
-
-let selectedStars = 0;
+/* REGULAMIN */
+acceptReg.onchange=()=>{
+regBox.classList.toggle("accepted",acceptReg.checked);
+regBox.classList.toggle("required",!acceptReg.checked);
+};
 
 /* GWIAZDKI */
+let sel=0;
 for(let i=1;i<=5;i++){
 const s=document.createElement("span");
 s.textContent="★";
 s.onclick=()=>{
-selectedStars=i;
-[...starsDiv.children].forEach((el,idx)=>{
-el.classList.toggle("active",idx<i);
-});
+sel=i;
+[...stars.children].forEach((e,j)=>e.classList.toggle("active",j<i));
 };
-starsDiv.appendChild(s);
+stars.appendChild(s);
 }
 
-/* ZAPIS OPINII */
-addBtn.onclick = async () => {
-if(selectedStars === 0){
-alert("Wybierz gwiazdki");
-return;
-}
-addBtn.disabled = true;
-await window.saveOpinionFB(selectedStars, opinionText.value.trim());
+/* OPINIE */
+function saveOpinion(){
+if(sel<1)return alert("Wybierz gwiazdki");
+window.saveOpinionFB(sel,opinionText.value.trim());
 opinionText.value="";
-selectedStars=0;
-[...starsDiv.children].forEach(e=>e.classList.remove("active"));
-addBtn.disabled=false;
-};
+sel=0;
+[...stars.children].forEach(e=>e.classList.remove("active"));
+}
 
-/* ODCZYT OPINII */
 window.listenOpinions(arr=>{
-opinionsDiv.innerHTML="";
+opinions.innerHTML="";
 let sum=0;
 arr.forEach(o=>{
 sum+=o.stars;
-opinionsDiv.innerHTML+=
-`<div class="opinia">⭐ ${o.stars} ${o.text||""}</div>`;
+opinions.innerHTML+=`<div class="opinia">⭐ ${o.stars} ${o.text||""}</div>`;
 });
-avgRating.innerText =
-`⭐ ${(arr.length?sum/arr.length:0).toFixed(1)} / 5 (${arr.length} opinii)`;
+avgRating.innerText=`⭐ ${(arr.length?sum/arr.length:0).toFixed(1)} / 5 (${arr.length})`;
 });
+
+/* JĘZYKI */
+const T={
+pl:{
+title:"Night Delivery Małdyty",
+rules:"Regulamin",
+accept:"Akceptuję regulamin",
+rate:"Oceń aplikację",
+add:"Dodaj opinię",
+reviews:"Opinie"
+},
+en:{
+title:"Night Delivery",
+rules:"Terms & Conditions",
+accept:"I accept the terms",
+rate:"Rate the app",
+add:"Add review",
+reviews:"Reviews"
+},
+ua:{
+title:"Нічна доставка",
+rules:"Правила",
+accept:"Я приймаю правила",
+rate:"Оцініть додаток",
+add:"Додати відгук",
+reviews:"Відгуки"
+}
+};
+
+function setLang(l){
+document.querySelectorAll(".langs button").forEach(b=>b.classList.remove("active"));
+event.target.classList.add("active");
+t_title.innerText=T[l].title;
+t_rules.innerText=T[l].rules;
+t_accept.innerText=T[l].accept;
+t_rate.innerText=T[l].rate;
+t_add.innerText=T[l].add;
+t_reviews.innerText=T[l].reviews;
+}
 </script>
 
 </body>
 </html>
+
 
 
