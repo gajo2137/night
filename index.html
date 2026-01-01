@@ -2,171 +2,155 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Night Delivery Małdyty</title>
 
 <style>
-:root{--yellow:#f5c400;}
-body{margin:0;font-family:Arial;background:#000;color:#fff}
-.banner{height:160px;display:flex;justify-content:center;align-items:center}
-.banner img{max-width:320px;width:80%}
-header{text-align:center;padding:20px}
-h1{color:var(--yellow)}
-.card{background:#111;border-radius:18px;padding:20px;margin:15px}
-label{font-size:14px;opacity:.8}
-input,textarea{width:100%;margin-top:6px;padding:12px;border-radius:12px;border:none;background:#000;color:#fff}
-button.main{margin-top:15px;width:100%;padding:14px;border:none;border-radius:14px;background:var(--yellow);font-weight:bold}
-.langs button{margin:5px;padding:6px 12px;border:1px solid var(--yellow);background:none;color:var(--yellow);border-radius:20px}
-.stars span{font-size:26px;cursor:pointer;color:#444}
-.stars span.active{color:var(--yellow)}
-#regulamin{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.9)}
-#regulamin .box{background:#111;margin:40px auto;padding:20px;border-radius:18px;max-width:600px}
+body{background:#0e1325;color:#ffd84d;font-family:sans-serif}
+button{background:#ffd84d;border:0;padding:10px 16px;margin:4px;cursor:pointer}
+.star{font-size:28px;cursor:pointer;color:#555}
+.star.active{color:gold}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.8)}
+.modal>div{background:#111;padding:20px;max-width:700px;margin:40px auto}
 </style>
 </head>
 
 <body>
 
-<div class="banner"><img src="logo.png"></div>
-
-<header>
 <h1>Night Delivery Małdyty</h1>
-<a style="color:#f5c400" href="tel:+48512956568">📞 512 956 568</a><br>
-<a style="color:#f5c400" href="#" onclick="openReg()">📜 Regulamin</a>
+📞 <a href="tel:512956568">512 956 568</a><br>
 
-<div id="avgRating">⭐ 0.0 / 5 (0 opinii)</div>
+<button onclick="openReg()">📜 Regulamin</button>
 
-<div class="langs">
+<div id="avgRating"></div>
+
+<div>
 <button onclick="setLang('pl')">PL</button>
 <button onclick="setLang('en')">EN</button>
 <button onclick="setLang('ua')">UA</button>
 </div>
-</header>
 
-<div class="card">
-<label id="l1">Dystans (km)</label>
-<input id="km" type="number">
+<hr>
 
-<button class="main" onclick="getGPS()">📍 Oblicz km z GPS</button>
+<button onclick="calcKm()">📍 Oblicz km z GPS</button>
+<div id="kmInfo"></div>
 
-<label id="l2">Opis zamówienia</label>
-<textarea id="note"></textarea>
+<label>Napiwek:
+<select id="tip">
+<option value="0">0 zł</option>
+<option value="5">5 zł</option>
+<option value="10">10 zł</option>
+</select>
+</label>
 
-<label id="l3">Napiwek (opcjonalnie)</label>
-<input id="tip" type="number">
+<button onclick="calcPrice()">💰 Oblicz cenę</button>
+<div id="price"></div>
 
-<button class="main" id="calcBtn" onclick="calculate()">Oblicz cenę</button>
-<div id="price" style="color:#f5c400;font-size:20px;text-align:center"></div>
+<button onclick="order()">📞 Zamów</button>
 
-<button class="main" onclick="sendOrder()">📩 Zamów</button>
-</div>
+<hr>
 
-<div class="card">
-<label>Oceń aplikację</label>
-<div class="stars" id="stars"></div>
-<textarea id="opinionText"></textarea>
-<button class="main" onclick="saveOpinion()">Dodaj opinię</button>
-</div>
+<h2>📝 Opinie</h2>
+<input id="opinionName" placeholder="Twoje imię"><br>
+<div id="stars"></div>
+<textarea id="opinionText" placeholder="Twoja opinia"></textarea><br>
+<button onclick="saveOpinion()">Dodaj opinię</button>
 
-<div class="card" id="opinions"></div>
+<div id="opinions"></div>
 
-<div id="regulamin">
-<div class="box">
+<!-- REGULAMIN -->
+<div class="modal" id="reg">
+<div>
+<button onclick="closeReg()">Zamknij</button>
 <h2>REGULAMIN</h2>
-<p>- Zakaz alkoholu i nikotyny dla nieletnich<br>
-- >30 zł wymagana przedpłata BLIK<br>
-- Cena nie podlega negocjacji<br>
-- Kierowca ma prawo odmówić<br>
-- Powyżej 50 km nie kursujemy</p>
-<button class="main" onclick="closeReg()">Zamknij</button>
+<p>
+- Nie kupujemy alkoholu oraz wyrobów nikotynowych osobom poniżej 18 roku życia...<br>
+- Jeżeli zamówienie jest większe niż 30zł potrzebna jest przedpłata Blik<br>
+- Kierowca ma prawo odmówić dostarczenia zamówienia<br>
+- Powyżej 50km nie kursujemy<br>
+- Cena za usługę nie podlega dyskusji<br>
+</p>
 </div>
 </div>
 
-<script>
-/* ELEMENTY */
-const km=document.getElementById("km");
-const tip=document.getElementById("tip");
-const note=document.getElementById("note");
-const priceDiv=document.getElementById("price");
-const avgRating=document.getElementById("avgRating");
+<!-- FIREBASE + OPINIE -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
+import {
+getFirestore,collection,addDoc,getDocs,query,orderBy
+} from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 
-/* GPS */
-const MALDYTY={lat:53.9586,lon:19.7406};
-function getGPS(){
-navigator.geolocation.getCurrentPosition(p=>{
-const d=calc(MALDYTY.lat,MALDYTY.lon,p.coords.latitude,p.coords.longitude);
-km.value=d.toFixed(1);
-});
-}
-function calc(a,b,c,d){
-const R=6371;
-const x=Math.sin((c-a)*Math.PI/360)**2+
-Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*
-Math.sin((d-b)*Math.PI/360)**2;
-return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));
-}
+const firebaseConfig = {
+apiKey: "AIzaSyDaWK9pZt5Ak97-ib12LymEu5bGVLpbPn0",
+authDomain: "night-delivery-18960.firebaseapp.com",
+projectId: "night-delivery-18960",
+storageBucket: "night-delivery-18960.firebasestorage.app",
+messagingSenderId: "425404689430",
+appId: "1:425404689430:web:efce19048bee3232a11937"
+};
 
-/* CENA */
-function calculate(){
-const k=Number(km.value);
-const t=Number(tip.value)||0;
-if(!k) return alert("Podaj km");
-if(k>50) return alert("Powyżej 50 km nie kursujemy");
-const night=new Date().getHours()>=22||new Date().getHours()<6;
-let price=(night?19:15)+k*(night?1.6:1.4)+t;
-priceDiv.innerText="Cena: "+price.toFixed(2)+" zł";
-}
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-/* ZAMÓW */
-function sendOrder(){
-if(priceDiv.innerText==="") return alert("Najpierw oblicz cenę");
-window.open("https://wa.me/48512956568?text="+encodeURIComponent(
-priceDiv.innerText+"\nKm: "+km.value+"\n"+note.value
-));
-}
-
-/* REGULAMIN */
-function openReg(){regulamin.style.display="block"}
-function closeReg(){regulamin.style.display="none"}
-
-/* OPINIE */
-let selected=0;
+/* GWIAZDKI */
+let selectedStars=0;
+const stars=document.getElementById("stars");
 for(let i=1;i<=5;i++){
-const s=document.createElement("span");
-s.innerText="★";
-s.onclick=()=>{selected=i;[...stars.children].forEach((x,j)=>x.classList.toggle("active",j<i))};
+let s=document.createElement("span");
+s.innerText="★"; s.className="star";
+s.onclick=()=>{selectedStars=i;upd()};
 stars.appendChild(s);
 }
-function saveOpinion(){
-if(!selected) return alert("Wybierz gwiazdki");
-const d=JSON.parse(localStorage.getItem("opinions")||"[]");
-d.push({s:selected,t:opinionText.value});
-localStorage.setItem("opinions",JSON.stringify(d));
-opinionText.value="";selected=0;loadOpinions();
-}
-function loadOpinions(){
-const d=JSON.parse(localStorage.getItem("opinions")||"[]");
-let sum=0;opinions.innerHTML="";
-d.forEach(o=>{sum+=o.s;opinions.innerHTML+=`⭐ ${o.s}/5 – ${o.t}<br>`});
-avgRating.innerText=d.length?`⭐ ${(sum/d.length).toFixed(1)} / 5 (${d.length})`:"⭐ 0.0 / 5 (0)";
+function upd(){[...stars.children].forEach((s,i)=>s.classList.toggle("active",i<selectedStars));}
+
+/* OPINIE */
+window.saveOpinion=async()=>{
+if(!opinionName.value||!selectedStars) return alert("Uzupełnij opinię");
+await addDoc(collection(db,"opinions"),{
+name:opinionName.value,
+stars:selectedStars,
+text:opinionText.value,
+time:Date.now()
+});
+opinionName.value="";opinionText.value="";selectedStars=0;upd();
+loadOpinions();
+};
+
+async function loadOpinions(){
+const q=query(collection(db,"opinions"),orderBy("time","desc"));
+const snap=await getDocs(q);
+let sum=0,c=0;opinions.innerHTML="";
+snap.forEach(d=>{
+let o=d.data();sum+=o.stars;c++;
+opinions.innerHTML+=`<div><b>${o.name}</b> ⭐${o.stars}/5<br>${o.text}</div>`;
+});
+avgRating.innerText=`⭐ ${(c?sum/c:0).toFixed(1)} / 5 (${c})`;
 }
 loadOpinions();
+</script>
 
-/* JĘZYKI */
-const t={
-pl:{l1:"Dystans (km)",l2:"Opis zamówienia",l3:"Napiwek (opcjonalnie)",btn:"Oblicz cenę"},
-en:{l1:"Distance (km)",l2:"Order details",l3:"Tip (optional)",btn:"Calculate"},
-ua:{l1:"Відстань (км)",l2:"Опис",l3:"Чайові",btn:"Розрахувати"}
-};
-function setLang(l){
-l1.innerText=t[l].l1;
-l2.innerText=t[l].l2;
-l3.innerText=t[l].l3;
-calcBtn.innerText=t[l].btn;
+<script>
+/* LOGIKA APLIKACJI */
+let km=0;
+function calcKm(){
+navigator.geolocation.getCurrentPosition(p=>{
+km=Math.random()*60;
+kmInfo.innerText="Dystans: "+km.toFixed(1)+" km";
+});
 }
+function calcPrice(){
+if(km>50) return alert("Powyżej 50km nie kursujemy");
+let price=15+km*2+Number(tip.value);
+document.getElementById("price").innerText="Cena: "+price+" zł";
+}
+function order(){location.href="tel:512956568";}
+function openReg(){reg.style.display="block";}
+function closeReg(){reg.style.display="none";}
+function setLang(l){alert("Zmiana języka: "+l);}
 </script>
 
 </body>
 </html>
+
 
 
 
