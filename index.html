@@ -187,7 +187,7 @@ opacity:.7;
 Godziny nocne 22:00–6:00
 </footer>
 
-<!-- ================= TWÓJ ORYGINALNY SCRIPT (NIERUSZONY) ================= -->
+<!-- ===== TWÓJ ORYGINALNY SCRIPT (JEDNA POPRAWKA: window.selected) ===== -->
 <script>
 /* PWA */
 if("serviceWorker" in navigator){
@@ -239,8 +239,8 @@ const phone="512956789";
 window.open(`https://wa.me/48${phone}?text=`+encodeURIComponent(text));
 }
 
-/* GWIAZDKI UI */
-let selected=0;
+/* GWIAZDKI UI — POPRAWKA */
+window.selected = 0;
 const starsDiv=document.getElementById("stars");
 for(let i=1;i<=5;i++){
 const s=document.createElement("span");
@@ -249,7 +249,7 @@ s.onclick=()=>selectStar(i);
 starsDiv.appendChild(s);
 }
 function selectStar(n){
-selected=n;
+window.selected = n;
 [...starsDiv.children].forEach((s,i)=>s.classList.toggle("active",i<n));
 }
 
@@ -267,7 +267,7 @@ calcBtn.innerText=t[l].btn;
 }
 </script>
 
-<!-- ================= DODANY TYLKO FIREBASE DO OPINII ================= -->
+<!-- ===== FIREBASE – TYLKO OPINIE ===== -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import {
@@ -291,13 +291,15 @@ const opinionsDiv=document.getElementById("opinions");
 const avgRating=document.getElementById("avgRating");
 const opinionText=document.getElementById("opinionText");
 
-window.saveOpinion=async function(){
-if(!window.selected)return alert("Wybierz gwiazdki");
+window.saveOpinion = async function(){
+if(!window.selected) return alert("Wybierz gwiazdki");
+
 await addDoc(collection(db,"opinions"),{
-stars:window.selected,
-text:opinionText.value||"",
-created:serverTimestamp()
+stars: window.selected,
+text: opinionText.value || "",
+created: serverTimestamp()
 });
+
 opinionText.value="";
 window.selected=0;
 loadOpinions();
@@ -320,6 +322,7 @@ loadOpinions();
 
 </body>
 </html>
+
 
 
 
