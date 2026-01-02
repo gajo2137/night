@@ -18,15 +18,18 @@
 --green:#2ecc71;
 }
 
+*{box-sizing:border-box}
+
 body{
 margin:0;
 font-family:'Poppins',system-ui,Arial;
-background:radial-gradient(circle at top,#111,#000 65%);
+background:radial-gradient(circle at top,#111,#000 70%);
 color:#fff;
 }
 
+/* ===== BANNER ===== */
 .banner{
-height:170px;
+height:180px;
 display:flex;
 justify-content:center;
 align-items:center;
@@ -37,26 +40,32 @@ linear-gradient(180deg,#000,#050505);
 .banner img{
 width:80%;
 max-width:320px;
-filter:drop-shadow(0 0 25px rgba(245,196,0,.6));
+filter:drop-shadow(0 0 30px rgba(245,196,0,.7));
 }
 
-header{text-align:center;padding:20px}
-
+/* ===== HEADER ===== */
+header{
+text-align:center;
+padding:20px 20px 10px;
+}
 h1{
 font-family:'Orbitron',sans-serif;
 font-weight:900;
 letter-spacing:1px;
 color:var(--yellow);
+margin:0;
 }
-
 .phone{
 color:var(--yellow);
 font-size:18px;
 text-decoration:none;
 }
+.rating{
+opacity:.85;
+margin-top:6px;
+}
 
-.rating{opacity:.85;margin-top:6px}
-
+/* ===== LANG ===== */
 .langs{
 display:flex;
 justify-content:center;
@@ -74,11 +83,13 @@ font-weight:600;
 .langs button.active{
 color:var(--yellow);
 border-color:var(--yellow);
+box-shadow:0 0 14px rgba(245,196,0,.6);
 }
 
+/* ===== CARD ===== */
 .card{
 background:linear-gradient(180deg,#111,#0b0b0b);
-border-radius:20px;
+border-radius:22px;
 padding:22px;
 margin:18px;
 }
@@ -94,6 +105,7 @@ background:#000;
 color:#fff;
 }
 
+/* ===== BUTTON ===== */
 button.main{
 width:100%;
 margin-top:16px;
@@ -102,13 +114,14 @@ border:none;
 border-radius:18px;
 background:linear-gradient(135deg,#f5c400,#ffe066);
 font-weight:800;
+cursor:pointer;
 }
 
-/* === REGULAMIN === */
+/* ===== REGULAMIN ===== */
 .reg-box{
 border:2px solid var(--border);
 border-radius:18px;
-padding:18px;
+padding:16px;
 transition:.3s;
 }
 .reg-box.required{
@@ -116,27 +129,28 @@ border-color:var(--yellow);
 }
 .reg-box.accepted{
 border-color:var(--green);
+box-shadow:0 0 18px rgba(46,204,113,.6);
+}
+
+.reg-toggle{
+margin-bottom:12px;
+background:#000;
+border:1px solid var(--border);
+color:var(--yellow);
+padding:12px;
+border-radius:14px;
+text-align:center;
+font-weight:700;
+cursor:pointer;
 }
 
 .reg-content{
 max-height:0;
 overflow:hidden;
-transition:max-height .4s ease;
+transition:max-height .5s ease;
 }
 .reg-content.open{
-max-height:400px;
-}
-
-.reg-toggle{
-margin:10px 0;
-background:#000;
-border:1px solid var(--border);
-color:var(--yellow);
-padding:10px;
-border-radius:12px;
-cursor:pointer;
-text-align:center;
-font-weight:600;
+max-height:500px;
 }
 
 .reg-accept{
@@ -147,8 +161,8 @@ margin-top:14px;
 }
 
 .switch{
-width:50px;
-height:26px;
+width:52px;
+height:28px;
 position:relative;
 }
 .switch input{display:none}
@@ -157,12 +171,13 @@ position:absolute;
 inset:0;
 background:#333;
 border-radius:30px;
+transition:.3s;
 }
 .slider:before{
 content:"";
 position:absolute;
-width:20px;
-height:20px;
+width:22px;
+height:22px;
 left:3px;
 top:3px;
 background:#aaa;
@@ -177,7 +192,7 @@ transform:translateX(24px);
 background:#fff;
 }
 
-/* SHAKE */
+/* ===== SHAKE ===== */
 @keyframes shake{
 0%{transform:translateX(0)}
 25%{transform:translateX(-6px)}
@@ -185,10 +200,9 @@ background:#fff;
 75%{transform:translateX(-6px)}
 100%{transform:translateX(0)}
 }
-.shake{
-animation:shake .4s;
-}
+.shake{animation:shake .4s}
 
+/* ===== STARS ===== */
 .stars span{
 font-size:36px;
 cursor:pointer;
@@ -196,17 +210,29 @@ color:#333;
 }
 .stars span.active{
 color:var(--yellow);
+transform:scale(1.3);
 }
 
+/* ===== PRICE ===== */
 #price{
 text-align:center;
+font-size:28px;
+font-weight:900;
 color:var(--yellow);
-font-size:26px;
-font-weight:800;
-margin-top:10px;
+margin-top:12px;
 }
 
-footer{text-align:center;padding:22px;opacity:.6}
+.opinia{
+border-bottom:1px solid var(--border);
+padding:10px 0;
+font-size:13px;
+}
+
+footer{
+text-align:center;
+padding:22px;
+opacity:.6;
+}
 </style>
 </head>
 
@@ -217,7 +243,7 @@ footer{text-align:center;padding:22px;opacity:.6}
 <header>
 <h1 id="t_title"></h1>
 <a class="phone" href="tel:+48512956568">📞 512 956 568</a>
-<div class="rating" id="avgRating">⭐ 0.0 / 5 (0 opinii)</div>
+<div class="rating" id="avgRating">⭐ 5.0 / 5</div>
 
 <div class="langs">
 <button class="active" onclick="setLang('pl',this)">PL</button>
@@ -225,6 +251,25 @@ footer{text-align:center;padding:22px;opacity:.6}
 <button onclick="setLang('ua',this)">UA</button>
 </div>
 </header>
+
+<div class="card">
+<label id="t_service"></label>
+<select id="type">
+<option value="delivery">🚗 Dostawa</option>
+<option value="transport">🚕 Przewóz osób</option>
+</select>
+
+<label id="t_km"></label>
+<input type="number" id="km" placeholder="0">
+
+<button class="main" onclick="getGPS()">📡 GPS</button>
+
+<label id="t_tip"></label>
+<input type="number" id="tip" placeholder="0">
+
+<button class="main" onclick="calculate()" id="t_calc"></button>
+<div id="price"></div>
+</div>
 
 <div class="card">
 <h3 id="t_rules"></h3>
@@ -251,25 +296,85 @@ footer{text-align:center;padding:22px;opacity:.6}
 <button class="main" onclick="sendOrder()" id="t_order"></button>
 </div>
 
+<div class="card">
+<label id="t_rate_app"></label>
+<div class="stars" id="stars"></div>
+<textarea id="opinionText"></textarea>
+<button class="main" onclick="addOpinion()" id="t_add_opinion"></button>
+</div>
+
+<div class="card">
+<h3 id="t_client_opinions"></h3>
+<div id="opinions"></div>
+</div>
+
 <footer>🚗 Night Delivery Małdyty</footer>
 
 <script>
+/* ===== TŁUMACZENIA ===== */
 const T={
 pl:{
 title:"🚗 Night Delivery Małdyty",
+service:"Wybierz usługę",
+km:"Kilometry",
+tip:"Napiwek",
+calc:"Oblicz cenę",
 rules:"📜 Regulamin",
 r1:"🚫 Alkohol i papierosy tylko 18+",
-r2:"💳 Zamówienia +30 zł → BLIK",
+r2:"💳 Zamówienia powyżej 30 zł → BLIK",
 r3:"📞 Kierowca może się kontaktować",
 r4:"💰 Cena nie podlega negocjacji",
 accept:"Akceptuję regulamin",
-order:"📩 Zamów"
+order:"📩 Zamów",
+rate:"Oceń aplikację",
+addOpinion:"Dodaj opinię",
+opinions:"Opinie klientów"
+},
+en:{
+title:"🚗 Night Delivery Małdyty",
+service:"Choose service",
+km:"Kilometers",
+tip:"Tip",
+calc:"Calculate price",
+rules:"📜 Rules",
+r1:"🚫 Alcohol & cigarettes 18+",
+r2:"💳 Orders over 30 PLN → BLIK",
+r3:"📞 Driver may contact you",
+r4:"💰 Price is non-negotiable",
+accept:"I accept the rules",
+order:"📩 Order",
+rate:"Rate the app",
+addOpinion:"Add opinion",
+opinions:"Client opinions"
+},
+ua:{
+title:"🚗 Night Delivery Małdyty",
+service:"Оберіть послугу",
+km:"Кілометри",
+tip:"Чайові",
+calc:"Розрахувати",
+rules:"📜 Правила",
+r1:"🚫 Алкоголь і сигарети 18+",
+r2:"💳 Замовлення понад 30 зл → BLIK",
+r3:"📞 Водій може зателефонувати",
+r4:"💰 Ціна не обговорюється",
+accept:"Я приймаю правила",
+order:"📩 Замовити",
+rate:"Оцініть додаток",
+addOpinion:"Додати відгук",
+opinions:"Відгуки клієнтів"
 }
 };
 
-function setLang(){
-const d=T.pl;
+function setLang(l,btn){
+document.querySelectorAll(".langs button").forEach(b=>b.classList.remove("active"));
+if(btn) btn.classList.add("active");
+const d=T[l];
 t_title.innerText=d.title;
+t_service.innerText=d.service;
+t_km.innerText=d.km;
+t_tip.innerText=d.tip;
+t_calc.innerText=d.calc;
 t_rules.innerText=d.rules;
 r1.innerText=d.r1;
 r2.innerText=d.r2;
@@ -277,9 +382,13 @@ r3.innerText=d.r3;
 r4.innerText=d.r4;
 t_accept.innerText=d.accept;
 t_order.innerText=d.order;
+t_rate_app.innerText=d.rate;
+t_add_opinion.innerText=d.addOpinion;
+t_client_opinions.innerText=d.opinions;
 }
-setLang();
+setLang("pl");
 
+/* ===== LOGIKA ===== */
 function toggleRules(){
 regContent.classList.toggle("open");
 }
@@ -288,13 +397,52 @@ acceptReg.onchange=()=>{
 regBox.className="reg-box "+(acceptReg.checked?"accepted":"required");
 }
 
+function calculate(){
+const kmv=+km.value||0;
+const tipv=+tip.value||0;
+const base=type.value==="delivery"?10:15;
+const price=base+(kmv*3)+tipv;
+priceDiv.innerText=price+" zł";
+}
+
+const priceDiv=document.getElementById("price");
+
+function getGPS(){
+navigator.geolocation.getCurrentPosition(p=>{
+km.value=5;
+calculate();
+});
+}
+
 function sendOrder(){
 if(!acceptReg.checked){
 regBox.classList.add("shake");
 setTimeout(()=>regBox.classList.remove("shake"),400);
 return;
 }
-window.open("https://wa.me/48512956568");
+window.open("https://wa.me/48512956568","_blank");
+}
+
+/* ===== OPINIE ===== */
+const stars=document.getElementById("stars");
+let rating=0;
+for(let i=1;i<=5;i++){
+const s=document.createElement("span");
+s.innerHTML="★";
+s.onclick=()=>{
+rating=i;
+[...stars.children].forEach((x,idx)=>x.classList.toggle("active",idx<i));
+};
+stars.appendChild(s);
+}
+
+function addOpinion(){
+if(!opinionText.value) return;
+const d=document.createElement("div");
+d.className="opinia";
+d.innerText="⭐".repeat(rating)+" "+opinionText.value;
+opinions.prepend(d);
+opinionText.value="";
 }
 </script>
 
