@@ -28,9 +28,9 @@ background:radial-gradient(circle at top,#111,#000 70%);
 color:#fff;
 }
 
-/* ===== ANIMATIONS ===== */
+/* ===== ANIM ===== */
 @keyframes fadeUp{
-from{opacity:0;transform:translateY(25px)}
+from{opacity:0;transform:translateY(20px)}
 to{opacity:1;transform:none}
 }
 @keyframes glow{
@@ -39,7 +39,7 @@ to{opacity:1;transform:none}
 100%{box-shadow:0 0 10px rgba(245,196,0,.3)}
 }
 
-/* ===== BANNER ===== */
+/* ===== UI ===== */
 .banner{
 height:220px;
 display:flex;
@@ -53,43 +53,33 @@ linear-gradient(180deg,#000,#050505);
 width:85%;
 max-width:340px;
 filter:drop-shadow(0 0 40px rgba(245,196,0,.9));
-animation:fadeUp .9s ease;
 }
 
-/* ===== HEADER ===== */
 header{
 text-align:center;
 padding:18px;
+background:#000;
 position:sticky;
 top:0;
-background:#000;
 z-index:10;
 }
 h1{
 font-family:'Orbitron',sans-serif;
-font-weight:900;
 color:var(--yellow);
 margin:0;
 }
-.phone{
-color:var(--yellow);
-font-size:18px;
-text-decoration:none;
-}
-.rating{opacity:.9;margin-top:6px}
+.phone{color:var(--yellow);text-decoration:none}
 
-/* ===== CARD ===== */
 .card{
 background:linear-gradient(180deg,#111,#0b0b0b);
 border-radius:22px;
 padding:22px;
 margin:18px;
-animation:fadeUp .7s ease;
+animation:fadeUp .6s ease;
 }
 
-/* ===== INPUT ===== */
 label{font-size:14px}
-input,select{
+input,select,textarea{
 width:100%;
 margin-top:6px;
 padding:13px;
@@ -97,9 +87,9 @@ border-radius:14px;
 border:none;
 background:#000;
 color:#fff;
+resize:none;
 }
 
-/* ===== BUTTON ===== */
 button.main{
 width:100%;
 margin-top:16px;
@@ -110,50 +100,27 @@ background:linear-gradient(135deg,#f5c400,#ffe066);
 font-weight:800;
 cursor:pointer;
 }
-button.main:hover{
-animation:glow 1.5s infinite;
-}
+button.main:hover{animation:glow 1.5s infinite}
 
-/* ===== PAYMENTS ===== */
-.payments{
-display:flex;
-gap:12px;
-margin-top:14px;
-}
-.payments button{
-flex:1;
-padding:14px;
-border-radius:16px;
-border:2px solid var(--border);
-background:#000;
-color:#fff;
-font-weight:700;
-}
-.payments button.active{
-border-color:var(--green);
-box-shadow:0 0 18px rgba(46,204,113,.6);
-}
-
-/* ===== TIPS ===== */
-.tips{
+.payments,.tips{
 display:flex;
 gap:10px;
-margin-top:12px;
+margin-top:14px;
 }
-.tips button{
+.payments button,.tips button{
 flex:1;
 padding:12px;
 border-radius:14px;
 border:1px solid var(--border);
 background:#000;
 color:#fff;
+font-weight:700;
 }
-.tips button.active{
-border-color:var(--yellow);
-box-shadow:0 0 12px rgba(245,196,0,.6);
+button.active{
+border-color:var(--green);
+box-shadow:0 0 15px rgba(46,204,113,.6);
 }
 
-/* ===== PRICE ===== */
 #price{
 text-align:center;
 font-size:30px;
@@ -162,23 +129,8 @@ color:var(--yellow);
 margin-top:14px;
 }
 
-/* ===== ALERT ===== */
-.alert{
-text-align:center;
-color:var(--red);
-font-weight:800;
-margin-top:10px;
-}
+.alert{color:var(--red);text-align:center;font-weight:800}
 
-/* ===== OPINIONS ===== */
-.opinion{
-border-left:3px solid var(--yellow);
-padding-left:12px;
-margin-top:10px;
-opacity:.9;
-}
-
-/* ===== REGULAMIN ===== */
 .reg-toggle{
 margin-bottom:14px;
 background:#000;
@@ -201,20 +153,8 @@ border-color:var(--green);
 box-shadow:0 0 20px rgba(46,204,113,.6);
 }
 
-.reg-content{
-display:none;
-font-size:14px;
-line-height:1.6;
-}
+.reg-content{display:none;font-size:14px}
 .reg-content.open{display:block}
-
-.reg-section{
-margin-bottom:14px;
-padding:14px;
-border-radius:14px;
-background:#0a0a0a;
-border-left:4px solid var(--yellow);
-}
 
 footer{text-align:center;padding:22px;opacity:.6}
 </style>
@@ -223,21 +163,31 @@ footer{text-align:center;padding:22px;opacity:.6}
 <body>
 
 <div class="banner">
-<img src="logo.png" alt="Night Delivery">
+<img src="logo.png">
 </div>
 
 <header>
 <h1>🚗 Night Delivery Małdyty</h1>
 <a class="phone" href="tel:+48512956568">📞 512 956 568</a>
-<div class="rating">⭐ 5.0 / 5</div>
+<div>⭐ 5.0 / 5</div>
 </header>
 
 <div class="card">
 <label>Usługa</label>
-<select id="type">
+<select id="type" onchange="toggleExtra()">
 <option value="delivery">🚗 Dostawa</option>
 <option value="transport">🚕 Przewóz osób</option>
 </select>
+
+<div id="deliveryBox">
+<label>Co przywieźć?</label>
+<textarea id="deliveryText" placeholder="Np. papierosy, jedzenie, zakupy..."></textarea>
+</div>
+
+<div id="transportBox" style="display:none">
+<label>Adres odbioru / cel podróży</label>
+<textarea id="transportText" placeholder="Np. Małdyty ul. ..."></textarea>
+</div>
 
 <label>Kilometry</label>
 <input type="number" id="km" value="5">
@@ -261,31 +211,16 @@ footer{text-align:center;padding:22px;opacity:.6}
 </div>
 
 <div class="card">
-<h3>⭐ Opinie klientów</h3>
-<div class="opinion">Zawsze na czas 🔥</div>
-<div class="opinion">Nocą ratują życie 😎</div>
-<div class="opinion">Najlepsi w okolicy</div>
-</div>
-
-<div class="card">
-<div class="reg-toggle" onclick="regContent.classList.toggle('open')">
-📜 Regulamin świadczenia usług
-</div>
-
+<div class="reg-toggle" onclick="regContent.classList.toggle('open')">📜 Regulamin</div>
 <div class="reg-box" id="regBox">
 <div class="reg-content" id="regContent">
-
-<div class="reg-section">
-<b>✔ Zasięg:</b> Maks. 50 km<br>
-<b>✔ Płatność:</b> Gotówka / BLIK<br>
-<b>✔ Alkohol:</b> Tylko 18+<br>
-<b>✔ Cena:</b> Automatyczna, nienegocjowalna
-</div>
-
-<label style="font-weight:700">
+✔ Maks. 50 km<br>
+✔ Gotówka / BLIK<br>
+✔ Alkohol 18+<br>
+✔ Cena nienegocjowalna
+<label style="display:block;margin-top:10px">
 <input type="checkbox" id="acceptReg"> Akceptuję regulamin
 </label>
-
 </div>
 </div>
 
@@ -296,6 +231,11 @@ footer{text-align:center;padding:22px;opacity:.6}
 
 <script>
 let payment="",tip=0,lastPrice=0;
+
+function toggleExtra(){
+deliveryBox.style.display=type.value==="delivery"?"block":"none";
+transportBox.style.display=type.value==="transport"?"block":"none";
+}
 
 function setPay(p){
 payment=p;
@@ -332,10 +272,7 @@ price.innerText=`${lastPrice} zł (${night?"NOC":"DZIEŃ"})`;
 }
 
 function getGPS(){
-navigator.geolocation.getCurrentPosition(()=>{
-km.value=5;
-calculate();
-});
+navigator.geolocation.getCurrentPosition(()=>{calculate()});
 }
 
 function sendOrder(){
@@ -343,11 +280,18 @@ if(!acceptReg.checked||!payment||!lastPrice){
 alert("Uzupełnij zamówienie");
 return;
 }
+
+let extra=type.value==="delivery"
+?`Co przywieźć: ${deliveryText.value}`
+:`Adres: ${transportText.value}`;
+
 let msg=`Zamówienie:
 Usługa: ${type.value}
+${extra}
 KM: ${km.value}
 Cena: ${lastPrice} zł
 Płatność: ${payment}`;
+
 window.open("https://wa.me/48512956568?text="+encodeURIComponent(msg));
 }
 
@@ -358,5 +302,4 @@ regBox.classList.toggle("accepted",acceptReg.checked);
 
 </body>
 </html>
-
 
