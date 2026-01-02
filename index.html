@@ -102,12 +102,12 @@ cursor:pointer;
 }
 button.main:hover{animation:glow 1.5s infinite}
 
-.payments,.tips{
+.payments,.tips,.tabs{
 display:flex;
 gap:10px;
 margin-top:14px;
 }
-.payments button,.tips button{
+.payments button,.tips button,.tabs button{
 flex:1;
 padding:12px;
 border-radius:14px;
@@ -127,6 +127,14 @@ font-size:30px;
 font-weight:900;
 color:var(--yellow);
 margin-top:14px;
+}
+
+.points{
+text-align:center;
+font-size:22px;
+font-weight:900;
+color:var(--yellow);
+margin-bottom:10px;
 }
 
 .alert{color:var(--red);text-align:center;font-weight:800}
@@ -173,6 +181,18 @@ footer{text-align:center;padding:22px;opacity:.6}
 </header>
 
 <div class="card">
+<div class="tabs">
+<button class="active" onclick="showTab('order',this)">🚗 Zamów</button>
+<button onclick="showTab('points',this)">🎁 Punkty</button>
+</div>
+</div>
+
+<!-- ===== ZAMÓWIENIE ===== -->
+<div id="orderTab">
+
+<div class="card">
+<div class="points">🎯 Twoje punkty: <span id="points">0</span></div>
+
 <label>Usługa</label>
 <select id="type" onchange="toggleExtra()">
 <option value="delivery">🚗 Dostawa</option>
@@ -181,12 +201,12 @@ footer{text-align:center;padding:22px;opacity:.6}
 
 <div id="deliveryBox">
 <label>Co przywieźć?</label>
-<textarea id="deliveryText" placeholder="Np. papierosy, jedzenie, zakupy..."></textarea>
+<textarea id="deliveryText"></textarea>
 </div>
 
 <div id="transportBox" style="display:none">
-<label>Adres odbioru / cel podróży</label>
-<textarea id="transportText" placeholder="Np. Małdyty ul. ..."></textarea>
+<label>Adres</label>
+<textarea id="transportText"></textarea>
 </div>
 
 <label>Kilometry</label>
@@ -227,10 +247,29 @@ footer{text-align:center;padding:22px;opacity:.6}
 <button class="main" onclick="sendOrder()">📩 Zamów przez WhatsApp</button>
 </div>
 
+<!-- ===== PUNKTY ===== -->
+<div id="pointsTab" style="display:none">
+<div class="card">
+<h3>🎁 Program lojalnościowy</h3>
+<p>📏 1 km = <b>10 punktów</b></p>
+<p>🎁 100 punktów = <b>darmowy kurs do 10 km</b></p>
+<button class="main" onclick="redeem()">🎁 Wymień punkty</button>
+</div>
+</div>
+
 <footer>🚗 Night Delivery Małdyty</footer>
 
 <script>
 let payment="",tip=0,lastPrice=0;
+let points = Number(localStorage.getItem("points")) || 0;
+document.getElementById("points").innerText = points;
+
+function showTab(tab,btn){
+orderTab.style.display = tab==="order" ? "block" : "none";
+pointsTab.style.display = tab==="points" ? "block" : "none";
+document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("active"));
+btn.classList.add("active");
+}
 
 function toggleExtra(){
 deliveryBox.style.display=type.value==="delivery"?"block":"none";
@@ -281,6 +320,10 @@ alert("Uzupełnij zamówienie");
 return;
 }
 
+points += (+km.value||0)*10;
+localStorage.setItem("points",points);
+document.getElementById("points").innerText=points;
+
 let extra=type.value==="delivery"
 ?`Co przywieźć: ${deliveryText.value}`
 :`Adres: ${transportText.value}`;
@@ -295,6 +338,14 @@ Płatność: ${payment}`;
 window.open("https://wa.me/48512956568?text="+encodeURIComponent(msg));
 }
 
+function redeem(){
+if(points<100){alert("Za mało punktów");return;}
+points-=100;
+localStorage.setItem("points",points);
+document.getElementById("points").innerText=points;
+alert("🎉 Darmowy kurs do 10 km aktywny!");
+}
+
 acceptReg.onchange=()=>{
 regBox.classList.toggle("accepted",acceptReg.checked);
 };
@@ -302,4 +353,3 @@ regBox.classList.toggle("accepted",acceptReg.checked);
 
 </body>
 </html>
-
