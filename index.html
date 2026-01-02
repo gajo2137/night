@@ -208,9 +208,9 @@ footer{text-align:center;padding:22px;opacity:.6}
 <div class="rating">⭐ 5.0 / 5</div>
 
 <div class="langs">
-<button class="active" onclick="setLang('pl',this)">PL</button>
-<button onclick="setLang('en',this)">EN</button>
-<button onclick="setLang('ua',this)">UA</button>
+<button class="active" data-lang="pl">PL</button>
+<button data-lang="en">EN</button>
+<button data-lang="ua">UA</button>
 </div>
 </header>
 
@@ -227,8 +227,8 @@ footer{text-align:center;padding:22px;opacity:.6}
 <button class="main" onclick="getGPS()">📡 GPS</button>
 
 <div class="payments">
-<button onclick="setPay('Gotówka')" id="cash">💵 Gotówka</button>
-<button onclick="setPay('BLIK')" id="blik">📲 BLIK</button>
+<button id="cash" onclick="setPay('Gotówka')">💵 Gotówka</button>
+<button id="blik" onclick="setPay('BLIK')">📲 BLIK</button>
 </div>
 
 <button class="main" onclick="calculate()" id="t_calc"></button>
@@ -302,10 +302,8 @@ order:"📩 Замовити через WhatsApp"
 }
 };
 
-function setLang(l,btn){
-document.querySelectorAll(".langs button").forEach(b=>b.classList.remove("active"));
-btn.classList.add("active");
-const d=T[l];
+function setLang(lang){
+const d=T[lang];
 t_title.innerText=d.title;
 t_service.innerText=d.service;
 t_km.innerText=d.km;
@@ -317,11 +315,22 @@ r3.innerText=d.r3;
 r4.innerText=d.r4;
 t_accept.innerText=d.accept;
 t_order.innerText=d.order;
+
+document.querySelectorAll(".langs button").forEach(b=>{
+b.classList.toggle("active", b.dataset.lang===lang);
+});
 }
+
+document.querySelectorAll(".langs button").forEach(b=>{
+b.onclick=()=>setLang(b.dataset.lang);
+});
+
 setLang("pl");
 
 /* ===== LOGIKA ===== */
 let payment="";
+const priceDiv=document.getElementById("price");
+
 function setPay(p){
 payment=p;
 cash.classList.remove("active");
@@ -352,16 +361,22 @@ function calculate(){
 const kmv=+km.value||0;
 let price= type.value==="delivery" ? deliveryPrice(kmv) : transportPrice(kmv);
 price=Math.round(price*100)/100;
-priceDiv.innerText=price+" zł ("+(isNight()?"noc":"dzień")+")";
+priceDiv.innerText=`${price} zł (${isNight()?"NOC":"DZIEŃ"})`;
 window.lastPrice=price;
 }
 
 function getGPS(){
-navigator.geolocation.getCurrentPosition(()=>{ km.value=5; calculate(); });
+navigator.geolocation.getCurrentPosition(()=>{
+km.value=5;
+calculate();
+});
 }
 
 function sendOrder(){
-if(!acceptReg.checked||!payment){alert("Akceptuj regulamin i wybierz płatność");return;}
+if(!acceptReg.checked||!payment){
+alert("Akceptuj regulamin i wybierz płatność");
+return;
+}
 const msg=`Zamówienie:
 Usługa: ${type.value}
 Kilometry: ${km.value}
@@ -371,11 +386,9 @@ Płatność: ${payment}`;
 window.open("https://wa.me/48512956568?text="+encodeURIComponent(msg));
 }
 
-const priceDiv=document.getElementById("price");
 acceptReg.onchange=()=>regBox.className="reg-box "+(acceptReg.checked?"accepted":"required");
 </script>
 
 </body>
 </html>
-
 
