@@ -12,62 +12,26 @@
 <style>
 :root{
 --yellow:#f5c400;
---bg:#000;
 --card:#111;
 --border:#222;
 --green:#2ecc71;
 --red:#ff4d4d;
 }
-
 *{box-sizing:border-box}
-
 body{
 margin:0;
-font-family:'Poppins',system-ui,Arial;
+font-family:'Poppins',system-ui;
 background:radial-gradient(circle at top,#111,#000 70%);
 color:#fff;
 }
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1}}
+@keyframes glow{0%{box-shadow:0 0 10px rgba(245,196,0,.3)}50%{box-shadow:0 0 25px rgba(245,196,0,.7)}100%{box-shadow:0 0 10px rgba(245,196,0,.3)}}
 
-/* ===== ANIM ===== */
-@keyframes fadeUp{
-from{opacity:0;transform:translateY(20px)}
-to{opacity:1;transform:none}
-}
-@keyframes glow{
-0%{box-shadow:0 0 10px rgba(245,196,0,.3)}
-50%{box-shadow:0 0 25px rgba(245,196,0,.7)}
-100%{box-shadow:0 0 10px rgba(245,196,0,.3)}
-}
+.banner{height:220px;display:flex;justify-content:center;align-items:center}
+.banner img{width:85%;max-width:340px;filter:drop-shadow(0 0 40px rgba(245,196,0,.9))}
 
-/* ===== UI ===== */
-.banner{
-height:220px;
-display:flex;
-justify-content:center;
-align-items:center;
-background:
-radial-gradient(circle at center, rgba(245,196,0,.35), transparent 65%),
-linear-gradient(180deg,#000,#050505);
-}
-.banner img{
-width:85%;
-max-width:340px;
-filter:drop-shadow(0 0 40px rgba(245,196,0,.9));
-}
-
-header{
-text-align:center;
-padding:18px;
-background:#000;
-position:sticky;
-top:0;
-z-index:10;
-}
-h1{
-font-family:'Orbitron',sans-serif;
-color:var(--yellow);
-margin:0;
-}
+header{text-align:center;padding:18px;background:#000;position:sticky;top:0}
+h1{font-family:'Orbitron';color:var(--yellow);margin:0}
 .phone{color:var(--yellow);text-decoration:none}
 
 .card{
@@ -75,109 +39,41 @@ background:linear-gradient(180deg,#111,#0b0b0b);
 border-radius:22px;
 padding:22px;
 margin:18px;
-animation:fadeUp .6s ease;
+animation:fadeUp .5s ease;
 }
-
-label{font-size:14px}
 input,select,textarea{
-width:100%;
-margin-top:6px;
-padding:13px;
-border-radius:14px;
-border:none;
-background:#000;
-color:#fff;
-resize:none;
+width:100%;margin-top:6px;padding:13px;border-radius:14px;border:none;background:#000;color:#fff
 }
-
 button.main{
-width:100%;
-margin-top:16px;
-padding:16px;
-border:none;
-border-radius:18px;
-background:linear-gradient(135deg,#f5c400,#ffe066);
-font-weight:800;
-cursor:pointer;
+width:100%;margin-top:16px;padding:16px;border:none;border-radius:18px;
+background:linear-gradient(135deg,#f5c400,#ffe066);font-weight:800;cursor:pointer
 }
 button.main:hover{animation:glow 1.5s infinite}
 
-.payments,.tips,.tabs{
-display:flex;
-gap:10px;
-margin-top:14px;
+.tabs,.payments,.tips{display:flex;gap:10px;margin-top:14px}
+.tabs button,.payments button,.tips button{
+flex:1;padding:12px;border-radius:14px;border:1px solid var(--border);
+background:#000;color:#fff;font-weight:700
 }
-.payments button,.tips button,.tabs button{
-flex:1;
-padding:12px;
-border-radius:14px;
-border:1px solid var(--border);
-background:#000;
-color:#fff;
-font-weight:700;
-}
-button.active{
-border-color:var(--green);
-box-shadow:0 0 15px rgba(46,204,113,.6);
-}
+button.active{border-color:var(--green);box-shadow:0 0 15px rgba(46,204,113,.6)}
 
-#price{
-text-align:center;
-font-size:30px;
-font-weight:900;
-color:var(--yellow);
-margin-top:14px;
-}
+.points{text-align:center;font-size:22px;font-weight:900;color:var(--yellow)}
+#price{text-align:center;font-size:30px;font-weight:900;color:var(--yellow)}
+.alert{text-align:center;color:var(--red);font-weight:800}
 
-.points{
-text-align:center;
-font-size:22px;
-font-weight:900;
-color:var(--yellow);
-margin-bottom:10px;
-}
-
-.alert{color:var(--red);text-align:center;font-weight:800}
-
-.reg-toggle{
-margin-bottom:14px;
-background:#000;
-border:1px solid var(--border);
-color:var(--yellow);
-padding:14px;
-border-radius:16px;
-text-align:center;
-font-weight:800;
-cursor:pointer;
-}
-
-.reg-box{
-border:2px solid var(--border);
-border-radius:20px;
-padding:18px;
-}
-.reg-box.accepted{
-border-color:var(--green);
-box-shadow:0 0 20px rgba(46,204,113,.6);
-}
-
+.reg-toggle{background:#000;border:1px solid var(--border);padding:14px;border-radius:16px;cursor:pointer}
+.reg-box.accepted{border-color:var(--green);box-shadow:0 0 20px rgba(46,204,113,.6)}
 .reg-content{display:none;font-size:14px}
 .reg-content.open{display:block}
-
 footer{text-align:center;padding:22px;opacity:.6}
 </style>
 </head>
 
 <body>
 
-<div class="banner">
-<img src="logo.png">
-</div>
-
 <header>
 <h1>🚗 Night Delivery Małdyty</h1>
 <a class="phone" href="tel:+48512956568">📞 512 956 568</a>
-<div>⭐ 5.0 / 5</div>
 </header>
 
 <div class="card">
@@ -187,67 +83,26 @@ footer{text-align:center;padding:22px;opacity:.6}
 </div>
 </div>
 
-<!-- ===== ZAMÓWIENIE ===== -->
 <div id="orderTab">
-
 <div class="card">
-<div class="points">🎯 Twoje punkty: <span id="points">0</span></div>
+<div class="points">🎯 Twoje punkty: <span id="pointsCount">0</span></div>
 
 <label>Usługa</label>
-<select id="type" onchange="toggleExtra()">
+<select id="type">
 <option value="delivery">🚗 Dostawa</option>
 <option value="transport">🚕 Przewóz osób</option>
 </select>
 
-<div id="deliveryBox">
-<label>Co przywieźć?</label>
-<textarea id="deliveryText"></textarea>
-</div>
-
-<div id="transportBox" style="display:none">
-<label>Adres</label>
-<textarea id="transportText"></textarea>
-</div>
-
 <label>Kilometry</label>
 <input type="number" id="km" value="5">
 
-<button class="main" onclick="getGPS()">📡 GPS (realne KM)</button>
-
-<div class="payments">
-<button id="cash" onclick="setPay('Gotówka')">💵 Gotówka</button>
-<button id="blik" onclick="setPay('BLIK')">📲 BLIK</button>
-</div>
-
-<div class="tips">
-<button onclick="setTip(0,this)">Bez napiwku</button>
-<button onclick="setTip(5,this)">+5 zł</button>
-<button onclick="setTip(10,this)">+10 zł</button>
-</div>
-
 <button class="main" onclick="calculate()">Oblicz cenę</button>
 <div id="price"></div>
-<div class="alert" id="limitMsg"></div>
-</div>
-
-<div class="card">
-<div class="reg-toggle" onclick="regContent.classList.toggle('open')">📜 Regulamin</div>
-<div class="reg-box" id="regBox">
-<div class="reg-content" id="regContent">
-✔ Maks. 50 km<br>
-✔ Gotówka / BLIK<br>
-✔ Alkohol 18+<br>
-✔ Cena nienegocjowalna
-<label style="display:block;margin-top:10px">
-<input type="checkbox" id="acceptReg"> Akceptuję regulamin
-</label>
-</div>
-</div>
 
 <button class="main" onclick="sendOrder()">📩 Zamów przez WhatsApp</button>
 </div>
+</div>
 
-<!-- ===== PUNKTY ===== -->
 <div id="pointsTab" style="display:none">
 <div class="card">
 <h3>🎁 Program lojalnościowy</h3>
@@ -260,96 +115,55 @@ footer{text-align:center;padding:22px;opacity:.6}
 <footer>🚗 Night Delivery Małdyty</footer>
 
 <script>
-let payment="",tip=0,lastPrice=0;
+const orderTab = document.getElementById("orderTab");
+const pointsTab = document.getElementById("pointsTab");
+const pointsEl = document.getElementById("pointsCount");
+
 let points = Number(localStorage.getItem("points")) || 0;
-document.getElementById("points").innerText = points;
+let freeRide = localStorage.getItem("freeRide")==="1";
+pointsEl.textContent = points;
 
 function showTab(tab,btn){
-orderTab.style.display = tab==="order" ? "block" : "none";
-pointsTab.style.display = tab==="points" ? "block" : "none";
+orderTab.style.display = tab==="order"?"block":"none";
+pointsTab.style.display = tab==="points"?"block":"none";
 document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("active"));
 btn.classList.add("active");
 }
 
-function toggleExtra(){
-deliveryBox.style.display=type.value==="delivery"?"block":"none";
-transportBox.style.display=type.value==="transport"?"block":"none";
-}
-
-function setPay(p){
-payment=p;
-cash.classList.remove("active");
-blik.classList.remove("active");
-(p==="Gotówka"?cash:blik).classList.add("active");
-}
-
-function setTip(v,el){
-tip=v;
-document.querySelectorAll(".tips button").forEach(b=>b.classList.remove("active"));
-el.classList.add("active");
-}
-
-function isNight(){
-const h=new Date().getHours();
-return h>=22||h<6;
-}
-
 function calculate(){
-const kmv=+km.value||0;
-limitMsg.innerText="";
-if(kmv>50){
-limitMsg.innerText="🚫 Poza strefą Night Delivery (max 50 km)";
-price.innerText="";
+let km = +document.getElementById("km").value||0;
+if(freeRide && km<=10){
+price.innerText="0 zł (DARMOWY KURS 🎁)";
 return;
 }
-let night=isNight();
-let base=(type.value==="delivery")
-?(night?20+1.8*kmv:15+1.5*kmv)
-:(night?8+2.8*kmv:6+2.5*kmv);
-lastPrice=Math.round((base+tip)*100)/100;
-price.innerText=`${lastPrice} zł (${night?"NOC":"DZIEŃ"})`;
-}
-
-function getGPS(){
-navigator.geolocation.getCurrentPosition(()=>{calculate()});
+let cost = 15 + km*1.5;
+price.innerText = cost+" zł";
 }
 
 function sendOrder(){
-if(!acceptReg.checked||!payment||!lastPrice){
-alert("Uzupełnij zamówienie");
-return;
+let km = +document.getElementById("km").value||0;
+if(!freeRide){
+points += km*10;
+}else{
+freeRide=false;
+localStorage.removeItem("freeRide");
 }
-
-points += (+km.value||0)*10;
 localStorage.setItem("points",points);
-document.getElementById("points").innerText=points;
-
-let extra=type.value==="delivery"
-?`Co przywieźć: ${deliveryText.value}`
-:`Adres: ${transportText.value}`;
-
-let msg=`Zamówienie:
-Usługa: ${type.value}
-${extra}
-KM: ${km.value}
-Cena: ${lastPrice} zł
-Płatność: ${payment}`;
-
-window.open("https://wa.me/48512956568?text="+encodeURIComponent(msg));
+pointsEl.textContent=points;
+window.open("https://wa.me/48512956568");
 }
 
 function redeem(){
 if(points<100){alert("Za mało punktów");return;}
 points-=100;
+freeRide=true;
 localStorage.setItem("points",points);
-document.getElementById("points").innerText=points;
+localStorage.setItem("freeRide","1");
+pointsEl.textContent=points;
 alert("🎉 Darmowy kurs do 10 km aktywny!");
 }
-
-acceptReg.onchange=()=>{
-regBox.classList.toggle("accepted",acceptReg.checked);
-};
 </script>
 
 </body>
 </html>
+
