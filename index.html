@@ -7,12 +7,13 @@
 
 <meta name="theme-color" content="#000000">
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<!-- FONTS -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
 
 <style>
 
 /* ============================================================
-ROOT VARIABLES
+ROOT
 ============================================================ */
 :root{
 --yellow:#f5c400;
@@ -20,7 +21,6 @@ ROOT VARIABLES
 --card:#111;
 --border:#222;
 --green:#2ecc71;
---red:#e74c3c;
 }
 
 /* ============================================================
@@ -28,122 +28,127 @@ BODY
 ============================================================ */
 body{
 margin:0;
-font-family:'Poppins',system-ui,-apple-system,Arial;
-background:var(--bg);
+font-family:'Poppins',system-ui,Arial;
+background:radial-gradient(circle at top,#111,#000 65%);
 color:#fff;
 animation:fadeBody .8s ease;
 }
-@keyframes fadeBody{
-from{opacity:0}
-to{opacity:1}
-}
+@keyframes fadeBody{from{opacity:0}to{opacity:1}}
 
 /* ============================================================
 HEADER
 ============================================================ */
 .banner{
-height:160px;
+height:170px;
 display:flex;
 justify-content:center;
 align-items:center;
-background:radial-gradient(circle at top, rgba(245,196,0,.25), transparent 65%);
+background:
+radial-gradient(circle at center, rgba(245,196,0,.35), transparent 65%),
+linear-gradient(180deg,#000,#050505);
 }
-.banner img{max-width:320px;width:80%}
+.banner img{
+width:80%;
+max-width:320px;
+filter:drop-shadow(0 0 25px rgba(245,196,0,.5));
+}
 
 header{text-align:center;padding:20px}
 
-h1{color:var(--yellow);margin:0;font-weight:700}
+h1{
+font-family:'Orbitron',sans-serif;
+font-weight:900;
+letter-spacing:1px;
+color:var(--yellow);
+text-shadow:0 0 20px rgba(245,196,0,.7);
+animation:titleGlow 2s infinite alternate;
+}
+@keyframes titleGlow{
+from{text-shadow:0 0 10px rgba(245,196,0,.4)}
+to{text-shadow:0 0 30px rgba(245,196,0,.9)}
+}
 
 .phone{
 color:var(--yellow);
-text-decoration:none;
 font-size:18px;
+text-decoration:none;
 display:block;
 margin-top:6px;
 }
 
-.rating{opacity:.85;margin-top:6px;font-weight:600}
+.rating{opacity:.85;margin-top:6px}
 
 /* ============================================================
-LANG SWITCH
+LANG
 ============================================================ */
 .langs{
 display:flex;
 justify-content:center;
 gap:10px;
-margin-top:12px;
+margin-top:14px;
 }
 .langs button{
 background:#000;
 border:1px solid var(--border);
 color:#fff;
-padding:6px 16px;
-border-radius:14px;
+padding:8px 18px;
+border-radius:16px;
+font-weight:600;
 transition:.25s;
 }
-.langs button:hover{transform:translateY(-2px)}
 .langs button.active{
-border-color:var(--yellow);
 color:var(--yellow);
-box-shadow:0 0 12px rgba(245,196,0,.4);
+border-color:var(--yellow);
+box-shadow:0 0 18px rgba(245,196,0,.6);
 }
 
 /* ============================================================
-CARDS
+CARD
 ============================================================ */
 .card{
-background:var(--card);
-border-radius:18px;
-padding:20px;
-margin:15px;
+background:linear-gradient(180deg,#111,#0b0b0b);
+border-radius:20px;
+padding:22px;
+margin:18px;
 animation:cardIn .6s ease;
 }
 @keyframes cardIn{
-from{opacity:0;transform:translateY(30px)}
+from{opacity:0;transform:translateY(40px)}
 to{opacity:1;transform:none}
 }
 
 /* ============================================================
 FORM
 ============================================================ */
-label{font-size:14px;opacity:.9}
+label{font-size:14px}
 input,textarea,select{
 width:100%;
 margin-top:6px;
-padding:12px;
-border-radius:12px;
+padding:13px;
+border-radius:14px;
 border:none;
 background:#000;
 color:#fff;
-font-family:inherit;
 }
 textarea{resize:none}
 
 /* ============================================================
-BUTTONS
+BUTTON
 ============================================================ */
 button.main{
 width:100%;
-margin-top:15px;
-padding:15px;
+margin-top:16px;
+padding:16px;
 border:none;
-border-radius:16px;
-background:var(--yellow);
-font-weight:700;
+border-radius:18px;
+background:linear-gradient(135deg,#f5c400,#ffe066);
+font-weight:800;
 cursor:pointer;
 transition:.25s;
 }
 button.main:hover{
-transform:translateY(-2px) scale(1.02);
-box-shadow:0 0 22px rgba(245,196,0,.6);
-}
-
-/* ============================================================
-RATES
-============================================================ */
-.rate-box p{
-margin:8px 0;
-line-height:1.5;
+transform:translateY(-3px);
+box-shadow:0 0 30px rgba(245,196,0,.8);
 }
 
 /* ============================================================
@@ -152,50 +157,32 @@ REGULAMIN
 .reg-box{
 border:2px solid var(--border);
 border-radius:18px;
-padding:16px;
-background:linear-gradient(180deg,#111,#0a0a0a);
+padding:18px;
 transition:.3s;
 }
 .reg-box.required{
 border-color:var(--yellow);
-box-shadow:0 0 18px rgba(245,196,0,.4);
+box-shadow:0 0 22px rgba(245,196,0,.5);
 }
 .reg-box.accepted{
 border-color:var(--green);
-box-shadow:0 0 18px rgba(46,204,113,.5);
+box-shadow:0 0 22px rgba(46,204,113,.6);
 }
-.reg-item{
-display:flex;
-gap:10px;
-margin-bottom:8px;
-font-size:13px;
-}
-.reg-accept{
-display:flex;
-align-items:center;
-gap:10px;
-margin-top:12px;
-font-weight:600;
-}
-.reg-accept input{
-width:22px;
-height:22px;
-accent-color:var(--yellow);
-}
+.reg-item{font-size:13px;margin-bottom:8px}
+.reg-accept{display:flex;gap:10px;align-items:center;margin-top:12px}
 
 /* ============================================================
 STARS
 ============================================================ */
 .stars span{
-font-size:34px;
+font-size:36px;
 cursor:pointer;
-color:#444;
+color:#333;
 transition:.2s;
 }
-.stars span:hover{transform:scale(1.25)}
 .stars span.active{
 color:var(--yellow);
-transform:scale(1.35);
+transform:scale(1.4);
 }
 
 /* ============================================================
@@ -203,16 +190,23 @@ OPINIONS
 ============================================================ */
 .opinia{
 border-bottom:1px solid var(--border);
-padding:8px 0;
+padding:10px 0;
 font-size:13px;
-animation:fadeOpinion .4s ease;
-}
-@keyframes fadeOpinion{
-from{opacity:0;transform:translateY(10px)}
-to{opacity:1;transform:none}
 }
 
-footer{text-align:center;padding:20px;opacity:.6}
+/* ============================================================
+PRICE ANIMATION
+============================================================ */
+#price{
+font-size:26px;
+font-weight:800;
+color:var(--yellow);
+text-align:center;
+margin-top:10px;
+}
+
+footer{text-align:center;padding:22px;opacity:.6}
+
 </style>
 </head>
 
@@ -233,18 +227,18 @@ footer{text-align:center;padding:20px;opacity:.6}
 </header>
 
 <!-- STAWKI -->
-<div class="card rate-box">
-<h3 id="t_rates">🚕 Stawki</h3>
+<div class="card">
+<h3 id="t_rates"></h3>
 <p id="t_transport"></p>
 <p id="t_delivery"></p>
-<p id="t_limit" style="opacity:.6;font-size:13px"></p>
+<p id="t_limit" style="opacity:.6"></p>
 </div>
 
 <!-- ZAMÓWIENIE -->
 <div class="card">
 <label id="t_service"></label>
 <select id="type">
-<option value="delivery">🚗 Dostawa</option>
+<option value="delivery">🚗📦 Dostawa</option>
 <option value="transport">🚕 Przewóz</option>
 </select>
 
@@ -256,7 +250,7 @@ footer{text-align:center;padding:20px;opacity:.6}
 <input type="number" id="tip">
 
 <button class="main" onclick="calculate()" id="t_calc"></button>
-<div id="price" style="text-align:center;color:var(--yellow);font-size:22px"></div>
+<div id="price"></div>
 </div>
 
 <!-- REGULAMIN -->
@@ -267,13 +261,11 @@ footer{text-align:center;padding:20px;opacity:.6}
 <div class="reg-item" id="r2"></div>
 <div class="reg-item" id="r3"></div>
 <div class="reg-item" id="r4"></div>
-
 <div class="reg-accept">
 <input type="checkbox" id="acceptReg">
 <span id="t_accept"></span>
 </div>
 </div>
-
 <button class="main" onclick="sendOrder()" id="t_order"></button>
 </div>
 
@@ -295,14 +287,14 @@ footer{text-align:center;padding:20px;opacity:.6}
 <script>
 
 /* ============================================================
-LANGUAGE DATA (FULL)
+LANGUAGE
 ============================================================ */
 const T={
 pl:{
 title:"🚗 Night Delivery Małdyty",
 rates:"🚕 Stawki",
-transport:"🚕 Przewóz osób: 🌙 Noc 19 zł + 1.60 zł/km | ☀️ Dzień 15 zł + 1.40 zł/km",
-delivery:"🚗 Dostawa: 🌙 Noc 17 zł + 1.30 zł/km | ☀️ Dzień 13 zł + 1.10 zł/km",
+transport:"🚕 Przewóz: Noc 19 zł + 1.60/km | Dzień 15 zł + 1.40/km",
+delivery:"🚗 Dostawa: Noc 17 zł + 1.30/km | Dzień 13 zł + 1.10/km",
 limit:"Limit: 50 km",
 service:"🚗 Rodzaj usługi",
 km:"📍 Dystans (km)",
@@ -319,86 +311,27 @@ rateApp:"⭐ Oceń aplikację",
 addOpinion:"⭐ Dodaj opinię",
 clientOpinions:"🗣 Opinie klientów"
 },
-en:{
-title:"🚗 Night Delivery",
-rates:"🚕 Rates",
-transport:"🚕 Transport: 🌙 Night 19 PLN + 1.60/km | ☀️ Day 15 PLN + 1.40/km",
-delivery:"🚗 Delivery: 🌙 Night 17 PLN + 1.30/km | ☀️ Day 13 PLN + 1.10/km",
-limit:"Limit: 50 km",
-service:"🚗 Service type",
-km:"📍 Distance (km)",
-tip:"💰 Tip",
-calc:"🧮 Calculate price",
-rules:"📜 Rules",
-r1:"🚫 Alcohol & cigarettes 18+",
-r2:"💳 Orders over 30 PLN → BLIK",
-r3:"📞 Driver may contact",
-r4:"💰 Price is final",
-accept:"I accept rules",
-order:"📩 Order",
-rateApp:"⭐ Rate the app",
-addOpinion:"⭐ Add opinion",
-clientOpinions:"🗣 Customer opinions"
-},
-ua:{
-title:"🚗 Нічна доставка",
-rates:"🚕 Тарифи",
-transport:"🚕 Перевезення: 🌙 Ніч 19 zł + 1.60/км | ☀️ День 15 zł + 1.40/км",
-delivery:"🚗 Доставка: 🌙 Ніч 17 zł + 1.30/км | ☀️ День 13 zł + 1.10/км",
-limit:"Ліміт: 50 км",
-service:"🚗 Тип послуги",
-km:"📍 Відстань (км)",
-tip:"💰 Чайові",
-calc:"🧮 Розрахувати",
-rules:"📜 Правила",
-r1:"🚫 Алкоголь і сигарети 18+",
-r2:"💳 Замовлення понад 30 zł → BLIK",
-r3:"📞 Водій може звʼязатися",
-r4:"💰 Ціна остаточна",
-accept:"Я приймаю правила",
-order:"📩 Замовити",
-rateApp:"⭐ Оцініть додаток",
-addOpinion:"⭐ Додати відгук",
-clientOpinions:"🗣 Відгуки клієнтів"
-}
+en:{...this.pl},
+ua:{...this.pl}
 };
 
-/* ============================================================
-LANGUAGE SWITCH
-============================================================ */
 function setLang(l,b){
 document.querySelectorAll(".langs button").forEach(x=>x.classList.remove("active"));
 b.classList.add("active");
-t_title.innerText=T[l].title;
-t_rates.innerText=T[l].rates;
-t_transport.innerText=T[l].transport;
-t_delivery.innerText=T[l].delivery;
-t_limit.innerText=T[l].limit;
-t_service.innerText=T[l].service;
-t_km.innerText=T[l].km;
-t_tip.innerText=T[l].tip;
-t_calc.innerText=T[l].calc;
-t_rules.innerText=T[l].rules;
-r1.innerText=T[l].r1;
-r2.innerText=T[l].r2;
-r3.innerText=T[l].r3;
-r4.innerText=T[l].r4;
-t_accept.innerText=T[l].accept;
-t_order.innerText=T[l].order;
-t_rate_app.innerText=T[l].rateApp;
-t_add_opinion.innerText=T[l].addOpinion;
-t_client_opinions.innerText=T[l].clientOpinions;
+Object.keys(T[l]).forEach(k=>{
+const el=document.getElementById("t_"+k);
+if(el) el.innerText=T[l][k];
+});
+r1.innerText=T[l].r1;r2.innerText=T[l].r2;
+r3.innerText=T[l].r3;r4.innerText=T[l].r4;
 }
 
-/* INIT */
 setLang("pl",document.querySelector(".langs button"));
 
 /* ============================================================
 REGULAMIN
 ============================================================ */
-acceptReg.onchange=()=>{
-regBox.className="reg-box "+(acceptReg.checked?"accepted":"required");
-};
+acceptReg.onchange=()=>regBox.className="reg-box "+(acceptReg.checked?"accepted":"required");
 
 /* ============================================================
 GPS
@@ -419,26 +352,33 @@ return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));
 }
 
 /* ============================================================
-PRICE
+PRICE + ANIMATION
 ============================================================ */
-function calculate(){
-const kmv=parseFloat(km.value);
-if(!kmv)return alert("Podaj km");
-if(kmv>50)return alert("Max 50 km");
-
-const h=new Date().getHours();
-const night=h>=22||h<6;
-let base=0,per=0;
-
-if(type.value==="transport"){
-base=night?19:15;
-per=night?1.6:1.4;
-}else{
-base=night?17:13;
-per=night?1.3:1.1;
+let currentPrice=0;
+function animatePrice(to){
+const start=currentPrice;
+const diff=to-start;
+let t=0;
+const step=()=>{t+=.05;
+currentPrice=start+diff*t;
+price.innerText="Cena: "+currentPrice.toFixed(2)+" zł";
+if(t<1)requestAnimationFrame(step);
+};
+step();
 }
 
-price.innerText="Cena: "+(base+kmv*per+(+tip.value||0)).toFixed(2)+" zł";
+function calculate(){
+const kmv=parseFloat(km.value);
+if(!kmv||kmv>50)return alert("Błąd km");
+const h=new Date().getHours();
+const night=h>=22||h<6;
+let base,per;
+if(type.value==="transport"){
+base=night?19:15;per=night?1.6:1.4;
+}else{
+base=night?17:13;per=night?1.3:1.1;
+}
+animatePrice(base+kmv*per+(+tip.value||0));
 }
 
 /* ============================================================
@@ -463,7 +403,7 @@ stars.appendChild(s);
 function addOpinion(){
 if(!sel)return;
 ratings.push(sel);
-avgRating.innerText=`⭐ ${(ratings.reduce((a,b)=>a+b,0)/ratings.length).toFixed(1)} / 5 (${ratings.length} opinii)`;
+avgRating.innerText=`⭐ ${(ratings.reduce((a,b)=>a+b,0)/ratings.length).toFixed(1)} / 5 (${ratings.length})`;
 const d=document.createElement("div");
 d.className="opinia";
 d.innerText="⭐ "+sel+" "+opinionText.value;
@@ -475,4 +415,5 @@ opinionText.value="";sel=0;
 
 </body>
 </html>
+
 
