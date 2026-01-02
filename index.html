@@ -7,14 +7,9 @@
 
 <meta name="theme-color" content="#000000">
 
-<!-- FONTS -->
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
 
 <style>
-
-/* ============================================================
-ROOT
-============================================================ */
 :root{
 --yellow:#f5c400;
 --bg:#000;
@@ -23,21 +18,13 @@ ROOT
 --green:#2ecc71;
 }
 
-/* ============================================================
-BODY
-============================================================ */
 body{
 margin:0;
 font-family:'Poppins',system-ui,Arial;
 background:radial-gradient(circle at top,#111,#000 65%);
 color:#fff;
-animation:fadeBody .8s ease;
 }
-@keyframes fadeBody{from{opacity:0}to{opacity:1}}
 
-/* ============================================================
-HEADER
-============================================================ */
 .banner{
 height:170px;
 display:flex;
@@ -50,7 +37,7 @@ linear-gradient(180deg,#000,#050505);
 .banner img{
 width:80%;
 max-width:320px;
-filter:drop-shadow(0 0 25px rgba(245,196,0,.5));
+filter:drop-shadow(0 0 25px rgba(245,196,0,.6));
 }
 
 header{text-align:center;padding:20px}
@@ -60,27 +47,16 @@ font-family:'Orbitron',sans-serif;
 font-weight:900;
 letter-spacing:1px;
 color:var(--yellow);
-text-shadow:0 0 20px rgba(245,196,0,.7);
-animation:titleGlow 2s infinite alternate;
-}
-@keyframes titleGlow{
-from{text-shadow:0 0 10px rgba(245,196,0,.4)}
-to{text-shadow:0 0 30px rgba(245,196,0,.9)}
 }
 
 .phone{
 color:var(--yellow);
 font-size:18px;
 text-decoration:none;
-display:block;
-margin-top:6px;
 }
 
 .rating{opacity:.85;margin-top:6px}
 
-/* ============================================================
-LANG
-============================================================ */
 .langs{
 display:flex;
 justify-content:center;
@@ -94,32 +70,19 @@ color:#fff;
 padding:8px 18px;
 border-radius:16px;
 font-weight:600;
-transition:.25s;
 }
 .langs button.active{
 color:var(--yellow);
 border-color:var(--yellow);
-box-shadow:0 0 18px rgba(245,196,0,.6);
 }
 
-/* ============================================================
-CARD
-============================================================ */
 .card{
 background:linear-gradient(180deg,#111,#0b0b0b);
 border-radius:20px;
 padding:22px;
 margin:18px;
-animation:cardIn .6s ease;
-}
-@keyframes cardIn{
-from{opacity:0;transform:translateY(40px)}
-to{opacity:1;transform:none}
 }
 
-/* ============================================================
-FORM
-============================================================ */
 label{font-size:14px}
 input,textarea,select{
 width:100%;
@@ -130,11 +93,7 @@ border:none;
 background:#000;
 color:#fff;
 }
-textarea{resize:none}
 
-/* ============================================================
-BUTTON
-============================================================ */
 button.main{
 width:100%;
 margin-top:16px;
@@ -143,17 +102,9 @@ border:none;
 border-radius:18px;
 background:linear-gradient(135deg,#f5c400,#ffe066);
 font-weight:800;
-cursor:pointer;
-transition:.25s;
-}
-button.main:hover{
-transform:translateY(-3px);
-box-shadow:0 0 30px rgba(245,196,0,.8);
 }
 
-/* ============================================================
-REGULAMIN
-============================================================ */
+/* === REGULAMIN === */
 .reg-box{
 border:2px solid var(--border);
 border-radius:18px;
@@ -162,51 +113,100 @@ transition:.3s;
 }
 .reg-box.required{
 border-color:var(--yellow);
-box-shadow:0 0 22px rgba(245,196,0,.5);
 }
 .reg-box.accepted{
 border-color:var(--green);
-box-shadow:0 0 22px rgba(46,204,113,.6);
 }
-.reg-item{font-size:13px;margin-bottom:8px}
-.reg-accept{display:flex;gap:10px;align-items:center;margin-top:12px}
 
-/* ============================================================
-STARS
-============================================================ */
+.reg-content{
+max-height:0;
+overflow:hidden;
+transition:max-height .4s ease;
+}
+.reg-content.open{
+max-height:400px;
+}
+
+.reg-toggle{
+margin:10px 0;
+background:#000;
+border:1px solid var(--border);
+color:var(--yellow);
+padding:10px;
+border-radius:12px;
+cursor:pointer;
+text-align:center;
+font-weight:600;
+}
+
+.reg-accept{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-top:14px;
+}
+
+.switch{
+width:50px;
+height:26px;
+position:relative;
+}
+.switch input{display:none}
+.slider{
+position:absolute;
+inset:0;
+background:#333;
+border-radius:30px;
+}
+.slider:before{
+content:"";
+position:absolute;
+width:20px;
+height:20px;
+left:3px;
+top:3px;
+background:#aaa;
+border-radius:50%;
+transition:.3s;
+}
+.switch input:checked + .slider{
+background:var(--green);
+}
+.switch input:checked + .slider:before{
+transform:translateX(24px);
+background:#fff;
+}
+
+/* SHAKE */
+@keyframes shake{
+0%{transform:translateX(0)}
+25%{transform:translateX(-6px)}
+50%{transform:translateX(6px)}
+75%{transform:translateX(-6px)}
+100%{transform:translateX(0)}
+}
+.shake{
+animation:shake .4s;
+}
+
 .stars span{
 font-size:36px;
 cursor:pointer;
 color:#333;
-transition:.2s;
 }
 .stars span.active{
 color:var(--yellow);
-transform:scale(1.4);
 }
 
-/* ============================================================
-OPINIONS
-============================================================ */
-.opinia{
-border-bottom:1px solid var(--border);
-padding:10px 0;
-font-size:13px;
-}
-
-/* ============================================================
-PRICE ANIMATION
-============================================================ */
 #price{
+text-align:center;
+color:var(--yellow);
 font-size:26px;
 font-weight:800;
-color:var(--yellow);
-text-align:center;
 margin-top:10px;
 }
 
 footer{text-align:center;padding:22px;opacity:.6}
-
 </style>
 </head>
 
@@ -215,7 +215,7 @@ footer{text-align:center;padding:22px;opacity:.6}
 <div class="banner"><img src="logo.png"></div>
 
 <header>
-<h1 id="t_title">🚗 Night Delivery Małdyty</h1>
+<h1 id="t_title"></h1>
 <a class="phone" href="tel:+48512956568">📞 512 956 568</a>
 <div class="rating" id="avgRating">⭐ 0.0 / 5 (0 opinii)</div>
 
@@ -226,191 +226,76 @@ footer{text-align:center;padding:22px;opacity:.6}
 </div>
 </header>
 
-<!-- STAWKI -->
-<div class="card">
-<h3 id="t_rates"></h3>
-<p id="t_transport"></p>
-<p id="t_delivery"></p>
-<p id="t_limit" style="opacity:.6"></p>
-</div>
-
-<!-- ZAMÓWIENIE -->
-<div class="card">
-<label id="t_service"></label>
-<select id="type">
-<option value="delivery">🚗📦 Dostawa</option>
-<option value="transport">🚕 Przewóz</option>
-</select>
-
-<label id="t_km"></label>
-<input type="number" id="km">
-<button class="main" onclick="getGPS()">📡 GPS</button>
-
-<label id="t_tip"></label>
-<input type="number" id="tip">
-
-<button class="main" onclick="calculate()" id="t_calc"></button>
-<div id="price"></div>
-</div>
-
-<!-- REGULAMIN -->
 <div class="card">
 <h3 id="t_rules"></h3>
+
+<div class="reg-toggle" onclick="toggleRules()">📜 Czytaj regulamin</div>
+
 <div class="reg-box required" id="regBox">
-<div class="reg-item" id="r1"></div>
-<div class="reg-item" id="r2"></div>
-<div class="reg-item" id="r3"></div>
-<div class="reg-item" id="r4"></div>
+<div class="reg-content" id="regContent">
+<div id="r1"></div>
+<div id="r2"></div>
+<div id="r3"></div>
+<div id="r4"></div>
+</div>
+
 <div class="reg-accept">
-<input type="checkbox" id="acceptReg">
 <span id="t_accept"></span>
+<label class="switch">
+<input type="checkbox" id="acceptReg">
+<span class="slider"></span>
+</label>
 </div>
 </div>
+
 <button class="main" onclick="sendOrder()" id="t_order"></button>
-</div>
-
-<!-- OPINIE -->
-<div class="card">
-<label id="t_rate_app"></label>
-<div class="stars" id="stars"></div>
-<textarea id="opinionText"></textarea>
-<button class="main" onclick="addOpinion()" id="t_add_opinion"></button>
-</div>
-
-<div class="card">
-<h3 id="t_client_opinions"></h3>
-<div id="opinions"></div>
 </div>
 
 <footer>🚗 Night Delivery Małdyty</footer>
 
 <script>
-
-/* ============================================================
-LANGUAGE
-============================================================ */
 const T={
 pl:{
 title:"🚗 Night Delivery Małdyty",
-rates:"🚕 Stawki",
-transport:"🚕 Przewóz: Noc 19 zł + 1.60/km | Dzień 15 zł + 1.40/km",
-delivery:"🚗 Dostawa: Noc 17 zł + 1.30/km | Dzień 13 zł + 1.10/km",
-limit:"Limit: 50 km",
-service:"🚗 Rodzaj usługi",
-km:"📍 Dystans (km)",
-tip:"💰 Napiwek",
-calc:"🧮 Oblicz cenę",
 rules:"📜 Regulamin",
 r1:"🚫 Alkohol i papierosy tylko 18+",
 r2:"💳 Zamówienia +30 zł → BLIK",
 r3:"📞 Kierowca może się kontaktować",
 r4:"💰 Cena nie podlega negocjacji",
 accept:"Akceptuję regulamin",
-order:"📩 Zamów",
-rateApp:"⭐ Oceń aplikację",
-addOpinion:"⭐ Dodaj opinię",
-clientOpinions:"🗣 Opinie klientów"
-},
-en:{...this.pl},
-ua:{...this.pl}
+order:"📩 Zamów"
+}
 };
 
-function setLang(l,b){
-document.querySelectorAll(".langs button").forEach(x=>x.classList.remove("active"));
-b.classList.add("active");
-Object.keys(T[l]).forEach(k=>{
-const el=document.getElementById("t_"+k);
-if(el) el.innerText=T[l][k];
-});
-r1.innerText=T[l].r1;r2.innerText=T[l].r2;
-r3.innerText=T[l].r3;r4.innerText=T[l].r4;
+function setLang(){
+const d=T.pl;
+t_title.innerText=d.title;
+t_rules.innerText=d.rules;
+r1.innerText=d.r1;
+r2.innerText=d.r2;
+r3.innerText=d.r3;
+r4.innerText=d.r4;
+t_accept.innerText=d.accept;
+t_order.innerText=d.order;
+}
+setLang();
+
+function toggleRules(){
+regContent.classList.toggle("open");
 }
 
-setLang("pl",document.querySelector(".langs button"));
-
-/* ============================================================
-REGULAMIN
-============================================================ */
-acceptReg.onchange=()=>regBox.className="reg-box "+(acceptReg.checked?"accepted":"required");
-
-/* ============================================================
-GPS
-============================================================ */
-const BASE={lat:53.9586,lon:19.7406};
-function getGPS(){
-navigator.geolocation.getCurrentPosition(p=>{
-km.value=dist(BASE.lat,BASE.lon,p.coords.latitude,p.coords.longitude).toFixed(1);
-});
-}
-function dist(a,b,c,d){
-const R=6371;
-const dLat=(c-a)*Math.PI/180;
-const dLon=(d-b)*Math.PI/180;
-const x=Math.sin(dLat/2)**2+
-Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.sin(dLon/2)**2;
-return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));
+acceptReg.onchange=()=>{
+regBox.className="reg-box "+(acceptReg.checked?"accepted":"required");
 }
 
-/* ============================================================
-PRICE + ANIMATION
-============================================================ */
-let currentPrice=0;
-function animatePrice(to){
-const start=currentPrice;
-const diff=to-start;
-let t=0;
-const step=()=>{t+=.05;
-currentPrice=start+diff*t;
-price.innerText="Cena: "+currentPrice.toFixed(2)+" zł";
-if(t<1)requestAnimationFrame(step);
-};
-step();
-}
-
-function calculate(){
-const kmv=parseFloat(km.value);
-if(!kmv||kmv>50)return alert("Błąd km");
-const h=new Date().getHours();
-const night=h>=22||h<6;
-let base,per;
-if(type.value==="transport"){
-base=night?19:15;per=night?1.6:1.4;
-}else{
-base=night?17:13;per=night?1.3:1.1;
-}
-animatePrice(base+kmv*per+(+tip.value||0));
-}
-
-/* ============================================================
-ORDER
-============================================================ */
 function sendOrder(){
-if(!acceptReg.checked)return alert("Zaakceptuj regulamin");
-if(!price.innerText)return alert("Oblicz cenę");
+if(!acceptReg.checked){
+regBox.classList.add("shake");
+setTimeout(()=>regBox.classList.remove("shake"),400);
+return;
+}
 window.open("https://wa.me/48512956568");
 }
-
-/* ============================================================
-OPINIONS
-============================================================ */
-let sel=0,ratings=[];
-for(let i=1;i<=5;i++){
-const s=document.createElement("span");
-s.textContent="★";
-s.onclick=()=>{sel=i;[...stars.children].forEach((e,j)=>e.classList.toggle("active",j<i));};
-stars.appendChild(s);
-}
-function addOpinion(){
-if(!sel)return;
-ratings.push(sel);
-avgRating.innerText=`⭐ ${(ratings.reduce((a,b)=>a+b,0)/ratings.length).toFixed(1)} / 5 (${ratings.length})`;
-const d=document.createElement("div");
-d.className="opinia";
-d.innerText="⭐ "+sel+" "+opinionText.value;
-opinions.prepend(d);
-opinionText.value="";sel=0;
-}
-
 </script>
 
 </body>
