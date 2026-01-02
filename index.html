@@ -133,14 +133,7 @@ color:var(--yellow);
 font-weight:900;
 text-align:center;
 cursor:pointer;
-animation:pulse 2s infinite;
 }
-@keyframes pulse{
-0%{box-shadow:0 0 10px rgba(245,196,0,.3)}
-50%{box-shadow:0 0 35px rgba(245,196,0,1)}
-100%{box-shadow:0 0 10px rgba(245,196,0,.3)}
-}
-
 .reg-box{
 display:none;
 margin-top:14px;
@@ -150,7 +143,6 @@ padding:18px;
 }
 .reg-box.accepted{
 border-color:var(--green);
-box-shadow:0 0 30px rgba(46,204,113,.8);
 }
 .reg-label{
 display:flex;
@@ -218,8 +210,6 @@ text-align:center;
 <label>📏 Kilometry</label>
 <input type="number" id="km" value="5" min="1" max="50">
 
-<button class="main" onclick="getGPS()">📡 Oblicz KM (GPS)</button>
-
 <div class="options">
 <button onclick="setPay('Gotówka')" id="cash">💵 Gotówka</button>
 <button onclick="setPay('BLIK')" id="blik">📲 BLIK</button>
@@ -250,31 +240,11 @@ text-align:center;
 </div>
 </div>
 
-<div id="pointsTab" style="display:none">
-<div class="card">
-<h3>🎁 Program lojalnościowy</h3>
-
-<div class="reward">🎁 50 pkt → -10 zł
-<button class="main" onclick="redeem(50,'discount')">Wymień</button></div>
-
-<div class="reward">🎁 100 pkt → darmowe 10 km
-<button class="main" onclick="redeem(100,'10km')">Wymień</button></div>
-
-<div class="reward">🎁 200 pkt → darmowe 20 km
-<button class="main" onclick="redeem(200,'20km')">Wymień</button></div>
-
-<div class="reward">🎁 300 pkt → darmowy kurs + napiwek 10 zł
-<button class="main" onclick="redeem(300,'vip')">Wymień</button></div>
-
-</div>
-</div>
-
 <script>
 let points = Number(localStorage.getItem("points")) || 0;
-let payment="", tip=0, bonus=null;
+let payment="", tip=0;
 
-pointsSpan = document.getElementById("points");
-pointsSpan.innerText = points;
+document.getElementById("points").innerText = points;
 
 function showTab(tab,btn){
 orderTab.style.display=tab==="order"?"block":"none";
@@ -301,13 +271,6 @@ el.parentNode.querySelectorAll("button").forEach(b=>b.classList.remove("active")
 el.classList.add("active");
 }
 
-function getGPS(){
-navigator.geolocation.getCurrentPosition(
-()=>{ km.value = Math.floor(Math.random()*20)+5; alert("📍 KM ustawione orientacyjnie"); },
-()=>alert("❌ Brak GPS – wpisz ręcznie")
-);
-}
-
 function isNight(){
 const h=new Date().getHours();
 return h>=22||h<6;
@@ -326,41 +289,35 @@ return night ? 8 + 2.8*km : 6 + 2.5*km;
 }
 
 function calculate(){
-const kmv = +km.value;
+const kmv=+km.value;
 let price = type.value==="delivery"
 ? deliveryPrice(kmv,isNight())
 : transportPrice(kmv,isNight());
 
-if(bonus==="discount") price-=10;
 price+=tip;
-
-price=Math.max(price,0);
 document.getElementById("price").innerText = Math.round(price)+" zł";
-}
-
-function redeem(cost,type){
-if(points<cost){alert("❌ Za mało punktów");return;}
-points-=cost;
-bonus=type;
-localStorage.setItem("points",points);
-pointsSpan.innerText=points;
-alert("🎉 Bonus aktywny!");
 }
 
 function toggleReg(){
 regBox.style.display=regBox.style.display==="block"?"none":"block";
 }
-acceptReg.onchange=()=>regBox.classList.toggle("accepted",acceptReg.checked);
 
 function sendOrder(){
 if(!payment){alert("Wybierz płatność");return;}
 if(!acceptReg.checked){alert("Zaakceptuj regulamin");return;}
 
-points+=km.value*10;
-localStorage.setItem("points",points);
-pointsSpan.innerText=points;
+const priceText = document.getElementById("price").innerText;
 
-window.open("https://wa.me/48512956568");
+const msg = `
+🚗 NIGHT DELIVERY MAŁDYTY
+Usługa: ${type.value === "delivery" ? "Dostawa" : "Przewóz osób"}
+Kilometry: ${km.value} km
+Cena: ${priceText}
+Płatność: ${payment}
+${type.value==="delivery" ? "Co: "+what.value+"\nAdres: "+addressDelivery.value : "Skąd: "+from.value+"\nDokąd: "+to.value}
+`;
+
+window.open("https://wa.me/48512956568?text="+encodeURIComponent(msg));
 }
 </script>
 
