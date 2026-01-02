@@ -189,7 +189,6 @@ text-align:center;
 <button onclick="showTab('points',this)">🎁 Punkty</button>
 </div>
 
-<!-- ZAMÓWIENIE -->
 <div id="orderTab">
 <div class="card">
 
@@ -251,7 +250,6 @@ text-align:center;
 </div>
 </div>
 
-<!-- PUNKTY -->
 <div id="pointsTab" style="display:none">
 <div class="card">
 <h3>🎁 Program lojalnościowy</h3>
@@ -275,7 +273,8 @@ text-align:center;
 let points = Number(localStorage.getItem("points")) || 0;
 let payment="", tip=0, bonus=null;
 
-document.getElementById("points").innerText=points;
+pointsSpan = document.getElementById("points");
+pointsSpan.innerText = points;
 
 function showTab(tab,btn){
 orderTab.style.display=tab==="order"?"block":"none";
@@ -322,17 +321,20 @@ if(km<=30) return night?21+1.6*km:19+1.3*km;
 return night?21+1.55*km:19+1.25*km;
 }
 
+function transportPrice(km,night){
+return night ? 8 + 2.8*km : 6 + 2.5*km;
+}
+
 function calculate(){
-const kmv=+km.value;
+const kmv = +km.value;
 let price = type.value==="delivery"
 ? deliveryPrice(kmv,isNight())
-: (isNight()?8+2.8*kmv:6+2.5*kmv);
+: transportPrice(kmv,isNight());
 
 if(bonus==="discount") price-=10;
 price+=tip;
 
 price=Math.max(price,0);
-price.innerText = Math.round(price)+" zł";
 document.getElementById("price").innerText = Math.round(price)+" zł";
 }
 
@@ -341,7 +343,7 @@ if(points<cost){alert("❌ Za mało punktów");return;}
 points-=cost;
 bonus=type;
 localStorage.setItem("points",points);
-document.getElementById("points").innerText=points;
+pointsSpan.innerText=points;
 alert("🎉 Bonus aktywny!");
 }
 
@@ -356,7 +358,7 @@ if(!acceptReg.checked){alert("Zaakceptuj regulamin");return;}
 
 points+=km.value*10;
 localStorage.setItem("points",points);
-document.getElementById("points").innerText=points;
+pointsSpan.innerText=points;
 
 window.open("https://wa.me/48512956568");
 }
@@ -364,5 +366,3 @@ window.open("https://wa.me/48512956568");
 
 </body>
 </html>
-
-
