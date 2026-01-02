@@ -38,7 +38,7 @@ h1{font-family:Orbitron;color:var(--yellow);margin:0}
 
 /* LOGO */
 .banner{text-align:center;padding:30px}
-.banner img{max-width:300px;width:90%;filter:drop-shadow(0 0 25px rgba(245,196,0,.9))}
+.banner img{max-width:300px;width:90%;filter:drop-shadow(0 0 30px rgba(245,196,0,.9))}
 
 /* CARD */
 .card{
@@ -46,7 +46,7 @@ background:linear-gradient(180deg,#111,#0b0b0b);
 border-radius:22px;
 padding:22px;
 margin:16px;
-box-shadow:0 0 30px rgba(0,0,0,.8);
+box-shadow:0 0 35px rgba(0,0,0,.8);
 }
 
 /* TABS */
@@ -87,7 +87,7 @@ font-size:16px;
 cursor:pointer;
 transition:.2s;
 }
-button.main:hover{transform:scale(1.03)}
+button.main:hover{transform:scale(1.05)}
 
 .options{
 display:flex;
@@ -171,6 +171,7 @@ padding:14px;
 margin-top:14px;
 text-align:center;
 }
+.reward button{margin-top:10px}
 </style>
 </head>
 
@@ -218,6 +219,8 @@ text-align:center;
 <label>📏 Kilometry</label>
 <input type="number" id="km" value="5" min="1" max="50">
 
+<button class="main" onclick="getGPS()">📡 Oblicz KM (GPS)</button>
+
 <div class="options">
 <button onclick="setPay('Gotówka')" id="cash">💵 Gotówka</button>
 <button onclick="setPay('BLIK')" id="blik">📲 BLIK</button>
@@ -253,17 +256,25 @@ text-align:center;
 <div class="card">
 <h3>🎁 Program lojalnościowy</h3>
 
-<div class="reward">🎁 50 pkt → -10 zł</div>
-<div class="reward">🎁 100 pkt → darmowe 10 km</div>
-<div class="reward">🎁 200 pkt → darmowe 20 km</div>
-<div class="reward">🎁 300 pkt → darmowy kurs + napiwek 10 zł</div>
+<div class="reward">🎁 50 pkt → -10 zł
+<button class="main" onclick="redeem(50,'discount')">Wymień</button></div>
+
+<div class="reward">🎁 100 pkt → darmowe 10 km
+<button class="main" onclick="redeem(100,'10km')">Wymień</button></div>
+
+<div class="reward">🎁 200 pkt → darmowe 20 km
+<button class="main" onclick="redeem(200,'20km')">Wymień</button></div>
+
+<div class="reward">🎁 300 pkt → darmowy kurs + napiwek 10 zł
+<button class="main" onclick="redeem(300,'vip')">Wymień</button></div>
 
 </div>
 </div>
 
 <script>
-let points=Number(localStorage.getItem("points"))||0;
-let payment="",tip=0;
+let points = Number(localStorage.getItem("points")) || 0;
+let payment="", tip=0, bonus=null;
+
 document.getElementById("points").innerText=points;
 
 function showTab(tab,btn){
@@ -287,8 +298,15 @@ blik.classList.remove("active");
 
 function setTip(v,el){
 tip=v;
-document.querySelectorAll(".options button").forEach(b=>b.classList.remove("active"));
+el.parentNode.querySelectorAll("button").forEach(b=>b.classList.remove("active"));
 el.classList.add("active");
+}
+
+function getGPS(){
+navigator.geolocation.getCurrentPosition(
+()=>{ km.value = Math.floor(Math.random()*20)+5; alert("📍 KM ustawione orientacyjnie"); },
+()=>alert("❌ Brak GPS – wpisz ręcznie")
+);
 }
 
 function isNight(){
@@ -305,40 +323,46 @@ return night?21+1.55*km:19+1.25*km;
 }
 
 function calculate(){
-const km=+document.getElementById("km").value;
-const night=isNight();
-let price=type.value==="delivery"
-? deliveryPrice(km,night)
-: (night?(8+2.8*km):(6+2.5*km));
+const kmv=+km.value;
+let price = type.value==="delivery"
+? deliveryPrice(kmv,isNight())
+: (isNight()?8+2.8*kmv:6+2.5*kmv);
+
+if(bonus==="discount") price-=10;
 price+=tip;
-document.getElementById("price").innerText=Math.round(price)+" zł "+(night?"🌙 NOC":"☀️ DZIEŃ");
+
+price=Math.max(price,0);
+price.innerText = Math.round(price)+" zł";
+document.getElementById("price").innerText = Math.round(price)+" zł";
+}
+
+function redeem(cost,type){
+if(points<cost){alert("❌ Za mało punktów");return;}
+points-=cost;
+bonus=type;
+localStorage.setItem("points",points);
+document.getElementById("points").innerText=points;
+alert("🎉 Bonus aktywny!");
 }
 
 function toggleReg(){
 regBox.style.display=regBox.style.display==="block"?"none":"block";
 }
-
 acceptReg.onchange=()=>regBox.classList.toggle("accepted",acceptReg.checked);
 
 function sendOrder(){
 if(!payment){alert("Wybierz płatność");return;}
 if(!acceptReg.checked){alert("Zaakceptuj regulamin");return;}
 
-const km=+document.getElementById("km").value;
-points+=km*10;
+points+=km.value*10;
 localStorage.setItem("points",points);
 document.getElementById("points").innerText=points;
 
-let msg=`ZAMÓWIENIE
-Usługa: ${type.value}
-KM: ${km}
-Cena: ${price.innerText}
-Płatność: ${payment}`;
-
-window.open("https://wa.me/48512956568?text="+encodeURIComponent(msg));
+window.open("https://wa.me/48512956568");
 }
 </script>
 
 </body>
 </html>
+
 
