@@ -36,6 +36,7 @@ align-items:center;
 background:
 radial-gradient(circle at center, rgba(245,196,0,.35), transparent 65%),
 linear-gradient(180deg,#000,#050505);
+z-index:0; /* FIX */
 }
 .banner img{
 width:80%;
@@ -47,6 +48,8 @@ filter:drop-shadow(0 0 30px rgba(245,196,0,.7));
 header{
 text-align:center;
 padding:20px 20px 10px;
+position:relative; /* FIX */
+z-index:2; /* FIX */
 }
 h1{
 font-family:'Orbitron',sans-serif;
@@ -448,5 +451,6 @@ opinionText.value="";
 
 </body>
 </html>
+
 
 
