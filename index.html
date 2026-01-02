@@ -16,6 +16,7 @@
 --card:#111;
 --border:#222;
 --green:#2ecc71;
+--red:#ff4d4d;
 }
 
 *{box-sizing:border-box}
@@ -29,27 +30,30 @@ color:#fff;
 
 /* ===== ANIMATIONS ===== */
 @keyframes fadeUp{
-from{opacity:0;transform:translateY(20px)}
+from{opacity:0;transform:translateY(25px)}
 to{opacity:1;transform:none}
+}
+@keyframes glow{
+0%{box-shadow:0 0 10px rgba(245,196,0,.3)}
+50%{box-shadow:0 0 25px rgba(245,196,0,.7)}
+100%{box-shadow:0 0 10px rgba(245,196,0,.3)}
 }
 
 /* ===== BANNER ===== */
 .banner{
-height:200px;
+height:220px;
 display:flex;
 justify-content:center;
 align-items:center;
 background:
 radial-gradient(circle at center, rgba(245,196,0,.35), transparent 65%),
 linear-gradient(180deg,#000,#050505);
-position:relative;
-z-index:2;
 }
 .banner img{
-width:80%;
-max-width:320px;
-filter:drop-shadow(0 0 35px rgba(245,196,0,.8));
-animation:fadeUp .8s ease;
+width:85%;
+max-width:340px;
+filter:drop-shadow(0 0 40px rgba(245,196,0,.9));
+animation:fadeUp .9s ease;
 }
 
 /* ===== HEADER ===== */
@@ -59,7 +63,7 @@ padding:18px;
 position:sticky;
 top:0;
 background:#000;
-z-index:5;
+z-index:10;
 }
 h1{
 font-family:'Orbitron',sans-serif;
@@ -126,6 +130,11 @@ border-radius:18px;
 background:linear-gradient(135deg,#f5c400,#ffe066);
 font-weight:800;
 cursor:pointer;
+transition:.3s;
+}
+button.main:hover{
+animation:glow 1.5s infinite;
+transform:scale(1.02);
 }
 
 /* ===== PAYMENT ===== */
@@ -142,6 +151,7 @@ border:2px solid var(--border);
 background:#000;
 color:#fff;
 font-weight:700;
+cursor:pointer;
 }
 .payments button.active{
 border-color:var(--green);
@@ -151,10 +161,30 @@ box-shadow:0 0 18px rgba(46,204,113,.6);
 /* ===== PRICE ===== */
 #price{
 text-align:center;
-font-size:28px;
+font-size:30px;
 font-weight:900;
 color:var(--yellow);
+margin-top:14px;
+}
+
+/* ===== TIP ===== */
+.tips{
+display:flex;
+gap:10px;
 margin-top:12px;
+}
+.tips button{
+flex:1;
+padding:12px;
+border-radius:14px;
+border:1px solid var(--border);
+background:#000;
+color:#fff;
+cursor:pointer;
+}
+.tips button.active{
+border-color:var(--yellow);
+box-shadow:0 0 12px rgba(245,196,0,.6);
 }
 
 /* ===== OPINIONS ===== */
@@ -165,22 +195,17 @@ margin-top:12px;
 opacity:.9;
 }
 
-/* ===== TARIFF ===== */
-.tariff{
-font-size:14px;
-opacity:.8;
-margin-top:10px;
-text-align:center;
-}
-
 /* ===== REGULAMIN ===== */
 .reg-box{
 border:2px solid var(--border);
 border-radius:18px;
 padding:16px;
+transition:.3s;
 }
-.reg-box.required{border-color:var(--yellow)}
-.reg-box.accepted{border-color:var(--green)}
+.reg-box.accepted{
+border-color:var(--green);
+box-shadow:0 0 20px rgba(46,204,113,.6);
+}
 
 .reg-toggle{
 margin-bottom:12px;
@@ -194,8 +219,18 @@ font-weight:700;
 cursor:pointer;
 }
 
-.reg-content{display:none}
+.reg-content{
+display:none;
+animation:fadeUp .5s ease;
+}
 .reg-content.open{display:block}
+
+.alert{
+color:var(--red);
+font-weight:700;
+text-align:center;
+margin-top:10px;
+}
 
 footer{text-align:center;padding:22px;opacity:.6}
 </style>
@@ -208,25 +243,25 @@ footer{text-align:center;padding:22px;opacity:.6}
 </div>
 
 <header>
-<h1 id="t_title">🚗 Night Delivery Małdyty</h1>
+<h1>🚗 Night Delivery Małdyty</h1>
 <a class="phone" href="tel:+48512956568">📞 512 956 568</a>
 <div class="rating">⭐ 5.0 / 5</div>
 
 <div class="langs">
-<button class="active" data-lang="pl">PL</button>
-<button data-lang="en">EN</button>
-<button data-lang="ua">UA</button>
+<button class="active">PL</button>
+<button>EN</button>
+<button>UA</button>
 </div>
 </header>
 
 <div class="card">
-<label id="t_service">Usługa</label>
+<label>Usługa</label>
 <select id="type">
 <option value="delivery">🚗 Dostawa</option>
 <option value="transport">🚕 Przewóz osób</option>
 </select>
 
-<label id="t_km">Kilometry</label>
+<label>Kilometry</label>
 <input type="number" id="km" value="5">
 
 <button class="main" onclick="getGPS()">📡 GPS (realne KM)</button>
@@ -236,27 +271,29 @@ footer{text-align:center;padding:22px;opacity:.6}
 <button id="blik" onclick="setPay('BLIK')">📲 BLIK</button>
 </div>
 
+<div class="tips">
+<button onclick="setTip(0)">Bez napiwku</button>
+<button onclick="setTip(5)">+5 zł</button>
+<button onclick="setTip(10)">+10 zł</button>
+</div>
+
 <button class="main" onclick="calculate()">Oblicz cenę</button>
 <div id="price"></div>
-
-<div class="tariff">
-🌞 Dzień: 6:00–22:00<br>
-🌙 Noc: 22:00–6:00 (wyższa stawka)
-</div>
+<div class="alert" id="limitMsg"></div>
 </div>
 
 <div class="card">
 <h3>⭐ Opinie klientów</h3>
-<div class="opinion">„Zawsze na czas, polecam 🔥”</div>
+<div class="opinion">„Zawsze na czas 🔥”</div>
 <div class="opinion">„Nocą ratują życie 😎”</div>
-<div class="opinion">„Najlepsza dostawa w Małdytach”</div>
+<div class="opinion">„Top jakość, polecam”</div>
 </div>
 
 <div class="card">
 <div class="reg-toggle" onclick="regContent.classList.toggle('open')">📜 Regulamin</div>
-<div class="reg-box required" id="regBox">
+<div class="reg-box" id="regBox">
 <div class="reg-content" id="regContent">
-<p>🚫 Alkohol i papierosy tylko 18+</p>
+<p>🚫 Alkohol i papierosy 18+</p>
 <p>💳 Powyżej 30 zł → BLIK</p>
 <p>📞 Kierowca może zadzwonić</p>
 <p>💰 Cena nie podlega negocjacji</p>
@@ -272,21 +309,19 @@ footer{text-align:center;padding:22px;opacity:.6}
 <footer>🚗 Night Delivery Małdyty</footer>
 
 <script>
-let payment="";
-const priceDiv=document.getElementById("price");
-
-document.querySelectorAll(".langs button").forEach(b=>{
-b.onclick=()=>{
-document.querySelectorAll(".langs button").forEach(x=>x.classList.remove("active"));
-b.classList.add("active");
-};
-});
+let payment="", tip=0;
 
 function setPay(p){
 payment=p;
 cash.classList.remove("active");
 blik.classList.remove("active");
 (p==="Gotówka"?cash:blik).classList.add("active");
+}
+
+function setTip(v){
+tip=v;
+document.querySelectorAll(".tips button").forEach(b=>b.classList.remove("active"));
+event.target.classList.add("active");
 }
 
 function isNight(){
@@ -296,26 +331,32 @@ return h>=22 || h<6;
 
 function calculate(){
 const kmv=+km.value||0;
+limitMsg.innerText="";
+if(kmv>50){
+limitMsg.innerText="🚫 Poza strefą Night Delivery – max 50 km";
+price.innerText="";
+return;
+}
 const night=isNight();
-let price=(type.value==="delivery")
+let base=(type.value==="delivery")
 ?(night?20+1.8*kmv:15+1.5*kmv)
 :(night?8+2.8*kmv:6+2.5*kmv);
 
-price=Math.round(price*100)/100;
-priceDiv.innerText=`${price} zł (${night?"NOC":"DZIEŃ"})`;
-window.lastPrice=price;
+let total=Math.round((base+tip)*100)/100;
+price.innerText=`${total} zł (${night?"NOC":"DZIEŃ"})`;
+window.lastPrice=total;
 }
 
 function getGPS(){
-navigator.geolocation.getCurrentPosition(pos=>{
+navigator.geolocation.getCurrentPosition(()=>{
 km.value=5;
 calculate();
 });
 }
 
 function sendOrder(){
-if(!acceptReg.checked||!payment){
-alert("Akceptuj regulamin i wybierz płatność");
+if(!acceptReg.checked||!payment||!window.lastPrice){
+alert("Uzupełnij zamówienie poprawnie");
 return;
 }
 const msg=`Zamówienie:
@@ -325,9 +366,12 @@ Cena: ${window.lastPrice} zł
 Płatność: ${payment}`;
 window.open("https://wa.me/48512956568?text="+encodeURIComponent(msg));
 }
+
+acceptReg.onchange=()=>{
+regBox.classList.toggle("accepted",acceptReg.checked);
+};
 </script>
 
 </body>
 </html>
-
 
