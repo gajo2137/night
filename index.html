@@ -11,6 +11,8 @@
 :root{
 --yellow:#f5c400;
 --green:#2ecc71;
+--bg:#000;
+--card:#111;
 --border:#222;
 }
 
@@ -22,92 +24,152 @@ background:#000;
 color:#fff;
 }
 
-.banner{text-align:center;padding:30px}
-.banner img{max-width:300px;width:90%}
-
-header{text-align:center;padding:10px;position:sticky;top:0;background:#000}
-h1{font-family:Orbitron;color:var(--yellow)}
+/* HEADER */
+header{
+text-align:center;
+padding:16px;
+position:sticky;
+top:0;
+background:#000;
+z-index:10;
+}
+h1{font-family:Orbitron;color:var(--yellow);margin:0}
 .phone{color:var(--yellow);font-weight:800;text-decoration:none}
 
+/* LOGO */
+.banner{text-align:center;padding:30px}
+.banner img{max-width:300px;width:90%;filter:drop-shadow(0 0 25px rgba(245,196,0,.9))}
+
+/* CARD */
 .card{
-background:#111;
-border-radius:20px;
-padding:20px;
-margin:15px;
+background:linear-gradient(180deg,#111,#0b0b0b);
+border-radius:22px;
+padding:22px;
+margin:16px;
+box-shadow:0 0 30px rgba(0,0,0,.8);
 }
 
+/* TABS */
+.tabs{display:flex}
 .tabs button{
-width:50%;
+flex:1;
 padding:14px;
 border:none;
 background:#000;
 color:#fff;
-font-weight:800;
+font-weight:900;
 }
 .tabs .active{
 border-bottom:4px solid var(--green);
 }
 
+/* INPUTS */
 input,select,textarea{
 width:100%;
 padding:14px;
 border-radius:14px;
 border:none;
-margin-top:8px;
 background:#000;
 color:#fff;
+margin-top:6px;
 }
 
+/* BUTTONS */
 button.main{
 width:100%;
 padding:18px;
-margin-top:15px;
+margin-top:16px;
 border:none;
 border-radius:18px;
 background:linear-gradient(135deg,#f5c400,#ffe066);
 font-weight:900;
+font-size:16px;
+cursor:pointer;
+transition:.2s;
+}
+button.main:hover{transform:scale(1.03)}
+
+.options{
+display:flex;
+gap:10px;
+margin-top:14px;
+}
+.options button{
+flex:1;
+padding:14px;
+border-radius:14px;
+border:1px solid var(--border);
+background:#000;
+color:#fff;
+font-weight:800;
+}
+.options button.active{
+border-color:var(--green);
+box-shadow:0 0 20px rgba(46,204,113,.8);
 }
 
-.points{text-align:center;font-size:22px;color:var(--yellow);font-weight:900}
+/* INFO */
+.points{
+text-align:center;
+font-size:22px;
+font-weight:900;
+color:var(--yellow);
+}
+#price{
+text-align:center;
+font-size:32px;
+font-weight:900;
+color:var(--yellow);
+margin-top:10px;
+}
 
-#price{text-align:center;font-size:30px;color:var(--yellow);margin-top:10px}
-
+/* REGULAMIN */
 .reg-toggle{
 margin-top:20px;
-padding:16px;
-border:3px solid var(--yellow);
+padding:18px;
 border-radius:18px;
-text-align:center;
+border:3px solid var(--yellow);
+color:var(--yellow);
 font-weight:900;
+text-align:center;
 cursor:pointer;
+animation:pulse 2s infinite;
+}
+@keyframes pulse{
+0%{box-shadow:0 0 10px rgba(245,196,0,.3)}
+50%{box-shadow:0 0 35px rgba(245,196,0,1)}
+100%{box-shadow:0 0 10px rgba(245,196,0,.3)}
 }
 
 .reg-box{
 display:none;
-margin-top:15px;
+margin-top:14px;
 border:3px solid var(--border);
-border-radius:18px;
-padding:15px;
+border-radius:20px;
+padding:18px;
 }
-
 .reg-box.accepted{
 border-color:var(--green);
-box-shadow:0 0 25px rgba(46,204,113,.8);
+box-shadow:0 0 30px rgba(46,204,113,.8);
 }
-
 .reg-label{
 display:flex;
 align-items:center;
-gap:15px;
-font-size:18px;
+gap:14px;
+font-size:20px;
 font-weight:900;
 color:var(--green);
-margin-top:15px;
+margin-top:14px;
 }
+.reg-label input{width:30px;height:30px}
 
-.reg-label input{
-width:28px;
-height:28px;
+/* REWARDS */
+.reward{
+border:1px solid var(--border);
+border-radius:16px;
+padding:14px;
+margin-top:14px;
+text-align:center;
 }
 </style>
 </head>
@@ -138,45 +200,46 @@ height:28px;
 <option value="transport">🚕 Przewóz osób</option>
 </select>
 
-<!-- DOSTAWA -->
 <div id="deliveryFields">
 <label>🛍️ Co przywieźć</label>
-<textarea id="what" placeholder="np. piwo, papierosy, jedzenie"></textarea>
-
+<textarea id="what"></textarea>
 <label>📍 Adres dostawy</label>
-<input id="addressDelivery" placeholder="Adres">
+<input id="addressDelivery">
 </div>
 
-<!-- TRANSPORT -->
 <div id="transportFields" style="display:none">
 <label>📍 Skąd</label>
-<input id="from" placeholder="Adres startowy">
-
+<input id="from">
 <label>📍 Dokąd</label>
-<input id="to" placeholder="Adres docelowy">
-
+<input id="to">
 <p style="color:#f5c400;font-weight:800">🚕 MAX 1 OSOBA</p>
 </div>
 
 <label>📏 Kilometry</label>
 <input type="number" id="km" value="5" min="1" max="50">
 
-<button class="main" onclick="getGPS()">📡 Ustaw orientacyjnie z GPS</button>
+<div class="options">
+<button onclick="setPay('Gotówka')" id="cash">💵 Gotówka</button>
+<button onclick="setPay('BLIK')" id="blik">📲 BLIK</button>
+</div>
+
+<div class="options">
+<button onclick="setTip(0,this)" class="active">Bez napiwku</button>
+<button onclick="setTip(5,this)">+5 zł</button>
+<button onclick="setTip(10,this)">+10 zł</button>
+</div>
 
 <button class="main" onclick="calculate()">💰 Oblicz cenę</button>
 <div id="price"></div>
 
 <div class="reg-toggle" onclick="toggleReg()">📜 REGULAMIN – MUSISZ ZAAKCEPTOWAĆ</div>
-
 <div class="reg-box" id="regBox">
 ✔ Maks. 50 km<br>
 ✔ Gotówka / BLIK<br>
 ✔ Alkohol tylko 18+<br>
 ✔ Cena nienegocjowalna<br>
-
 <label class="reg-label">
-<input type="checkbox" id="acceptReg">
-AKCEPTUJĘ REGULAMIN
+<input type="checkbox" id="acceptReg"> AKCEPTUJĘ REGULAMIN
 </label>
 </div>
 
@@ -189,13 +252,18 @@ AKCEPTUJĘ REGULAMIN
 <div id="pointsTab" style="display:none">
 <div class="card">
 <h3>🎁 Program lojalnościowy</h3>
-<p>📏 1 km = <b>10 punktów</b></p>
-<p>🎁 100 pkt = darmowe 10 km</p>
+
+<div class="reward">🎁 50 pkt → -10 zł</div>
+<div class="reward">🎁 100 pkt → darmowe 10 km</div>
+<div class="reward">🎁 200 pkt → darmowe 20 km</div>
+<div class="reward">🎁 300 pkt → darmowy kurs + napiwek 10 zł</div>
+
 </div>
 </div>
 
 <script>
 let points=Number(localStorage.getItem("points"))||0;
+let payment="",tip=0;
 document.getElementById("points").innerText=points;
 
 function showTab(tab,btn){
@@ -210,19 +278,40 @@ deliveryFields.style.display=type.value==="delivery"?"block":"none";
 transportFields.style.display=type.value==="transport"?"block":"none";
 }
 
-function getGPS(){
-navigator.geolocation.getCurrentPosition(()=>{
-alert("📍 Możesz ręcznie poprawić kilometry");
-});
+function setPay(p){
+payment=p;
+cash.classList.remove("active");
+blik.classList.remove("active");
+(p==="Gotówka"?cash:blik).classList.add("active");
+}
+
+function setTip(v,el){
+tip=v;
+document.querySelectorAll(".options button").forEach(b=>b.classList.remove("active"));
+el.classList.add("active");
+}
+
+function isNight(){
+const h=new Date().getHours();
+return h>=22||h<6;
+}
+
+function deliveryPrice(km,night){
+if(km<=5) return night?19+1.8*km:15+1.5*km;
+if(km<=10) return night?21+1.7*km:17+1.4*km;
+if(km<=20) return night?21+1.65*km:18+1.35*km;
+if(km<=30) return night?21+1.6*km:19+1.3*km;
+return night?21+1.55*km:19+1.25*km;
 }
 
 function calculate(){
 const km=+document.getElementById("km").value;
-const night=new Date().getHours()>=22||new Date().getHours()<6;
+const night=isNight();
 let price=type.value==="delivery"
-? night?(19+1.8*km):(15+1.5*km)
-: night?(8+2.8*km):(6+2.5*km);
-document.getElementById("price").innerText=Math.round(price)+" zł";
+? deliveryPrice(km,night)
+: (night?(8+2.8*km):(6+2.5*km));
+price+=tip;
+document.getElementById("price").innerText=Math.round(price)+" zł "+(night?"🌙 NOC":"☀️ DZIEŃ");
 }
 
 function toggleReg(){
@@ -232,6 +321,7 @@ regBox.style.display=regBox.style.display==="block"?"none":"block";
 acceptReg.onchange=()=>regBox.classList.toggle("accepted",acceptReg.checked);
 
 function sendOrder(){
+if(!payment){alert("Wybierz płatność");return;}
 if(!acceptReg.checked){alert("Zaakceptuj regulamin");return;}
 
 const km=+document.getElementById("km").value;
@@ -239,13 +329,11 @@ points+=km*10;
 localStorage.setItem("points",points);
 document.getElementById("points").innerText=points;
 
-let msg=`ZAMÓWIENIE\nUsługa: ${type.value}\nKM: ${km}\nCena: ${price.innerText}\n`;
-
-if(type.value==="delivery"){
-msg+=`Co: ${what.value}\nAdres: ${addressDelivery.value}`;
-}else{
-msg+=`Skąd: ${from.value}\nDokąd: ${to.value}\nMAX 1 osoba`;
-}
+let msg=`ZAMÓWIENIE
+Usługa: ${type.value}
+KM: ${km}
+Cena: ${price.innerText}
+Płatność: ${payment}`;
 
 window.open("https://wa.me/48512956568?text="+encodeURIComponent(msg));
 }
@@ -253,5 +341,4 @@ window.open("https://wa.me/48512956568?text="+encodeURIComponent(msg));
 
 </body>
 </html>
-
 
