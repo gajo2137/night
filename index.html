@@ -5,8 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Night Delivery Małdyty</title>
 
-<meta name="theme-color" content="#000000">
-
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Orbitron:wght@600;900&display=swap" rel="stylesheet">
 
 <style>
@@ -17,6 +15,7 @@
 --green:#2ecc71;
 --red:#ff4d4d;
 }
+
 *{box-sizing:border-box}
 body{
 margin:0;
@@ -24,13 +23,15 @@ font-family:'Poppins',system-ui;
 background:radial-gradient(circle at top,#111,#000 70%);
 color:#fff;
 }
-@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1}}
-@keyframes glow{0%{box-shadow:0 0 10px rgba(245,196,0,.3)}50%{box-shadow:0 0 25px rgba(245,196,0,.7)}100%{box-shadow:0 0 10px rgba(245,196,0,.3)}}
 
-.banner{height:220px;display:flex;justify-content:center;align-items:center}
-.banner img{width:85%;max-width:340px;filter:drop-shadow(0 0 40px rgba(245,196,0,.9))}
-
-header{text-align:center;padding:18px;background:#000;position:sticky;top:0}
+header{
+text-align:center;
+padding:18px;
+background:#000;
+position:sticky;
+top:0;
+z-index:10;
+}
 h1{font-family:'Orbitron';color:var(--yellow);margin:0}
 .phone{color:var(--yellow);text-decoration:none}
 
@@ -39,33 +40,83 @@ background:linear-gradient(180deg,#111,#0b0b0b);
 border-radius:22px;
 padding:22px;
 margin:18px;
-animation:fadeUp .5s ease;
 }
-input,select,textarea{
-width:100%;margin-top:6px;padding:13px;border-radius:14px;border:none;background:#000;color:#fff
-}
-button.main{
-width:100%;margin-top:16px;padding:16px;border:none;border-radius:18px;
-background:linear-gradient(135deg,#f5c400,#ffe066);font-weight:800;cursor:pointer
-}
-button.main:hover{animation:glow 1.5s infinite}
 
-.tabs,.payments,.tips{display:flex;gap:10px;margin-top:14px}
+.tabs,.payments,.tips{
+display:flex;
+gap:10px;
+margin-top:14px;
+}
 .tabs button,.payments button,.tips button{
-flex:1;padding:12px;border-radius:14px;border:1px solid var(--border);
-background:#000;color:#fff;font-weight:700
+flex:1;
+padding:12px;
+border-radius:14px;
+border:1px solid var(--border);
+background:#000;
+color:#fff;
+font-weight:700;
 }
-button.active{border-color:var(--green);box-shadow:0 0 15px rgba(46,204,113,.6)}
+button.active{
+border-color:var(--green);
+box-shadow:0 0 15px rgba(46,204,113,.6);
+}
 
-.points{text-align:center;font-size:22px;font-weight:900;color:var(--yellow)}
-#price{text-align:center;font-size:30px;font-weight:900;color:var(--yellow)}
+input,select,textarea{
+width:100%;
+margin-top:6px;
+padding:13px;
+border-radius:14px;
+border:none;
+background:#000;
+color:#fff;
+}
+
+button.main{
+width:100%;
+margin-top:16px;
+padding:16px;
+border:none;
+border-radius:18px;
+background:linear-gradient(135deg,#f5c400,#ffe066);
+font-weight:800;
+cursor:pointer;
+}
+
+.points{
+text-align:center;
+font-size:22px;
+font-weight:900;
+color:var(--yellow);
+}
+#price{
+text-align:center;
+font-size:30px;
+font-weight:900;
+color:var(--yellow);
+}
 .alert{text-align:center;color:var(--red);font-weight:800}
 
-.reg-toggle{background:#000;border:1px solid var(--border);padding:14px;border-radius:16px;cursor:pointer}
-.reg-box.accepted{border-color:var(--green);box-shadow:0 0 20px rgba(46,204,113,.6)}
+.reg-toggle{
+background:#000;
+border:1px solid var(--border);
+padding:14px;
+border-radius:16px;
+cursor:pointer;
+text-align:center;
+font-weight:800;
+color:var(--yellow);
+}
 .reg-content{display:none;font-size:14px}
 .reg-content.open{display:block}
-footer{text-align:center;padding:22px;opacity:.6}
+.reg-box.accepted{border-color:var(--green);box-shadow:0 0 20px rgba(46,204,113,.6)}
+
+.reward{
+border:1px solid var(--border);
+border-radius:14px;
+padding:12px;
+margin-top:10px;
+text-align:center;
+}
 </style>
 </head>
 
@@ -74,6 +125,7 @@ footer{text-align:center;padding:22px;opacity:.6}
 <header>
 <h1>🚗 Night Delivery Małdyty</h1>
 <a class="phone" href="tel:+48512956568">📞 512 956 568</a>
+<div>⭐ 5.0 / 5</div>
 </header>
 
 <div class="card">
@@ -83,9 +135,11 @@ footer{text-align:center;padding:22px;opacity:.6}
 </div>
 </div>
 
+<!-- ZAMÓWIENIE -->
 <div id="orderTab">
 <div class="card">
-<div class="points">🎯 Twoje punkty: <span id="pointsCount">0</span></div>
+
+<div class="points">🎯 Twoje punkty: <span id="points">0</span></div>
 
 <label>Usługa</label>
 <select id="type">
@@ -96,32 +150,59 @@ footer{text-align:center;padding:22px;opacity:.6}
 <label>Kilometry</label>
 <input type="number" id="km" value="5">
 
+<button class="main" onclick="getGPS()">📡 GPS (realne KM)</button>
+
+<div class="payments">
+<button id="cash" onclick="setPay('Gotówka')">💵 Gotówka</button>
+<button id="blik" onclick="setPay('BLIK')">📲 BLIK</button>
+</div>
+
+<div class="tips">
+<button onclick="setTip(0,this)">Bez napiwku</button>
+<button onclick="setTip(5,this)">+5 zł</button>
+<button onclick="setTip(10,this)">+10 zł</button>
+</div>
+
 <button class="main" onclick="calculate()">Oblicz cenę</button>
 <div id="price"></div>
+<div class="alert" id="alert"></div>
+
+<div class="reg-toggle" onclick="regContent.classList.toggle('open')">📜 Regulamin</div>
+<div class="reg-content" id="regContent">
+✔ Maks. 50 km<br>
+✔ Gotówka / BLIK<br>
+✔ Alkohol 18+<br>
+✔ Cena nienegocjowalna<br><br>
+<label><input type="checkbox" id="accept"> Akceptuję regulamin</label>
+</div>
 
 <button class="main" onclick="sendOrder()">📩 Zamów przez WhatsApp</button>
 </div>
 </div>
 
+<!-- PUNKTY -->
 <div id="pointsTab" style="display:none">
 <div class="card">
 <h3>🎁 Program lojalnościowy</h3>
-<p>📏 1 km = <b>10 punktów</b></p>
-<p>🎁 100 punktów = <b>darmowy kurs do 10 km</b></p>
-<button class="main" onclick="redeem()">🎁 Wymień punkty</button>
-</div>
-</div>
 
-<footer>🚗 Night Delivery Małdyty</footer>
+<div class="reward">🎁 100 pkt → Darmowy kurs do 10 km<br>
+<button class="main" onclick="redeem(100,10)">Wymień</button></div>
+
+<div class="reward">🎁 200 pkt → Darmowy kurs do 20 km<br>
+<button class="main" onclick="redeem(200,20)">Wymień</button></div>
+
+<div class="reward">🎁 300 pkt → Darmowy kurs + napiwek 10 zł<br>
+<button class="main" onclick="redeem(300,999)">Wymień</button></div>
+
+</div>
+</div>
 
 <script>
-const orderTab = document.getElementById("orderTab");
-const pointsTab = document.getElementById("pointsTab");
-const pointsEl = document.getElementById("pointsCount");
-
+let payment="", tip=0;
 let points = Number(localStorage.getItem("points")) || 0;
-let freeRide = localStorage.getItem("freeRide")==="1";
-pointsEl.textContent = points;
+let freeKm = Number(localStorage.getItem("freeKm")) || 0;
+
+document.getElementById("points").innerText = points;
 
 function showTab(tab,btn){
 orderTab.style.display = tab==="order"?"block":"none";
@@ -130,40 +211,66 @@ document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("active"
 btn.classList.add("active");
 }
 
+function setPay(p){
+payment=p;
+cash.classList.remove("active");
+blik.classList.remove("active");
+(p==="Gotówka"?cash:blik).classList.add("active");
+}
+
+function setTip(v,el){
+tip=v;
+document.querySelectorAll(".tips button").forEach(b=>b.classList.remove("active"));
+el.classList.add("active");
+}
+
+function getGPS(){
+navigator.geolocation.getCurrentPosition(()=>{});
+}
+
 function calculate(){
-let km = +document.getElementById("km").value||0;
-if(freeRide && km<=10){
-price.innerText="0 zł (DARMOWY KURS 🎁)";
+let km=+document.getElementById("km").value||0;
+if(freeKm && km<=freeKm){
+price.innerText="0 zł 🎁 DARMOWY KURS";
 return;
 }
-let cost = 15 + km*1.5;
-price.innerText = cost+" zł";
+let priceVal=15+km*1.5+tip;
+price.innerText=priceVal+" zł";
 }
 
 function sendOrder(){
-let km = +document.getElementById("km").value||0;
-if(!freeRide){
-points += km*10;
+if(!accept.checked||!payment){alert("Uzupełnij zamówienie");return;}
+let km=+km.value||0;
+
+if(freeKm && km<=freeKm){
+freeKm=0;
+localStorage.removeItem("freeKm");
 }else{
-freeRide=false;
-localStorage.removeItem("freeRide");
+points+=km*10;
 }
+
 localStorage.setItem("points",points);
-pointsEl.textContent=points;
+document.getElementById("points").innerText=points;
+
 window.open("https://wa.me/48512956568");
 }
 
-function redeem(){
-if(points<100){alert("Za mało punktów");return;}
-points-=100;
-freeRide=true;
+function redeem(cost,km){
+if(points<cost){alert("Za mało punktów");return;}
+points-=cost;
+freeKm=km;
 localStorage.setItem("points",points);
-localStorage.setItem("freeRide","1");
-pointsEl.textContent=points;
-alert("🎉 Darmowy kurs do 10 km aktywny!");
+localStorage.setItem("freeKm",km);
+document.getElementById("points").innerText=points;
+alert("🎉 Nagroda aktywna!");
 }
 </script>
 
 </body>
 </html>
+
+
+</body>
+</html>
+
 
