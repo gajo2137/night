@@ -10,21 +10,37 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
+
+/* ============================================================
+ROOT VARIABLES
+============================================================ */
 :root{
 --yellow:#f5c400;
 --bg:#000;
 --card:#111;
 --border:#222;
 --green:#2ecc71;
+--red:#e74c3c;
 }
 
+/* ============================================================
+BODY
+============================================================ */
 body{
 margin:0;
 font-family:'Poppins',system-ui,-apple-system,Arial;
 background:var(--bg);
 color:#fff;
+animation:fadeBody .8s ease;
+}
+@keyframes fadeBody{
+from{opacity:0}
+to{opacity:1}
 }
 
+/* ============================================================
+HEADER
+============================================================ */
 .banner{
 height:160px;
 display:flex;
@@ -48,32 +64,49 @@ margin-top:6px;
 
 .rating{opacity:.85;margin-top:6px;font-weight:600}
 
+/* ============================================================
+LANG SWITCH
+============================================================ */
 .langs{
 display:flex;
 justify-content:center;
 gap:10px;
-margin-top:10px;
+margin-top:12px;
 }
 .langs button{
 background:#000;
 border:1px solid var(--border);
 color:#fff;
-padding:6px 14px;
-border-radius:12px;
+padding:6px 16px;
+border-radius:14px;
+transition:.25s;
 }
+.langs button:hover{transform:translateY(-2px)}
 .langs button.active{
 border-color:var(--yellow);
 color:var(--yellow);
+box-shadow:0 0 12px rgba(245,196,0,.4);
 }
 
+/* ============================================================
+CARDS
+============================================================ */
 .card{
 background:var(--card);
 border-radius:18px;
 padding:20px;
 margin:15px;
+animation:cardIn .6s ease;
+}
+@keyframes cardIn{
+from{opacity:0;transform:translateY(30px)}
+to{opacity:1;transform:none}
 }
 
-label{font-size:14px}
+/* ============================================================
+FORM
+============================================================ */
+label{font-size:14px;opacity:.9}
 input,textarea,select{
 width:100%;
 margin-top:6px;
@@ -82,8 +115,13 @@ border-radius:12px;
 border:none;
 background:#000;
 color:#fff;
+font-family:inherit;
 }
+textarea{resize:none}
 
+/* ============================================================
+BUTTONS
+============================================================ */
 button.main{
 width:100%;
 margin-top:15px;
@@ -92,27 +130,86 @@ border:none;
 border-radius:16px;
 background:var(--yellow);
 font-weight:700;
+cursor:pointer;
+transition:.25s;
+}
+button.main:hover{
+transform:translateY(-2px) scale(1.02);
+box-shadow:0 0 22px rgba(245,196,0,.6);
 }
 
+/* ============================================================
+RATES
+============================================================ */
+.rate-box p{
+margin:8px 0;
+line-height:1.5;
+}
+
+/* ============================================================
+REGULAMIN
+============================================================ */
 .reg-box{
 border:2px solid var(--border);
 border-radius:18px;
 padding:16px;
+background:linear-gradient(180deg,#111,#0a0a0a);
+transition:.3s;
 }
-.reg-box.required{border-color:var(--yellow)}
-.reg-box.accepted{border-color:var(--green)}
+.reg-box.required{
+border-color:var(--yellow);
+box-shadow:0 0 18px rgba(245,196,0,.4);
+}
+.reg-box.accepted{
+border-color:var(--green);
+box-shadow:0 0 18px rgba(46,204,113,.5);
+}
+.reg-item{
+display:flex;
+gap:10px;
+margin-bottom:8px;
+font-size:13px;
+}
+.reg-accept{
+display:flex;
+align-items:center;
+gap:10px;
+margin-top:12px;
+font-weight:600;
+}
+.reg-accept input{
+width:22px;
+height:22px;
+accent-color:var(--yellow);
+}
 
+/* ============================================================
+STARS
+============================================================ */
 .stars span{
 font-size:34px;
 cursor:pointer;
 color:#444;
+transition:.2s;
 }
-.stars span.active{color:var(--yellow)}
+.stars span:hover{transform:scale(1.25)}
+.stars span.active{
+color:var(--yellow);
+transform:scale(1.35);
+}
 
+/* ============================================================
+OPINIONS
+============================================================ */
 .opinia{
 border-bottom:1px solid var(--border);
 padding:8px 0;
 font-size:13px;
+animation:fadeOpinion .4s ease;
+}
+@keyframes fadeOpinion{
+from{opacity:0;transform:translateY(10px)}
+to{opacity:1;transform:none}
 }
 
 footer{text-align:center;padding:20px;opacity:.6}
@@ -135,71 +232,177 @@ footer{text-align:center;padding:20px;opacity:.6}
 </div>
 </header>
 
-<!-- STAWKI PRZEWOZU -->
-<div class="card">
-<h3>🚕 Stawki przewozu osób</h3>
-<p>🌙 <b>Noc (22:00 – 6:00)</b><br>Start: <b>19 zł</b> + <b>1,60 zł / km</b></p>
-<p>☀️ <b>Dzień (6:00 – 22:00)</b><br>Start: <b>15 zł</b> + <b>1,40 zł / km</b></p>
-<p style="opacity:.7;font-size:13px">Maksymalny dystans: 50 km</p>
+<!-- STAWKI -->
+<div class="card rate-box">
+<h3 id="t_rates">🚕 Stawki</h3>
+<p id="t_transport"></p>
+<p id="t_delivery"></p>
+<p id="t_limit" style="opacity:.6;font-size:13px"></p>
 </div>
 
 <!-- ZAMÓWIENIE -->
 <div class="card">
-<label id="t_service">🚗 Rodzaj usługi</label>
+<label id="t_service"></label>
 <select id="type">
-<option>🚗 Dostawa</option>
-<option>🚕 Przewóz</option>
+<option value="delivery">🚗 Dostawa</option>
+<option value="transport">🚕 Przewóz</option>
 </select>
 
-<label id="t_km">📍 Dystans (km)</label>
+<label id="t_km"></label>
 <input type="number" id="km">
-<button class="main" onclick="getGPS()">📡 Oblicz km z GPS</button>
+<button class="main" onclick="getGPS()">📡 GPS</button>
 
-<label id="t_note">📦 Adres / opis</label>
-<textarea id="note"></textarea>
-
-<label id="t_tip">💰 Napiwek</label>
+<label id="t_tip"></label>
 <input type="number" id="tip">
 
-<button class="main" onclick="calculate()" id="t_calc">🧮 Oblicz cenę</button>
+<button class="main" onclick="calculate()" id="t_calc"></button>
 <div id="price" style="text-align:center;color:var(--yellow);font-size:22px"></div>
 </div>
 
 <!-- REGULAMIN -->
 <div class="card">
-<h3 id="t_rules">📜 Regulamin</h3>
+<h3 id="t_rules"></h3>
 <div class="reg-box required" id="regBox">
-<div>🚫 Alkohol i papierosy tylko 18+</div>
-<div>💳 Zamówienia +30 zł → BLIK</div>
-<div>📞 Kierowca może się kontaktować</div>
-<div>💰 Cena nie podlega negocjacji</div>
+<div class="reg-item" id="r1"></div>
+<div class="reg-item" id="r2"></div>
+<div class="reg-item" id="r3"></div>
+<div class="reg-item" id="r4"></div>
 
-<label>
-<input type="checkbox" id="acceptReg"> Akceptuję regulamin
-</label>
+<div class="reg-accept">
+<input type="checkbox" id="acceptReg">
+<span id="t_accept"></span>
+</div>
 </div>
 
-<button class="main" onclick="sendOrder()" id="t_order">📩 Zamów</button>
+<button class="main" onclick="sendOrder()" id="t_order"></button>
 </div>
 
 <!-- OPINIE -->
 <div class="card">
-<label>⭐ Oceń aplikację</label>
+<label id="t_rate_app"></label>
 <div class="stars" id="stars"></div>
 <textarea id="opinionText"></textarea>
-<button class="main" onclick="addOpinion()">⭐ Dodaj opinię</button>
+<button class="main" onclick="addOpinion()" id="t_add_opinion"></button>
 </div>
 
 <div class="card">
-<h3>🗣 Opinie klientów</h3>
+<h3 id="t_client_opinions"></h3>
 <div id="opinions"></div>
 </div>
 
 <footer>🚗 Night Delivery Małdyty</footer>
 
 <script>
-acceptReg.onchange=()=>regBox.className="reg-box "+(acceptReg.checked?"accepted":"required");
 
+/* ============================================================
+LANGUAGE DATA (FULL)
+============================================================ */
+const T={
+pl:{
+title:"🚗 Night Delivery Małdyty",
+rates:"🚕 Stawki",
+transport:"🚕 Przewóz osób: 🌙 Noc 19 zł + 1.60 zł/km | ☀️ Dzień 15 zł + 1.40 zł/km",
+delivery:"🚗 Dostawa: 🌙 Noc 17 zł + 1.30 zł/km | ☀️ Dzień 13 zł + 1.10 zł/km",
+limit:"Limit: 50 km",
+service:"🚗 Rodzaj usługi",
+km:"📍 Dystans (km)",
+tip:"💰 Napiwek",
+calc:"🧮 Oblicz cenę",
+rules:"📜 Regulamin",
+r1:"🚫 Alkohol i papierosy tylko 18+",
+r2:"💳 Zamówienia +30 zł → BLIK",
+r3:"📞 Kierowca może się kontaktować",
+r4:"💰 Cena nie podlega negocjacji",
+accept:"Akceptuję regulamin",
+order:"📩 Zamów",
+rateApp:"⭐ Oceń aplikację",
+addOpinion:"⭐ Dodaj opinię",
+clientOpinions:"🗣 Opinie klientów"
+},
+en:{
+title:"🚗 Night Delivery",
+rates:"🚕 Rates",
+transport:"🚕 Transport: 🌙 Night 19 PLN + 1.60/km | ☀️ Day 15 PLN + 1.40/km",
+delivery:"🚗 Delivery: 🌙 Night 17 PLN + 1.30/km | ☀️ Day 13 PLN + 1.10/km",
+limit:"Limit: 50 km",
+service:"🚗 Service type",
+km:"📍 Distance (km)",
+tip:"💰 Tip",
+calc:"🧮 Calculate price",
+rules:"📜 Rules",
+r1:"🚫 Alcohol & cigarettes 18+",
+r2:"💳 Orders over 30 PLN → BLIK",
+r3:"📞 Driver may contact",
+r4:"💰 Price is final",
+accept:"I accept rules",
+order:"📩 Order",
+rateApp:"⭐ Rate the app",
+addOpinion:"⭐ Add opinion",
+clientOpinions:"🗣 Customer opinions"
+},
+ua:{
+title:"🚗 Нічна доставка",
+rates:"🚕 Тарифи",
+transport:"🚕 Перевезення: 🌙 Ніч 19 zł + 1.60/км | ☀️ День 15 zł + 1.40/км",
+delivery:"🚗 Доставка: 🌙 Ніч 17 zł + 1.30/км | ☀️ День 13 zł + 1.10/км",
+limit:"Ліміт: 50 км",
+service:"🚗 Тип послуги",
+km:"📍 Відстань (км)",
+tip:"💰 Чайові",
+calc:"🧮 Розрахувати",
+rules:"📜 Правила",
+r1:"🚫 Алкоголь і сигарети 18+",
+r2:"💳 Замовлення понад 30 zł → BLIK",
+r3:"📞 Водій може звʼязатися",
+r4:"💰 Ціна остаточна",
+accept:"Я приймаю правила",
+order:"📩 Замовити",
+rateApp:"⭐ Оцініть додаток",
+addOpinion:"⭐ Додати відгук",
+clientOpinions:"🗣 Відгуки клієнтів"
+}
+};
+
+/* ============================================================
+LANGUAGE SWITCH
+============================================================ */
+function setLang(l,b){
+document.querySelectorAll(".langs button").forEach(x=>x.classList.remove("active"));
+b.classList.add("active");
+t_title.innerText=T[l].title;
+t_rates.innerText=T[l].rates;
+t_transport.innerText=T[l].transport;
+t_delivery.innerText=T[l].delivery;
+t_limit.innerText=T[l].limit;
+t_service.innerText=T[l].service;
+t_km.innerText=T[l].km;
+t_tip.innerText=T[l].tip;
+t_calc.innerText=T[l].calc;
+t_rules.innerText=T[l].rules;
+r1.innerText=T[l].r1;
+r2.innerText=T[l].r2;
+r3.innerText=T[l].r3;
+r4.innerText=T[l].r4;
+t_accept.innerText=T[l].accept;
+t_order.innerText=T[l].order;
+t_rate_app.innerText=T[l].rateApp;
+t_add_opinion.innerText=T[l].addOpinion;
+t_client_opinions.innerText=T[l].clientOpinions;
+}
+
+/* INIT */
+setLang("pl",document.querySelector(".langs button"));
+
+/* ============================================================
+REGULAMIN
+============================================================ */
+acceptReg.onchange=()=>{
+regBox.className="reg-box "+(acceptReg.checked?"accepted":"required");
+};
+
+/* ============================================================
+GPS
+============================================================ */
 const BASE={lat:53.9586,lon:19.7406};
 function getGPS(){
 navigator.geolocation.getCurrentPosition(p=>{
@@ -215,24 +418,44 @@ Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.sin(dLon/2)**2;
 return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));
 }
 
+/* ============================================================
+PRICE
+============================================================ */
 function calculate(){
 const kmv=parseFloat(km.value);
 if(!kmv)return alert("Podaj km");
 if(kmv>50)return alert("Max 50 km");
+
 const h=new Date().getHours();
 const night=h>=22||h<6;
-let p=night?19+kmv*1.6:15+kmv*1.4;
-price.innerText="Cena: "+p.toFixed(2)+" zł";
+let base=0,per=0;
+
+if(type.value==="transport"){
+base=night?19:15;
+per=night?1.6:1.4;
+}else{
+base=night?17:13;
+per=night?1.3:1.1;
 }
 
+price.innerText="Cena: "+(base+kmv*per+(+tip.value||0)).toFixed(2)+" zł";
+}
+
+/* ============================================================
+ORDER
+============================================================ */
 function sendOrder(){
 if(!acceptReg.checked)return alert("Zaakceptuj regulamin");
+if(!price.innerText)return alert("Oblicz cenę");
 window.open("https://wa.me/48512956568");
 }
 
+/* ============================================================
+OPINIONS
+============================================================ */
 let sel=0,ratings=[];
 for(let i=1;i<=5;i++){
-let s=document.createElement("span");
+const s=document.createElement("span");
 s.textContent="★";
 s.onclick=()=>{sel=i;[...stars.children].forEach((e,j)=>e.classList.toggle("active",j<i));};
 stars.appendChild(s);
@@ -241,23 +464,13 @@ function addOpinion(){
 if(!sel)return;
 ratings.push(sel);
 avgRating.innerText=`⭐ ${(ratings.reduce((a,b)=>a+b,0)/ratings.length).toFixed(1)} / 5 (${ratings.length} opinii)`;
-let d=document.createElement("div");
+const d=document.createElement("div");
 d.className="opinia";
-d.textContent="⭐ "+sel+" "+opinionText.value;
+d.innerText="⭐ "+sel+" "+opinionText.value;
 opinions.prepend(d);
 opinionText.value="";sel=0;
 }
 
-const T={
-pl:{title:"🚗 Night Delivery Małdyty"},
-en:{title:"🚗 Night Delivery"},
-ua:{title:"🚗 Нічна доставка"}
-};
-function setLang(l,b){
-document.querySelectorAll(".langs button").forEach(x=>x.classList.remove("active"));
-b.classList.add("active");
-t_title.innerText=T[l].title;
-}
 </script>
 
 </body>
