@@ -6,6 +6,7 @@
 <title>Night Delivery Małdyty</title>
 
 <meta name="theme-color" content="#000000">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
 :root{
@@ -18,18 +19,11 @@
 
 body{
 margin:0;
-font-family:system-ui,-apple-system,Arial;
+font-family:'Poppins',system-ui;
 background:var(--bg);
 color:#fff;
-animation:fadeBody .6s ease;
 }
 
-@keyframes fadeBody{
-from{opacity:0}
-to{opacity:1}
-}
-
-/* HEADER */
 .banner{
 height:160px;
 display:flex;
@@ -40,11 +34,18 @@ background:radial-gradient(circle at top, rgba(245,196,0,.25), transparent 65%);
 .banner img{max-width:320px;width:80%}
 
 header{text-align:center;padding:20px}
-h1{color:var(--yellow);margin:0}
-.phone{color:var(--yellow);text-decoration:none;font-size:18px;display:block;margin-top:6px}
-.rating{opacity:.8;margin-top:6px}
+h1{color:var(--yellow);margin:0;font-weight:700}
 
-/* JĘZYKI */
+.phone{
+color:var(--yellow);
+text-decoration:none;
+font-size:18px;
+display:block;
+margin-top:6px;
+}
+
+.rating{opacity:.85;margin-top:6px;font-weight:600}
+
 .langs{
 display:flex;
 justify-content:center;
@@ -55,29 +56,22 @@ margin-top:10px;
 background:#000;
 border:1px solid var(--border);
 color:#fff;
-padding:6px 12px;
-border-radius:10px;
+padding:6px 14px;
+border-radius:12px;
 }
 .langs button.active{
 border-color:var(--yellow);
 color:var(--yellow);
 }
 
-/* KARTY */
 .card{
 background:var(--card);
 border-radius:18px;
 padding:20px;
 margin:15px;
-box-shadow:0 10px 30px rgba(0,0,0,.4);
-animation:cardIn .5s ease;
-}
-@keyframes cardIn{
-from{transform:translateY(20px);opacity:0}
-to{transform:none;opacity:1}
 }
 
-label{font-size:14px;opacity:.8}
+label{font-size:14px;opacity:.85}
 input,textarea,select{
 width:100%;
 margin-top:6px;
@@ -87,61 +81,39 @@ border:none;
 background:#000;
 color:#fff;
 }
+
 button.main{
 width:100%;
 margin-top:15px;
-padding:14px;
+padding:15px;
 border:none;
-border-radius:14px;
+border-radius:16px;
 background:var(--yellow);
 font-weight:700;
-font-size:16px;
+cursor:pointer;
 }
 
-/* REGULAMIN */
 .reg-box{
 border:2px solid var(--border);
 border-radius:18px;
 padding:16px;
-margin-top:15px;
-background:linear-gradient(180deg,#111,#0a0a0a);
-transition:.3s;
 }
-.reg-box.required{
-border-color:var(--yellow);
-box-shadow:0 0 18px rgba(245,196,0,.4);
-}
-.reg-box.accepted{
-border-color:var(--green);
-box-shadow:0 0 18px rgba(46,204,113,.4);
-}
-.reg-item{
-display:flex;
-gap:10px;
-margin-bottom:8px;
-font-size:13px;
-}
+.reg-box.accepted{border-color:var(--green)}
+.reg-box.required{border-color:var(--yellow)}
+
 .reg-accept{
 display:flex;
-align-items:center;
 gap:10px;
 margin-top:12px;
-font-weight:600;
-}
-.reg-accept input{
-width:22px;
-height:22px;
-accent-color:var(--yellow);
 }
 
-/* OPINIE */
 .stars span{
-font-size:32px;
+font-size:34px;
 cursor:pointer;
 color:#444;
-transition:.2s;
 }
-.stars span.active{color:var(--yellow);transform:scale(1.1)}
+.stars span.active{color:var(--yellow)}
+
 .opinia{
 border-bottom:1px solid var(--border);
 padding:8px 0;
@@ -159,7 +131,7 @@ footer{text-align:center;padding:20px;opacity:.6}
 <header>
 <h1 id="t_title">🚗 Night Delivery Małdyty</h1>
 <a class="phone" href="tel:+48512956568">📞 512 956 568</a>
-<div class="rating" id="avgRating">⭐ 0.0 / 5</div>
+<div class="rating" id="avgRating">⭐ 0.0 / 5 (0 opinii)</div>
 
 <div class="langs">
 <button class="active" onclick="setLang('pl',this)">PL</button>
@@ -168,12 +140,11 @@ footer{text-align:center;padding:20px;opacity:.6}
 </div>
 </header>
 
-<!-- ZAMÓWIENIE -->
 <div class="card">
 <label id="t_service">🚗 Rodzaj usługi</label>
 <select id="type">
-<option>🚗 Dostawa</option>
-<option>🚕 Przewóz</option>
+<option value="delivery">🚗 Dostawa</option>
+<option value="transport">🚕 Przewóz osób</option>
 </select>
 
 <label id="t_km">📍 Dystans (km)</label>
@@ -186,62 +157,33 @@ footer{text-align:center;padding:20px;opacity:.6}
 <label id="t_tip">💰 Napiwek</label>
 <input type="number" id="tip">
 
-<label id="t_pay">💳 Płatność</label>
-<select id="payment">
-<option>Gotówka</option>
-<option>BLIK 603433325</option>
-</select>
-
 <button class="main" onclick="calculate()" id="t_calc">🧮 Oblicz cenę</button>
 <div id="price" style="text-align:center;color:var(--yellow);font-size:22px"></div>
 </div>
 
-<!-- REGULAMIN -->
 <div class="card">
 <h3 id="t_rules">📜 Regulamin</h3>
 <div class="reg-box required" id="regBox">
-<div class="reg-item">🚫 Alkohol i papierosy tylko 18+</div>
-<div class="reg-item">💳 Zamówienia +30 zł → BLIK</div>
-<div class="reg-item">📞 Kierowca może się kontaktować</div>
-<div class="reg-item">💰 Cena nie podlega negocjacji</div>
-
 <div class="reg-accept">
 <input type="checkbox" id="acceptReg">
 <span id="t_accept">Akceptuję regulamin</span>
 </div>
 </div>
-
-<button class="main" onclick="sendOrder()" id="t_order">📩 Zamów</button>
-</div>
-
-<!-- OPINIE -->
-<div class="card">
-<label>⭐ Oceń aplikację</label>
-<div class="stars" id="stars"></div>
-<textarea id="opinionText" placeholder="Twoja opinia (opcjonalnie)"></textarea>
-<button class="main" onclick="addOpinion()">⭐ Dodaj opinię</button>
-</div>
-
-<div class="card">
-<h3>🗣 Opinie klientów</h3>
-<div id="opinions"></div>
+<button class="main" onclick="sendOrder()">📩 Zamów</button>
 </div>
 
 <footer>🚗 Night Delivery Małdyty</footer>
 
 <script>
-/* REGULAMIN */
 acceptReg.onchange=()=>{
 regBox.classList.toggle("accepted",acceptReg.checked);
 regBox.classList.toggle("required",!acceptReg.checked);
 };
 
-/* GPS */
 const BASE={lat:53.9586,lon:19.7406};
 function getGPS(){
 navigator.geolocation.getCurrentPosition(p=>{
-const d=dist(BASE.lat,BASE.lon,p.coords.latitude,p.coords.longitude);
-km.value=d.toFixed(1);
+km.value=dist(BASE.lat,BASE.lon,p.coords.latitude,p.coords.longitude).toFixed(1);
 });
 }
 function dist(a,b,c,d){
@@ -253,77 +195,39 @@ Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.sin(dLon/2)**2;
 return R*2*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));
 }
 
-/* CENA */
 function calculate(){
 const kmv=parseFloat(km.value);
-const tipv=parseFloat(tip.value)||0;
 if(!kmv)return alert("Podaj km");
+if(kmv>50)return alert("🚫 Maks 50 km");
+
+const tipv=parseFloat(tip.value)||0;
 const h=new Date().getHours();
 const night=h>=22||h<6;
-let p=night?19+kmv*1.6:15+kmv*1.4;
+let p=0;
+
+if(type.value==="delivery"){
+p = night ? 19 + kmv*1.6 : 15 + kmv*1.4;
+}else{
+p = night ? 25 + kmv*2.5 : 20 + kmv*2.0;
+}
+
 p+=tipv;
 price.innerText="Cena: "+p.toFixed(2)+" zł";
 }
 
-/* ZAMÓWIENIE */
 function sendOrder(){
 if(!acceptReg.checked)return alert("Zaakceptuj regulamin");
 if(!price.innerText)return alert("Oblicz cenę");
-const msg=`🚗 Night Delivery
-Usługa: ${type.value}
-Km: ${km.value}
-${price.innerText}
-Płatność: ${payment.value}
-Uwagi: ${note.value}`;
-window.open("https://wa.me/48512956568?text="+encodeURIComponent(msg));
+window.open("https://wa.me/48512956568");
 }
 
-/* OPINIE – LOKALNE */
-let sel=0;
-for(let i=1;i<=5;i++){
-const s=document.createElement("span");
-s.textContent="★";
-s.onclick=()=>{
-sel=i;
-[...stars.children].forEach((e,j)=>e.classList.toggle("active",j<i));
-};
-stars.appendChild(s);
-}
-
-function addOpinion(){
-if(sel<1)return alert("Wybierz gwiazdki");
-const txt=opinionText.value||"";
-const el=document.createElement("div");
-el.className="opinia";
-el.innerText="⭐ "+sel+" "+txt;
-opinions.prepend(el);
-opinionText.value="";
-sel=0;
-[...stars.children].forEach(e=>e.classList.remove("active"));
-}
-
-/* JĘZYKI */
-const T={
-pl:{title:"🚗 Night Delivery Małdyty",service:"🚗 Rodzaj usługi",km:"📍 Dystans (km)",note:"📦 Adres / opis",tip:"💰 Napiwek",pay:"💳 Płatność",calc:"🧮 Oblicz cenę",rules:"📜 Regulamin",accept:"Akceptuję regulamin",order:"Zamów"},
-en:{title:"🚗 Night Delivery",service:"🚗 Service",km:"📍 Distance (km)",note:"📦 Address / note",tip:"💰 Tip",pay:"💳 Payment",calc:"🧮 Calculate",rules:"📜 Terms",accept:"I accept terms",order:"Order"},
-ua:{title:"🚗 Нічна доставка",service:"🚗 Послуга",km:"📍 Відстань",note:"📦 Адреса",tip:"💰 Чайові",pay:"💳 Оплата",calc:"🧮 Розрахувати",rules:"📜 Правила",accept:"Я приймаю правила",order:"Замовити"}
-};
 function setLang(l,btn){
 document.querySelectorAll(".langs button").forEach(b=>b.classList.remove("active"));
 btn.classList.add("active");
-t_title.innerText=T[l].title;
-t_service.innerText=T[l].service;
-t_km.innerText=T[l].km;
-t_note.innerText=T[l].note;
-t_tip.innerText=T[l].tip;
-t_pay.innerText=T[l].pay;
-t_calc.innerText=T[l].calc;
-t_rules.innerText=T[l].rules;
-t_accept.innerText=T[l].accept;
-t_order.innerText="📩 "+T[l].order;
 }
 </script>
 
 </body>
 </html>
+
 
