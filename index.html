@@ -38,6 +38,7 @@ max-width:320px;
 filter:drop-shadow(0 0 35px rgba(245,196,0,.9));
 }
 
+/* HEADER */
 header{
 text-align:center;
 padding:18px;
@@ -49,6 +50,7 @@ z-index:10;
 h1{font-family:'Orbitron';color:var(--yellow);margin:0}
 .phone{color:var(--yellow);text-decoration:none}
 
+/* UI */
 .card{
 background:linear-gradient(180deg,#111,#0b0b0b);
 border-radius:22px;
@@ -113,6 +115,61 @@ color:var(--yellow);
 
 .alert{text-align:center;color:var(--red);font-weight:800}
 
+/* REGULAMIN */
+.reg-toggle{
+margin-top:18px;
+padding:16px;
+border-radius:18px;
+background:#000;
+border:2px solid var(--yellow);
+color:var(--yellow);
+font-weight:900;
+text-align:center;
+cursor:pointer;
+animation:pulse 2s infinite;
+}
+
+@keyframes pulse{
+0%{box-shadow:0 0 10px rgba(245,196,0,.3)}
+50%{box-shadow:0 0 30px rgba(245,196,0,.9)}
+100%{box-shadow:0 0 10px rgba(245,196,0,.3)}
+}
+
+.reg-box{
+margin-top:14px;
+border:2px solid var(--border);
+border-radius:20px;
+padding:16px;
+display:none;
+animation:fadeUp .4s ease;
+}
+
+.reg-box.accepted{
+border-color:var(--green);
+box-shadow:0 0 25px rgba(46,204,113,.8);
+}
+
+.reg-box label{
+display:flex;
+align-items:center;
+gap:10px;
+font-size:18px;
+font-weight:900;
+margin-top:14px;
+color:var(--green);
+}
+
+.reg-box input{
+transform:scale(1.6);
+}
+
+/* ANIM */
+@keyframes fadeUp{
+from{opacity:0;transform:translateY(20px)}
+to{opacity:1;transform:none}
+}
+
+/* PUNKTY */
 .reward{
 border:1px solid var(--border);
 border-radius:14px;
@@ -120,7 +177,6 @@ padding:14px;
 margin-top:12px;
 text-align:center;
 }
-
 .info{
 border:1px dashed var(--border);
 border-radius:14px;
@@ -182,6 +238,21 @@ opacity:.9;
 <button class="main" onclick="calculate()">Oblicz cenę</button>
 <div id="price"></div>
 
+<!-- REGULAMIN -->
+<div class="reg-toggle" onclick="toggleReg()">📜 REGULAMIN – MUSISZ ZAAKCEPTOWAĆ</div>
+
+<div class="reg-box" id="regBox">
+✔ Maks. 50 km<br>
+✔ Gotówka / BLIK<br>
+✔ Alkohol tylko 18+<br>
+✔ Cena nienegocjowalna<br>
+✔ Zamówienie oznacza akceptację warunków<br>
+
+<label>
+<input type="checkbox" id="acceptReg"> AKCEPTUJĘ REGULAMIN
+</label>
+</div>
+
 <button class="main" onclick="sendOrder()">📩 Zamów przez WhatsApp</button>
 </div>
 </div>
@@ -194,8 +265,8 @@ opacity:.9;
 
 <div class="info">
 📏 <b>1 km = 10 punktów</b><br>
-🚗 Punkty naliczane są po KAŻDYM płatnym kursie<br>
-🎁 Punkty możesz wymieniać na darmowe przejazdy
+🎯 Punkty po KAŻDYM płatnym kursie<br>
+🎁 Wymieniaj na darmowe przejazdy
 </div>
 
 <div class="reward">
@@ -221,7 +292,7 @@ let payment="", tip=0;
 let points = Number(localStorage.getItem("points")) || 0;
 let freeKm = Number(localStorage.getItem("freeKm")) || 0;
 
-document.getElementById("points").innerText = points;
+pointsEl.innerText = points;
 
 function showTab(tab,btn){
 orderTab.style.display = tab==="order"?"block":"none";
@@ -253,12 +324,21 @@ if(freeKm && kmv<=freeKm){
 price.innerText="0 zł 🎁 DARMOWY KURS";
 return;
 }
-let priceVal=15+kmv*1.5+tip;
-price.innerText=priceVal+" zł";
+price.innerText=(15+kmv*1.5+tip)+" zł";
+}
+
+function toggleReg(){
+regBox.style.display = regBox.style.display==="block"?"none":"block";
+}
+
+acceptReg.onchange=()=>{
+regBox.classList.toggle("accepted",acceptReg.checked);
 }
 
 function sendOrder(){
 if(!payment){alert("Wybierz płatność");return;}
+if(!acceptReg.checked){alert("Musisz zaakceptować regulamin");return;}
+
 let kmv=+km.value||0;
 
 if(freeKm && kmv<=freeKm){
@@ -269,7 +349,7 @@ points+=kmv*10;
 }
 
 localStorage.setItem("points",points);
-document.getElementById("points").innerText=points;
+pointsEl.innerText=points;
 
 window.open("https://wa.me/48512956568");
 }
@@ -280,12 +360,10 @@ points-=cost;
 freeKm=kmv;
 localStorage.setItem("points",points);
 localStorage.setItem("freeKm",kmv);
-document.getElementById("points").innerText=points;
+pointsEl.innerText=points;
 alert("🎉 Nagroda aktywna!");
 }
 </script>
 
 </body>
 </html>
-
-
