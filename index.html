@@ -7,7 +7,7 @@
 
 <meta name="theme-color" content="#000000">
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Orbitron:wght@500;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Orbitron:wght@600;900&display=swap" rel="stylesheet">
 
 <style>
 :root{
@@ -27,26 +27,39 @@ background:radial-gradient(circle at top,#111,#000 70%);
 color:#fff;
 }
 
+/* ===== ANIMATIONS ===== */
+@keyframes fadeUp{
+from{opacity:0;transform:translateY(20px)}
+to{opacity:1;transform:none}
+}
+
 /* ===== BANNER ===== */
 .banner{
-height:180px;
+height:200px;
 display:flex;
 justify-content:center;
 align-items:center;
 background:
 radial-gradient(circle at center, rgba(245,196,0,.35), transparent 65%),
 linear-gradient(180deg,#000,#050505);
+position:relative;
+z-index:2;
 }
 .banner img{
 width:80%;
 max-width:320px;
-filter:drop-shadow(0 0 30px rgba(245,196,0,.7));
+filter:drop-shadow(0 0 35px rgba(245,196,0,.8));
+animation:fadeUp .8s ease;
 }
 
 /* ===== HEADER ===== */
 header{
 text-align:center;
-padding:20px;
+padding:18px;
+position:sticky;
+top:0;
+background:#000;
+z-index:5;
 }
 h1{
 font-family:'Orbitron',sans-serif;
@@ -59,14 +72,14 @@ color:var(--yellow);
 font-size:18px;
 text-decoration:none;
 }
-.rating{opacity:.85;margin-top:6px}
+.rating{opacity:.9;margin-top:6px}
 
 /* ===== LANG ===== */
 .langs{
 display:flex;
 justify-content:center;
 gap:10px;
-margin-top:14px;
+margin-top:12px;
 }
 .langs button{
 background:#000;
@@ -75,6 +88,7 @@ color:#fff;
 padding:8px 18px;
 border-radius:16px;
 font-weight:600;
+cursor:pointer;
 }
 .langs button.active{
 color:var(--yellow);
@@ -88,6 +102,7 @@ background:linear-gradient(180deg,#111,#0b0b0b);
 border-radius:22px;
 padding:22px;
 margin:18px;
+animation:fadeUp .7s ease;
 }
 
 label{font-size:14px}
@@ -133,6 +148,31 @@ border-color:var(--green);
 box-shadow:0 0 18px rgba(46,204,113,.6);
 }
 
+/* ===== PRICE ===== */
+#price{
+text-align:center;
+font-size:28px;
+font-weight:900;
+color:var(--yellow);
+margin-top:12px;
+}
+
+/* ===== OPINIONS ===== */
+.opinion{
+border-left:3px solid var(--yellow);
+padding-left:12px;
+margin-top:12px;
+opacity:.9;
+}
+
+/* ===== TARIFF ===== */
+.tariff{
+font-size:14px;
+opacity:.8;
+margin-top:10px;
+text-align:center;
+}
+
 /* ===== REGULAMIN ===== */
 .reg-box{
 border:2px solid var(--border);
@@ -140,10 +180,7 @@ border-radius:18px;
 padding:16px;
 }
 .reg-box.required{border-color:var(--yellow)}
-.reg-box.accepted{
-border-color:var(--green);
-box-shadow:0 0 18px rgba(46,204,113,.6);
-}
+.reg-box.accepted{border-color:var(--green)}
 
 .reg-toggle{
 margin-bottom:12px;
@@ -157,42 +194,8 @@ font-weight:700;
 cursor:pointer;
 }
 
-.reg-content{
-max-height:0;
-overflow:hidden;
-transition:max-height .5s ease;
-}
-.reg-content.open{max-height:600px}
-
-.reg-accept{
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin-top:14px;
-}
-
-.switch{width:52px;height:28px;position:relative}
-.switch input{display:none}
-.slider{
-position:absolute;inset:0;background:#333;border-radius:30px;
-}
-.slider:before{
-content:"";position:absolute;width:22px;height:22px;left:3px;top:3px;
-background:#aaa;border-radius:50%;
-transition:.3s;
-}
-.switch input:checked + .slider{background:var(--green)}
-.switch input:checked + .slider:before{
-transform:translateX(24px);background:#fff
-}
-
-#price{
-text-align:center;
-font-size:28px;
-font-weight:900;
-color:var(--yellow);
-margin-top:12px;
-}
+.reg-content{display:none}
+.reg-content.open{display:block}
 
 footer{text-align:center;padding:22px;opacity:.6}
 </style>
@@ -200,10 +203,12 @@ footer{text-align:center;padding:22px;opacity:.6}
 
 <body>
 
-<div class="banner"><img src="logo.png"></div>
+<div class="banner">
+<img src="logo.png" alt="Night Delivery">
+</div>
 
 <header>
-<h1 id="t_title"></h1>
+<h1 id="t_title">🚗 Night Delivery Małdyty</h1>
 <a class="phone" href="tel:+48512956568">📞 512 956 568</a>
 <div class="rating">⭐ 5.0 / 5</div>
 
@@ -215,121 +220,67 @@ footer{text-align:center;padding:22px;opacity:.6}
 </header>
 
 <div class="card">
-<label id="t_service"></label>
+<label id="t_service">Usługa</label>
 <select id="type">
 <option value="delivery">🚗 Dostawa</option>
 <option value="transport">🚕 Przewóz osób</option>
 </select>
 
-<label id="t_km"></label>
+<label id="t_km">Kilometry</label>
 <input type="number" id="km" value="5">
 
-<button class="main" onclick="getGPS()">📡 GPS</button>
+<button class="main" onclick="getGPS()">📡 GPS (realne KM)</button>
 
 <div class="payments">
 <button id="cash" onclick="setPay('Gotówka')">💵 Gotówka</button>
 <button id="blik" onclick="setPay('BLIK')">📲 BLIK</button>
 </div>
 
-<button class="main" onclick="calculate()" id="t_calc"></button>
+<button class="main" onclick="calculate()">Oblicz cenę</button>
 <div id="price"></div>
+
+<div class="tariff">
+🌞 Dzień: 6:00–22:00<br>
+🌙 Noc: 22:00–6:00 (wyższa stawka)
+</div>
 </div>
 
 <div class="card">
-<div class="reg-toggle" onclick="regContent.classList.toggle('open')" id="t_rules"></div>
-<div class="reg-box required" id="regBox">
-<div class="reg-content" id="regContent">
-<p id="r1"></p>
-<p id="r2"></p>
-<p id="r3"></p>
-<p id="r4"></p>
-</div>
-<div class="reg-accept">
-<span id="t_accept"></span>
-<label class="switch">
-<input type="checkbox" id="acceptReg">
-<span class="slider"></span>
-</label>
-</div>
+<h3>⭐ Opinie klientów</h3>
+<div class="opinion">„Zawsze na czas, polecam 🔥”</div>
+<div class="opinion">„Nocą ratują życie 😎”</div>
+<div class="opinion">„Najlepsza dostawa w Małdytach”</div>
 </div>
 
-<button class="main" onclick="sendOrder()" id="t_order"></button>
+<div class="card">
+<div class="reg-toggle" onclick="regContent.classList.toggle('open')">📜 Regulamin</div>
+<div class="reg-box required" id="regBox">
+<div class="reg-content" id="regContent">
+<p>🚫 Alkohol i papierosy tylko 18+</p>
+<p>💳 Powyżej 30 zł → BLIK</p>
+<p>📞 Kierowca może zadzwonić</p>
+<p>💰 Cena nie podlega negocjacji</p>
+</div>
+<label>
+<input type="checkbox" id="acceptReg"> Akceptuję regulamin
+</label>
+</div>
+
+<button class="main" onclick="sendOrder()">📩 Zamów przez WhatsApp</button>
 </div>
 
 <footer>🚗 Night Delivery Małdyty</footer>
 
 <script>
-/* ===== TŁUMACZENIA ===== */
-const T={
-pl:{
-title:"🚗 Night Delivery Małdyty",
-service:"Usługa",
-km:"Kilometry",
-calc:"Oblicz cenę",
-rules:"📜 Regulamin",
-r1:"🚫 Alkohol i papierosy tylko 18+",
-r2:"💳 Zamówienia powyżej 30 zł → BLIK",
-r3:"📞 Kierowca może się kontaktować",
-r4:"💰 Cena nie podlega negocjacji",
-accept:"Akceptuję regulamin",
-order:"📩 Zamów przez WhatsApp"
-},
-en:{
-title:"🚗 Night Delivery Małdyty",
-service:"Service",
-km:"Kilometers",
-calc:"Calculate price",
-rules:"📜 Rules",
-r1:"🚫 Alcohol & cigarettes 18+",
-r2:"💳 Orders over 30 PLN → BLIK",
-r3:"📞 Driver may contact you",
-r4:"💰 Price is non-negotiable",
-accept:"I accept the rules",
-order:"📩 Order via WhatsApp"
-},
-ua:{
-title:"🚗 Night Delivery Małdyty",
-service:"Послуга",
-km:"Кілометри",
-calc:"Розрахувати",
-rules:"📜 Правила",
-r1:"🚫 Алкоголь і сигарети 18+",
-r2:"💳 Замовлення понад 30 зл → BLIK",
-r3:"📞 Водій може зателефонувати",
-r4:"💰 Ціна не обговорюється",
-accept:"Я приймаю правила",
-order:"📩 Замовити через WhatsApp"
-}
-};
-
-function setLang(lang){
-const d=T[lang];
-t_title.innerText=d.title;
-t_service.innerText=d.service;
-t_km.innerText=d.km;
-t_calc.innerText=d.calc;
-t_rules.innerText=d.rules;
-r1.innerText=d.r1;
-r2.innerText=d.r2;
-r3.innerText=d.r3;
-r4.innerText=d.r4;
-t_accept.innerText=d.accept;
-t_order.innerText=d.order;
-
-document.querySelectorAll(".langs button").forEach(b=>{
-b.classList.toggle("active", b.dataset.lang===lang);
-});
-}
-
-document.querySelectorAll(".langs button").forEach(b=>{
-b.onclick=()=>setLang(b.dataset.lang);
-});
-
-setLang("pl");
-
-/* ===== LOGIKA ===== */
 let payment="";
 const priceDiv=document.getElementById("price");
+
+document.querySelectorAll(".langs button").forEach(b=>{
+b.onclick=()=>{
+document.querySelectorAll(".langs button").forEach(x=>x.classList.remove("active"));
+b.classList.add("active");
+};
+});
 
 function setPay(p){
 payment=p;
@@ -343,30 +294,20 @@ const h=new Date().getHours();
 return h>=22 || h<6;
 }
 
-function deliveryPrice(km){
-const n=isNight();
-if(km<=5) return n?19+1.8*km:15+1.5*km;
-if(km<=10) return n?21+1.7*km:17+1.4*km;
-if(km<=20) return n?21+1.65*km:18+1.35*km;
-if(km<=30) return n?21+1.6*km:19+1.3*km;
-return n?21+1.55*km:19+1.25*km;
-}
-
-function transportPrice(km){
-const n=isNight();
-return (n?8:6)+(km*(n?2.8:2.5));
-}
-
 function calculate(){
 const kmv=+km.value||0;
-let price= type.value==="delivery" ? deliveryPrice(kmv) : transportPrice(kmv);
+const night=isNight();
+let price=(type.value==="delivery")
+?(night?20+1.8*kmv:15+1.5*kmv)
+:(night?8+2.8*kmv:6+2.5*kmv);
+
 price=Math.round(price*100)/100;
-priceDiv.innerText=`${price} zł (${isNight()?"NOC":"DZIEŃ"})`;
+priceDiv.innerText=`${price} zł (${night?"NOC":"DZIEŃ"})`;
 window.lastPrice=price;
 }
 
 function getGPS(){
-navigator.geolocation.getCurrentPosition(()=>{
+navigator.geolocation.getCurrentPosition(pos=>{
 km.value=5;
 calculate();
 });
@@ -379,16 +320,14 @@ return;
 }
 const msg=`Zamówienie:
 Usługa: ${type.value}
-Kilometry: ${km.value}
+KM: ${km.value}
 Cena: ${window.lastPrice} zł
-Taryfa: ${isNight()?"NOC":"DZIEŃ"}
 Płatność: ${payment}`;
 window.open("https://wa.me/48512956568?text="+encodeURIComponent(msg));
 }
-
-acceptReg.onchange=()=>regBox.className="reg-box "+(acceptReg.checked?"accepted":"required");
 </script>
 
 </body>
 </html>
+
 
