@@ -11,9 +11,12 @@
 :root{
 --yellow:#f5c400;
 --green:#2ecc71;
+--pink:#ff0080;
+--blue:#00d8ff;
 --bg:#000;
 --card:#111;
 --border:#222;
+--neon-shadow: 0 0 8px var(--yellow), 0 0 16px var(--yellow), 0 0 24px var(--yellow);
 }
 
 *{box-sizing:border-box}
@@ -22,6 +25,7 @@ margin:0;
 font-family:Poppins;
 background:#000;
 color:#fff;
+overflow-x:hidden;
 }
 
 header{
@@ -31,19 +35,47 @@ position:sticky;
 top:0;
 background:#000;
 z-index:10;
+text-shadow:0 0 8px var(--yellow);
+animation: neonPulse 2s infinite alternate;
 }
-h1{font-family:Orbitron;color:var(--yellow);margin:0}
-.phone{color:var(--yellow);font-weight:800;text-decoration:none}
+h1{
+font-family:Orbitron;
+color:var(--yellow);
+margin:0;
+text-shadow:0 0 5px var(--yellow),0 0 10px var(--yellow),0 0 20px var(--yellow);
+animation: neonPulse 1.5s infinite alternate;
+}
+.phone{
+color:var(--yellow);
+font-weight:800;
+text-decoration:none;
+text-shadow:0 0 5px var(--yellow);
+transition: text-shadow 0.3s;
+}
+.phone:hover{
+text-shadow:0 0 10px var(--yellow),0 0 20px var(--yellow);
+}
 
 .banner{text-align:center;padding:30px}
-.banner img{max-width:300px;width:90%;filter:drop-shadow(0 0 30px rgba(245,196,0,.9))}
+.banner img{
+max-width:300px;
+width:90%;
+filter:drop-shadow(0 0 30px var(--yellow));
+animation: fadeInUp 1s ease forwards;
+}
 
 .card{
 background:linear-gradient(180deg,#111,#0b0b0b);
 border-radius:22px;
 padding:22px;
 margin:16px;
-box-shadow:0 0 35px rgba(0,0,0,.8);
+box-shadow:0 0 35px rgba(0,255,255,0.3);
+border:1px solid rgba(0,255,255,0.4);
+transition: transform 0.3s, box-shadow 0.3s;
+}
+.card:hover{
+transform: translateY(-5px);
+box-shadow:0 0 25px var(--blue),0 0 50px var(--blue);
 }
 
 .tabs{display:flex}
@@ -55,7 +87,10 @@ background:#000;
 color:#fff;
 font-weight:900;
 cursor:pointer;
+text-shadow:0 0 5px var(--blue);
+transition: 0.3s;
 }
+.tabs button:hover{color:var(--blue); text-shadow:0 0 15px var(--blue)}
 .tabs .active{border-bottom:4px solid var(--green)}
 
 input,select,textarea{
@@ -66,6 +101,12 @@ border:none;
 background:#000;
 color:#fff;
 margin-top:6px;
+box-shadow:0 0 8px var(--blue);
+transition:0.3s;
+}
+input:focus, select:focus, textarea:focus{
+box-shadow:0 0 15px var(--pink);
+outline:none;
 }
 
 button.main{
@@ -74,10 +115,18 @@ padding:18px;
 margin-top:16px;
 border:none;
 border-radius:18px;
-background:linear-gradient(135deg,#f5c400,#ffe066);
+background:linear-gradient(135deg,#ff0080,#00d8ff);
 font-weight:900;
 font-size:16px;
 cursor:pointer;
+color:#fff;
+text-shadow:0 0 5px #fff;
+box-shadow:0 0 10px #ff0080,0 0 20px #00d8ff,0 0 30px #fff;
+transition: 0.3s;
+}
+button.main:hover{
+transform: translateY(-3px);
+box-shadow:0 0 20px #ff0080,0 0 40px #00d8ff,0 0 60px #fff;
 }
 
 .options{display:flex;gap:10px;margin-top:14px}
@@ -89,10 +138,12 @@ border:1px solid var(--border);
 background:#000;
 color:#fff;
 font-weight:800;
+box-shadow:0 0 5px var(--blue);
+transition:0.3s;
 }
-.options button.active{
+.options button.active, .options button:hover{
 border-color:var(--green);
-box-shadow:0 0 20px rgba(46,204,113,.8);
+box-shadow:0 0 15px var(--green),0 0 25px var(--green);
 }
 
 .points{
@@ -100,6 +151,7 @@ text-align:center;
 font-size:22px;
 font-weight:900;
 color:var(--yellow);
+text-shadow:0 0 5px var(--yellow);
 }
 
 #price{
@@ -108,11 +160,18 @@ font-size:32px;
 font-weight:900;
 color:var(--yellow);
 margin-top:10px;
+text-shadow:0 0 10px var(--yellow);
 }
 
 @keyframes fadeInUp {
   0% {opacity:0; transform: translateY(20px);}
   100% {opacity:1; transform: translateY(0);}
+}
+
+@keyframes neonPulse {
+  0% {text-shadow:0 0 5px var(--yellow),0 0 10px var(--yellow);}
+  50% {text-shadow:0 0 15px var(--yellow),0 0 30px var(--yellow);}
+  100% {text-shadow:0 0 5px var(--yellow),0 0 10px var(--yellow);}
 }
 
 .reward{
@@ -125,12 +184,16 @@ background:linear-gradient(135deg, #111, #1a1a1a);
 transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
 animation: fadeInUp 0.6s ease forwards;
 cursor:default;
+box-shadow:0 0 10px var(--pink),0 0 20px var(--blue);
 }
-
 .reward:hover{
 transform: translateY(-5px);
-box-shadow:0 0 25px rgba(245,196,0,0.6);
-background:linear-gradient(135deg, #1a1a1a, #222);
+box-shadow:0 0 20px var(--pink),0 0 40px var(--blue),0 0 50px var(--yellow);
+background:linear-gradient(135deg,#222,#333);
+}
+
+ul li{
+margin:6px 0;
 }
 </style>
 </head>
