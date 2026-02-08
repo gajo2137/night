@@ -54,6 +54,7 @@ border:none;
 background:#000;
 color:#fff;
 font-weight:900;
+cursor:pointer;
 }
 .tabs .active{border-bottom:4px solid var(--green)}
 
@@ -109,12 +110,27 @@ color:var(--yellow);
 margin-top:10px;
 }
 
+@keyframes fadeInUp {
+  0% {opacity:0; transform: translateY(20px);}
+  100% {opacity:1; transform: translateY(0);}
+}
+
 .reward{
 border:1px solid var(--border);
 border-radius:16px;
 padding:14px;
 margin-top:14px;
 text-align:center;
+background:linear-gradient(135deg, #111, #1a1a1a);
+transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
+animation: fadeInUp 0.6s ease forwards;
+cursor:default;
+}
+
+.reward:hover{
+transform: translateY(-5px);
+box-shadow:0 0 25px rgba(245,196,0,0.6);
+background:linear-gradient(135deg, #1a1a1a, #222);
 }
 </style>
 </head>
@@ -131,6 +147,7 @@ text-align:center;
 <div class="card tabs">
 <button class="active" onclick="showTab('order',this)">🚗 Zamów</button>
 <button onclick="showTab('points',this)">🎁 Punkty</button>
+<button onclick="showTab('rules',this)">📜 Zasady</button>
 </div>
 
 <!-- ZAMÓWIENIE -->
@@ -191,6 +208,35 @@ text-align:center;
 </div>
 </div>
 
+<!-- ZASADY -->
+<div id="rulesTab" style="display:none">
+<div class="card">
+<h2 style="color:var(--yellow);text-align:center;animation: fadeInUp 0.8s;">📜 Zasady Zamówienia</h2>
+
+<div class="reward">
+<h3>🚕 Przewóz osób</h3>
+<ul>
+<li>👤 Przewożę maksymalnie <b>1 osobę</b> na kurs.</li>
+<li>📍 Podaj <b>dokładne miejsce odbioru i cel podróży</b>.</li>
+<li>⏰ Zarezerwuj kurs z wyprzedzeniem, aby zapewnić dostępność.</li>
+<li>⌛ Punktualność – kierowca przyjeżdża na czas, ale nie czeka dłużej niż 10 minut.</li>
+<li>💼 Ważne przedmioty przy sobie – przewoźnik nie odpowiada za zgubione rzeczy.</li>
+</ul>
+</div>
+
+<div class="reward">
+<h3>🚗 Dostawa</h3>
+<ul>
+<li>💰 Zamówienia powyżej <b>50 zł</b> wymagają <b>płatności z góry</b>.</li>
+<li>📍 Podaj dokładny adres dostawy i kontakt telefoniczny.</li>
+<li>🕒 Dostawa realizowana jest w możliwie najkrótszym czasie, lecz w godzinach nocnych może wystąpić niewielkie opóźnienie.</li>
+<li>⚠️ Nie przyjmuję przesyłek niebezpiecznych ani łatwopalnych.</li>
+<li>📞 W razie problemów z realizacją zamówienia skontaktuję się telefonicznie.</li>
+</ul>
+</div>
+</div>
+</div>
+
 <script>
 let points = Number(localStorage.getItem("points")) || 0;
 let payment="", bonus=null;
@@ -200,6 +246,7 @@ document.getElementById("points").innerText=points;
 function showTab(tab,btn){
 orderTab.style.display=tab==="order"?"block":"none";
 pointsTab.style.display=tab==="points"?"block":"none";
+rulesTab.style.display=tab==="rules"?"block":"none";
 document.querySelectorAll(".tabs button").forEach(b=>b.classList.remove("active"));
 btn.classList.add("active");
 }
