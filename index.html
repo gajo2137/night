@@ -57,17 +57,51 @@ animation: moveLines 20s linear infinite;
 pointer-events:none;
 }
 
+/* Latające cząsteczki neonowe */
+.particles{
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+pointer-events:none;
+z-index:0;
+overflow:hidden;
+}
+.particle{
+position:absolute;
+width:4px;
+height:4px;
+border-radius:50%;
+background:linear-gradient(45deg, var(--pink), var(--blue));
+opacity:0.7;
+animation: float 10s linear infinite;
+}
+
+/* Animacje */
+@keyframes float {
+0%{transform: translateY(0) translateX(0);}
+100%{transform: translateY(-1200px) translateX(300px);}
+}
 @keyframes moveLines{
 0%{transform: translate(0,0);}
 100%{transform: translate(-50px,-50px);}
 }
-
 @keyframes starTwinkle {
 0%,100%{opacity:0.2;}
 50%{opacity:0.6;}
 }
+@keyframes fadeInUp {
+0% {opacity:0; transform: translateY(20px);}
+100% {opacity:1; transform: translateY(0);}
+}
+@keyframes neonPulse {
+0% {text-shadow:0 0 5px var(--yellow),0 0 10px var(--yellow);}
+50% {text-shadow:0 0 15px var(--yellow),0 0 30px var(--yellow);}
+100% {text-shadow:0 0 5px var(--yellow),0 0 10px var(--yellow);}
+}
 
-/* Nagłówek neon */
+/* Glow i neon */
 header{
 text-align:center;
 padding:16px;
@@ -206,17 +240,6 @@ margin-top:10px;
 text-shadow:0 0 10px var(--yellow);
 }
 
-@keyframes fadeInUp {
-0% {opacity:0; transform: translateY(20px);}
-100% {opacity:1; transform: translateY(0);}
-}
-
-@keyframes neonPulse {
-0% {text-shadow:0 0 5px var(--yellow),0 0 10px var(--yellow);}
-50% {text-shadow:0 0 15px var(--yellow),0 0 30px var(--yellow);}
-100% {text-shadow:0 0 5px var(--yellow),0 0 10px var(--yellow);}
-}
-
 .reward{
 position:relative;
 z-index:1;
@@ -244,6 +267,22 @@ margin:6px 0;
 </head>
 
 <body>
+
+<!-- Neonowe cząsteczki w tle -->
+<div class="particles">
+<script>
+for(let i=0;i<50;i++){
+let p = document.createElement("div");
+p.className="particle";
+p.style.top=Math.random()*window.innerHeight+"px";
+p.style.left=Math.random()*window.innerWidth+"px";
+p.style.animationDuration=(5+Math.random()*10)+"s";
+p.style.width=(2+Math.random()*4)+"px";
+p.style.height=p.style.width;
+document.querySelector(".particles").appendChild(p);
+}
+</script>
+</div>
 
 <div class="banner"><img src="logo.png"></div>
 
