@@ -4,9 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Night Delivery Małdyty</title>
-
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&family=Orbitron:wght@600;900&display=swap" rel="stylesheet">
-
 <style>
 :root{
 --yellow:#f5c400;
@@ -17,136 +15,55 @@
 --card:#111;
 --border:#222;
 }
-
 /* Podstawowy styl */
 *{box-sizing:border-box}
-body{
-margin:0;
-font-family:Poppins;
-background:#000;
-color:#fff;
-overflow-x:hidden;
-position:relative;
-}
-
-/* Gwiazdki w tle */
-body::before{
-content:"";
-position:absolute;
-top:0;left:0;width:100%;height:100%;
-background:
-radial-gradient(circle, #fff 1px, transparent 1px) 0 0,
-radial-gradient(circle, #fff 1px, transparent 1px) 50px 50px;
-background-size: 100px 100px;
-z-index:0;
-opacity:0.2;
-animation: starTwinkle 5s infinite;
-pointer-events:none;
-}
-
-/* Neonowe linie tła */
-body::after{
-content:"";
-position:absolute;
-top:0;left:0;width:200%;height:200%;
-background:
-repeating-linear-gradient(45deg, rgba(0,255,255,0.05) 0 2px, transparent 2px 10px),
-repeating-linear-gradient(-45deg, rgba(255,0,255,0.05) 0 2px, transparent 2px 10px);
-z-index:0;
-animation: moveLines 20s linear infinite;
-pointer-events:none;
-}
-
-/* Latające cząsteczki neonowe */
-.particles{
-position:absolute;
-top:0;
-left:0;
-width:100%;
-height:100%;
-pointer-events:none;
-z-index:0;
-overflow:hidden;
-}
-.particle{
-position:absolute;
-width:4px;
-height:4px;
-border-radius:50%;
-background:linear-gradient(45deg, var(--pink), var(--blue));
-opacity:0.7;
-animation: float 10s linear infinite;
-}
-
-/* Neon kliknięcie */
-.clickEffect{
-position:absolute;
-border-radius:50%;
-pointer-events:none;
-transform:translate(-50%,-50%) scale(0);
-animation: clickAnim 0.5s forwards;
-background: radial-gradient(circle, var(--pink) 0%, var(--blue) 70%, transparent 100%);
-mix-blend-mode: screen;
-}
-
-@keyframes clickAnim{
-0% {transform:translate(-50%,-50%) scale(0); opacity:1;}
-70% {transform:translate(-50%,-50%) scale(1.5); opacity:0.6;}
-100%{transform:translate(-50%,-50%) scale(2); opacity:0;}
-}
-
-/* Animacje */
-@keyframes float {0%{transform: translateY(0) translateX(0);}100%{transform: translateY(-1200px) translateX(300px);}}
-@keyframes moveLines{0%{transform: translate(0,0);}100%{transform: translate(-50px,-50px);}}
-@keyframes starTwinkle {0%,100%{opacity:0.2;}50%{opacity:0.6;}}
-@keyframes fadeInUp {0% {opacity:0; transform: translateY(20px);}100% {opacity:1; transform: translateY(0);}}
-@keyframes neonPulse {0% {text-shadow:0 0 5px var(--yellow),0 0 10px var(--yellow);}50% {text-shadow:0 0 15px var(--yellow),0 0 30px var(--yellow);}100% {text-shadow:0 0 5px var(--yellow),0 0 10px var(--yellow);}}
-
-/* Glow i neon */
-header{text-align:center;padding:16px;position:sticky;top:0;background:#000;z-index:10;text-shadow:0 0 8px var(--yellow);animation: neonPulse 2s infinite alternate;}
-h1{font-family:Orbitron;color:var(--yellow);margin:0;text-shadow:0 0 5px var(--yellow),0 0 10px var(--yellow),0 0 20px var(--yellow);animation: neonPulse 1.5s infinite alternate;}
-.phone{color:var(--yellow);font-weight:800;text-decoration:none;text-shadow:0 0 5px var(--yellow);transition: text-shadow 0.3s;}
+body{margin:0;font-family:Poppins;background:#000;color:#fff;overflow-x:hidden;position:relative;}
+body::before{content:"";position:absolute;top:0;left:0;width:100%;height:100%;background:radial-gradient(circle,#fff 1px,transparent 1px) 0 0,radial-gradient(circle,#fff 1px,transparent 1px) 50px 50px;background-size:100px 100px;z-index:0;opacity:0.2;animation:starTwinkle 5s infinite;pointer-events:none;}
+body::after{content:"";position:absolute;top:0;left:0;width:200%;height:200%;background:repeating-linear-gradient(45deg,rgba(0,255,255,0.05)0 2px,transparent 2px 10px),repeating-linear-gradient(-45deg,rgba(255,0,255,0.05)0 2px,transparent 2px 10px);z-index:0;animation:moveLines 20s linear infinite;pointer-events:none;}
+.particles{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:hidden;}
+.particle{position:absolute;width:4px;height:4px;border-radius:50%;background:linear-gradient(45deg,var(--pink),var(--blue));opacity:0.7;animation:float 10s linear infinite;}
+.clickEffect{position:absolute;border-radius:50%;pointer-events:none;transform:translate(-50%,-50%) scale(0);animation:clickAnim 0.5s forwards;background:radial-gradient(circle,var(--pink)0%,var(--blue)70%,transparent 100%);mix-blend-mode:screen;}
+@keyframes clickAnim{0%{transform:translate(-50%,-50%) scale(0);opacity:1;}70%{transform:translate(-50%,-50%) scale(1.5);opacity:0.6;}100%{transform:translate(-50%,-50%) scale(2);opacity:0;}}
+@keyframes float{0%{transform:translateY(0) translateX(0);}100%{transform:translateY(-1200px) translateX(300px);}}
+@keyframes moveLines{0%{transform:translate(0,0);}100%{transform:translate(-50px,-50px);}}
+@keyframes starTwinkle{0%,100%{opacity:0.2;}50%{opacity:0.6;}}
+@keyframes fadeInUp{0%{opacity:0;transform:translateY(20px);}100%{opacity:1;transform:translateY(0);}}
+@keyframes neonPulse{0%{text-shadow:0 0 5px var(--yellow),0 0 10px var(--yellow);}50%{text-shadow:0 0 15px var(--yellow),0 0 30px var(--yellow);}100%{text-shadow:0 0 5px var(--yellow),0 0 10px var(--yellow);}}
+header{text-align:center;padding:16px;position:sticky;top:0;background:#000;z-index:10;text-shadow:0 0 8px var(--yellow);animation:neonPulse 2s infinite alternate;}
+h1{font-family:Orbitron;color:var(--yellow);margin:0;text-shadow:0 0 5px var(--yellow),0 0 10px var(--yellow),0 0 20px var(--yellow);animation:neonPulse 1.5s infinite alternate;}
+.phone{color:var(--yellow);font-weight:800;text-decoration:none;text-shadow:0 0 5px var(--yellow);transition:text-shadow 0.3s;}
 .phone:hover{text-shadow:0 0 10px var(--yellow),0 0 20px var(--yellow);}
-
 .banner{text-align:center;padding:30px}
-.banner img{max-width:300px;width:90%;filter:drop-shadow(0 0 30px var(--yellow));animation: fadeInUp 1s ease forwards;}
-
-/* Karty i glow */
-.card{position:relative;z-index:1;background:linear-gradient(180deg,#111,#0b0b0b);border-radius:22px;padding:22px;margin:16px;box-shadow:0 0 35px rgba(0,255,255,0.3);border:1px solid rgba(0,255,255,0.4);transition: transform 0.3s, box-shadow 0.3s;}
-.card:hover{transform: translateY(-5px);box-shadow:0 0 25px var(--blue),0 0 50px var(--blue);}
-
+.banner img{max-width:300px;width:90%;filter:drop-shadow(0 0 30px var(--yellow));animation:fadeInUp 1s ease forwards;}
+.card{position:relative;z-index:1;background:linear-gradient(180deg,#111,#0b0b0b);border-radius:22px;padding:22px;margin:16px;box-shadow:0 0 35px rgba(0,255,255,0.3);border:1px solid rgba(0,255,255,0.4);transition:transform 0.3s,box-shadow 0.3s;}
+.card:hover{transform:translateY(-5px);box-shadow:0 0 25px var(--blue),0 0 50px var(--blue);}
 .tabs{display:flex; z-index:1; position:relative;}
-.tabs button{flex:1;padding:14px;border:none;background:#000;color:#fff;font-weight:900;cursor:pointer;text-shadow:0 0 5px var(--blue);transition: 0.3s;}
+.tabs button{flex:1;padding:14px;border:none;background:#000;color:#fff;font-weight:900;cursor:pointer;text-shadow:0 0 5px var(--blue);transition:0.3s;}
 .tabs button:hover{color:var(--blue); text-shadow:0 0 15px var(--blue);}
 .tabs .active{border-bottom:4px solid var(--green);}
-
 input,select,textarea{width:100%;padding:14px;border-radius:14px;border:none;background:#000;color:#fff;margin-top:6px;box-shadow:0 0 8px var(--blue);transition:0.3s;}
-input:focus, select:focus, textarea:focus{box-shadow:0 0 15px var(--pink);outline:none;}
-
-button.main{width:100%;padding:18px;margin-top:16px;border:none;border-radius:18px;background:linear-gradient(135deg,#ff0080,#00d8ff);font-weight:900;font-size:16px;cursor:pointer;color:#fff;text-shadow:0 0 5px #fff;box-shadow:0 0 10px #ff0080,0 0 20px #00d8ff,0 0 30px #fff;transition: 0.3s;}
-button.main:hover{transform: translateY(-3px);box-shadow:0 0 20px #ff0080,0 0 40px #00d8ff,0 0 60px #fff;}
-
+input:focus,select:focus,textarea:focus{box-shadow:0 0 15px var(--pink);outline:none;}
+button.main{width:100%;padding:18px;margin-top:16px;border:none;border-radius:18px;background:linear-gradient(135deg,#ff0080,#00d8ff);font-weight:900;font-size:16px;cursor:pointer;color:#fff;text-shadow:0 0 5px #fff;box-shadow:0 0 10px #ff0080,0 0 20px #00d8ff,0 0 30px #fff;transition:0.3s;}
+button.main:hover{transform:translateY(-3px);box-shadow:0 0 20px #ff0080,0 0 40px #00d8ff,0 0 60px #fff;}
 .options{display:flex;gap:10px;margin-top:14px}
 .options button{flex:1;padding:14px;border-radius:14px;border:1px solid var(--border);background:#000;color:#fff;font-weight:800;box-shadow:0 0 5px var(--blue);transition:0.3s;}
-.options button.active, .options button:hover{border-color:var(--green);box-shadow:0 0 15px var(--green),0 0 25px var(--green);}
-
+.options button.active,.options button:hover{border-color:var(--green);box-shadow:0 0 15px var(--green),0 0 25px var(--green);}
 .points{text-align:center;font-size:22px;font-weight:900;color:var(--yellow);text-shadow:0 0 5px var(--yellow);}
 #price{text-align:center;font-size:32px;font-weight:900;color:var(--yellow);margin-top:10px;text-shadow:0 0 10px var(--yellow);}
-
-.reward{position:relative;z-index:1;border:1px solid var(--border);border-radius:16px;padding:14px;margin-top:14px;text-align:center;background:linear-gradient(135deg, #111, #1a1a1a);transition: transform 0.3s, box-shadow 0.3s, background 0.3s;animation: fadeInUp 0.6s ease forwards;cursor:default;box-shadow:0 0 10px var(--pink),0 0 20px var(--blue);}
-.reward:hover{transform: translateY(-5px);box-shadow:0 0 20px var(--pink),0 0 40px var(--blue),0 0 50px var(--yellow);background:linear-gradient(135deg,#222,#333);}
+.reward{position:relative;z-index:1;border:1px solid var(--border);border-radius:16px;padding:14px;margin-top:14px;text-align:center;background:linear-gradient(135deg,#111,#1a1a1a);transition:transform 0.3s,box-shadow 0.3s,background 0.3s;animation:fadeInUp 0.6s ease forwards;cursor:default;box-shadow:0 0 10px var(--pink),0 0 20px var(--blue);}
+.reward:hover{transform:translateY(-5px);box-shadow:0 0 20px var(--pink),0 0 40px var(--blue),0 0 50px var(--yellow);background:linear-gradient(135deg,#222,#333);}
 ul li{margin:6px 0;}
 
 /* Panel admina */
-#adminPanel{
-position:fixed;top:0;right:0;width:300px;height:100%;background:#111;color:#fff;z-index:999;display:none;overflow:auto;padding:20px;border-left:2px solid var(--yellow);}
-#adminPanel h2{color:var(--yellow);text-align:center;}
-#adminPanel button{margin-top:10px;padding:10px;width:100%;border:none;border-radius:12px;background:var(--green);color:#000;font-weight:800;cursor:pointer;}
+#adminPanel{display:none;position:fixed;top:10%;left:50%;transform:translateX(-50%);background:#111;padding:20px;border-radius:20px;z-index:50;box-shadow:0 0 30px var(--pink);width:90%;max-width:400px;}
+#adminPanel h2{text-align:center;color:var(--yellow);margin-bottom:10px;}
+#adminPanel button.status{width:100%;padding:12px;margin:6px 0;border:none;border-radius:14px;background:linear-gradient(135deg,var(--blue),var(--pink));color:#fff;font-weight:900;cursor:pointer;}
+#adminPanel button.status.active{border:2px solid var(--green);box-shadow:0 0 15px var(--green);}
+#adminPanel input{width:100%;padding:10px;margin:6px 0;border-radius:12px;border:none;background:#000;color:#fff;box-shadow:0 0 8px var(--blue);}
 </style>
 </head>
 <body>
 
-<!-- Neonowe cząsteczki w tle -->
 <div class="particles"></div>
 
 <div class="banner"><img src="logo.png"></div>
@@ -154,8 +71,7 @@ position:fixed;top:0;right:0;width:300px;height:100%;background:#111;color:#fff;
 <header>
 <h1>NIGHT DELIVERY MAŁDYTY</h1>
 <a class="phone" href="tel:+48603433325">📞 603 433 325</a>
-<!-- Przycisk admina -->
-<button onclick="openAdmin()" style="position:absolute;right:10px;top:10px;background:none;border:none;color:var(--yellow);font-size:20px;cursor:pointer;">⚙</button>
+<button style="position:absolute;right:20px;top:20px;padding:10px;border:none;border-radius:12px;background:var(--blue);color:#fff;cursor:pointer;" onclick="showAdminPrompt()">⚙️</button>
 </header>
 
 <div class="card tabs">
@@ -244,18 +160,20 @@ position:fixed;top:0;right:0;width:300px;height:100%;background:#111;color:#fff;
 </div>
 </div>
 
-<!-- PANEL ADMINA -->
+<!-- Panel admina -->
 <div id="adminPanel">
 <h2>Panel Admina</h2>
-<p>Tu możesz sterować zamówieniami i punktami.</p>
-<button onclick="clearPoints()">Wyczyść punkty</button>
-<button onclick="alert('Dodatkowe funkcje admina wkrótce!')">Inne funkcje</button>
+<input type="text" id="adminStatusInput" placeholder="Wprowadź status...">
+<button class="status" onclick="setAdminStatus('Dostępny')">Dostępny</button>
+<button class="status" onclick="setAdminStatus('Kurs')">W trakcie kursu</button>
+<button class="status" onclick="setAdminStatus('Niedostępny')">Niedostępny</button>
+<p>Status: <span id="adminStatus">Brak</span></p>
+<button class="main" onclick="closeAdmin()">Zamknij</button>
 </div>
 
 <script>
 let points = Number(localStorage.getItem("points")) || 0;
 let payment="", bonus=null;
-
 document.getElementById("points").innerText=points;
 
 function showTab(tab,btn){
@@ -343,10 +261,23 @@ p.style.width=(2+Math.random()*4)+"px";
 p.style.height=p.style.width;
 document.querySelector(".particles").appendChild(p);
 }
-</script>
 
+// --- Panel Admina ---
+function showAdminPrompt(){
+let pass = prompt("Podaj hasło do panelu admina");
+if(pass==="G4J0") document.getElementById("adminPanel").style.display="block";
+else alert("Błędne hasło");
+}
+function closeAdmin(){document.getElementById("adminPanel").style.display="none";}
+function setAdminStatus(status){
+document.getElementById("adminStatus").innerText=status;
+alert("Status ustawiony na: "+status);
+}
+</script>
 </body>
 </html>
+
+
 
 
 
